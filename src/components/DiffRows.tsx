@@ -1,5 +1,6 @@
 import type { DiffRow } from "@/lib/diff";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /** Renders unified diff rows (lines + collapsed gaps) in a mono font.
  *  `numbers` false drops the line-number columns (narrow panels). */
@@ -15,7 +16,7 @@ export function DiffRows({
       {rows.map((row, index) =>
         row.kind === "gap" ? (
           <p key={index} className="my-1 text-center text-2xs text-muted-foreground">
-            ⋯ {row.count} unchanged lines
+            {t("⋯ {count} unchanged lines", { count: row.count })}
           </p>
         ) : (
           <p

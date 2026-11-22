@@ -17,6 +17,7 @@ import { STEP_LABELS, copyText, useShare, type Share } from "@/hooks/useShare";
 import { features } from "@/lib/target";
 import type { ProjectMembers } from "@/lib/tauri";
 import { useDialogsStore } from "@/store/dialogs";
+import { formatList, t, tn } from "@scholarkit/i18n";
 
 /** Who the project is shared with, in a line; null when with no one. */
 export function peopleLine(people: ProjectMembers | null): string | null {
@@ -24,13 +25,24 @@ export function peopleLine(people: ProjectMembers | null): string | null {
   const names = people.members.map((m) => m.name);
   const invited = people.invites.length;
   const waiting =
-    invited > 0 ? `${invited} ${invited === 1 ? "invite" : "invites"} pending` : null;
+    invited > 0
+      ? tn(invited, "{count} invite pending", "{count} invites pending")
+      : null;
   if (names.length === 0) return waiting;
   const who =
     names.length <= 2
-      ? names.join(" and ")
-      : `${names[0]}, ${names[1]} and ${names.length - 2} more`;
-  return `Shared with ${who}${waiting ? ` · ${waiting}` : ""}`;
+      ? formatList(names)
+      : tn(
+          names.length - 2,
+          "{first}, {second} and {count} more",
+          "{first}, {second} and {count} more",
+          {
+            first: names[0],
+            second: names[1],
+          },
+        );
+  const shared = t("Shared with {who}", { who });
+  return waiting ? `${shared} · ${waiting}` : shared;
 }
 
 /**
@@ -43,9 +55,9 @@ export function SharePopover() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" title="Share this project">
+        <Button variant="outline" size="sm" title={t("Share this project")}>
           <UserRoundPlus />
-          Share
+          {t("Share")}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -74,7 +86,7 @@ function ShareQuick({ close }: { close: () => void }) {
   const openInBrowser = projectPage && (
     <Button size="sm" variant="ghost" onClick={() => void openUrl(projectPage)}>
       <ExternalLink />
-      Open in browser
+      {t("Open in browser")}
     </Button>
   );
 
@@ -89,7 +101,7 @@ function ShareQuick({ close }: { close: () => void }) {
   if (status === null || share.signedOut || (!shared && features.localFiles)) {
     return (
       <div className="space-y-2 p-4">
-        <h3 className="text-sm font-medium">Share this project</h3>
+        <h3 className="text-sm font-medium">{t("Share this project")}</h3>
         {status !== null && <ShareStart share={share} />}
         <ShareProblem share={share} />
       </div>
@@ -101,7 +113,7 @@ function ShareQuick({ close }: { close: () => void }) {
       <>
         <div className="space-y-2 p-4">
           <h3 className="text-sm font-medium">
-            Shared by {info?.owner?.name ?? "someone else"}
+            {t("Shared by")} {info?.owner?.name ?? t("someone else")}
           </h3>
           <p className="text-xs text-muted-foreground">{invitedLine(share)}</p>
           <SyncNotice share={share} />
@@ -116,7 +128,7 @@ function ShareQuick({ close }: { close: () => void }) {
               className="text-muted-foreground hover:text-destructive"
               onClick={() => setLeaving(true)}
             >
-              Leave project…
+              {t("Leave project…")}
             </Button>
             {openInBrowser}
           </div>
@@ -138,15 +150,15 @@ function ShareQuick({ close }: { close: () => void }) {
       )}
       {owner && share.people && (
         <section className="space-y-2 p-4">
-          <h3 className="text-sm font-medium">Invite people</h3>
+          <h3 className="text-sm font-medium">{t("Invite people")}</h3>
           <InviteForm share={share} />
           {line && <p className="text-xs text-muted-foreground">{line}</p>}
         </section>
       )}
       <section className="space-y-2 border-t p-4 first:border-t-0">
-        <h3 className="text-sm font-medium">Review link</h3>
+        <h3 className="text-sm font-medium">{t("Review link")}</h3>
         <p className="text-xs text-muted-foreground">
-          Anyone with the link can read and comment on what you published last.
+          {t("Anyone with the link can read and comment on what you published last.")}
         </p>
         <ReviewLinkButton share={share} />
         <PublishedLine share={share} />
@@ -154,7 +166,7 @@ function ShareQuick({ close }: { close: () => void }) {
       </section>
       <div className="flex items-center justify-between border-t p-2">
         <Button size="sm" variant="ghost" onClick={manage}>
-          Manage sharing…
+          {t("Manage sharing…")}
         </Button>
         {openInBrowser}
       </div>
@@ -191,14 +203,14 @@ function ReviewLinkButton({ share }: { share: Share }) {
       {working
         ? share.step
           ? STEP_LABELS[share.step]
-          : "Creating link…"
+          : t("Creating link…")
         : copied
-          ? "Copied"
+          ? t("Copied")
           : known
-            ? "Copy review link"
+            ? t("Copy review link")
             : share.links.length > 0
-              ? "New review link"
-              : "Create review link"}
+              ? t("New review link")
+              : t("Create review link")}
     </Button>
   );
 }

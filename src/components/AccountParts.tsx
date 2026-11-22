@@ -3,13 +3,14 @@ import { formatCompileUsed, formatStorage } from "@/components/UsageSummary";
 import type { AccountUsage, AccountUser } from "@/lib/tauri";
 import { initialsOf } from "@/store/settings";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /** Plan names as the account page shows them; "professional" comes from servers before the current plans. */
 export const PLAN_NAMES: Record<NonNullable<AccountUser["plan"]>, string> = {
-  free: "Free",
-  student: "Student",
-  pro: "Pro",
-  professional: "Pro",
+  free: t("Free"),
+  student: t("Student"),
+  pro: t("Pro"),
+  professional: t("Pro"),
 };
 
 const SIZES = {
@@ -105,17 +106,17 @@ export function UsageMeters({
   return (
     <div className={className}>
       <Meter
-        label="Storage"
+        label={t("Storage")}
         value={`${formatStorage(storage.usedBytes)} of ${formatStorage(storage.limitBytes)}`}
         share={storage.usedBytes / storage.limitBytes}
         full={storage.usedBytes >= storage.limitBytes}
       />
       <Meter
-        label="Cloud compile today"
+        label={t("Cloud compile today")}
         value={formatCompileUsed(compile.usedPercent)}
         share={compile.usedPercent / 100}
         full={compile.usedPercent >= 100}
-        note="More from midnight UTC"
+        note={t("More from midnight UTC")}
       />
     </div>
   );

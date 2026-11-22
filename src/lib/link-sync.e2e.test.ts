@@ -1,5 +1,5 @@
 // Two computers and a browser on one linked project, against a real
-// Polemic server. Skipped unless POLEMIC_E2E_SERVER (e.g.
+// Scholarkit server. Skipped unless POLEMIC_E2E_SERVER (e.g.
 // http://localhost:3000) and POLEMIC_E2E_TOKEN (a desktop token) are
 // set. The server calls go over HTTP as share.rs and link.rs make them;
 // each folder is kept in memory. The browser is a live sync client of

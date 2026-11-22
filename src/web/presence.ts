@@ -12,6 +12,7 @@ import * as Y from "yjs";
 import { carryOffset, textAt } from "@/lib/project-doc";
 import { setPresenceReporter, usePresenceStore, type Peer } from "@/store/presence";
 import { onProjectConnect, signedInAccount, type OpenProject } from "@/web/projects";
+import { t } from "@scholarkit/i18n";
 
 type Awareness = NonNullable<HocuspocusProvider["awareness"]>;
 
@@ -64,7 +65,7 @@ export function peersOf(
     const userId = typeof user?.id === "string" ? user.id : `client-${clientId}`;
     if (userId === selfId) continue;
     const name =
-      typeof user?.name === "string" && user.name !== "" ? user.name : "Someone";
+      typeof user?.name === "string" && user.name !== "" ? user.name : t("Someone");
     const file = typeof state.file === "string" ? state.file : null;
     let selection: Peer["selection"] = null;
     let text: string | null = null;

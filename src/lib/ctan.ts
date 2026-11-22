@@ -1,3 +1,4 @@
+import { t } from "@scholarkit/i18n";
 /**
  * The CTAN JSON API client, used by the package manager for
  * discovery. Online by design (local-first checks stay local).
@@ -40,10 +41,12 @@ export async function searchCtan(query: string): Promise<CtanPackage[]> {
   const response = await fetch(
     `https://ctan.org/json/2.0/packages?key=${encodeURIComponent(trimmed)}`,
   ).catch(() => {
-    throw new Error("Could not reach CTAN. Check your internet connection.");
+    throw new Error(t("Could not reach CTAN. Check your internet connection."));
   });
   if (!response.ok) {
-    throw new Error(`CTAN answered ${response.status}. Try again in a moment.`);
+    throw new Error(
+      t("CTAN answered {status}. Try again in a moment.", { status: response.status }),
+    );
   }
   return parseList(await response.json());
 }

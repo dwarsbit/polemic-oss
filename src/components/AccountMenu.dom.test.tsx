@@ -44,7 +44,7 @@ async function render() {
 }
 
 const trigger = () =>
-  host.querySelector<HTMLButtonElement>('[aria-label="Polemic account"]');
+  host.querySelector<HTMLButtonElement>('[aria-label="Scholarkit account"]');
 
 async function openMenu() {
   await act(async () => {
@@ -69,7 +69,7 @@ describe("AccountMenu", () => {
     vi.clearAllMocks();
     useAccountStore.setState({ status: null });
     server.status = {
-      server: "https://app.polemicapp.com",
+      server: "https://app.scholarkit.app",
       signedIn: true,
       user: ada,
       problem: null,
@@ -114,7 +114,7 @@ describe("AccountMenu", () => {
     await render();
     await openMenu();
     await choose("Manage account");
-    expect(openUrl).toHaveBeenCalledWith("https://app.polemicapp.com/account");
+    expect(openUrl).toHaveBeenCalledWith("https://app.scholarkit.app/account");
   });
 
   it("signs out and hides the avatar", async () => {

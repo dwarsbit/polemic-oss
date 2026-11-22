@@ -25,6 +25,7 @@ import {
   type OpenProject,
 } from "@/web/projects";
 import { request, ServerError } from "@/web/server";
+import { t } from "@scholarkit/i18n";
 
 type Args = Record<string, unknown>;
 
@@ -38,27 +39,29 @@ export function shareErrorFor(e: unknown): unknown {
   if (!(e instanceof ServerError)) return e;
   if (e.status === 0) return shareError("unavailable", e.message);
   if (e.status === 402)
-    return shareError("planRequired", "Sharing needs a paid plan on this server.");
+    return shareError("planRequired", t("Sharing needs a paid plan on this server."));
   if (e.status === 409 && e.code === "review_link_limit") {
     return shareError("limitReached", e.message);
   }
   if (e.status === 404) {
     return shareError(
       "notFound",
-      "This project doesn't exist or isn't shared with you.",
+      t("This project doesn't exist or isn't shared with you."),
     );
   }
   if (e.status === 413 && e.code === "quota_exceeded") {
     return shareError(
       "tooLarge",
-      "Your storage is full. Delete files or other projects to make room, or change your plan on your account page.",
+      t(
+        "Your storage is full. Delete files or other projects to make room, or change your plan on your account page.",
+      ),
     );
   }
   if (e.status === 413) return shareError("tooLarge", e.message);
   if (e.status >= 500) {
     return shareError(
       "unavailable",
-      "Sharing is unavailable right now. Try again later.",
+      t("Sharing is unavailable right now. Try again later."),
     );
   }
   return shareError("failed", e.message);
@@ -69,7 +72,9 @@ function shareable(open: OpenProject): void {
   if (open.info.role !== "owner") {
     throw shareError(
       "failed",
-      `Only ${open.info.owner.name} can share this project for review.`,
+      t("Only {name} can share this project for review.", {
+        name: open.info.owner.name,
+      }),
     );
   }
   publishedHere(open);
@@ -80,7 +85,7 @@ function publishedHere(open: OpenProject): void {
   if (open.info.role === "owner" && open.info.source === "desktop") {
     throw shareError(
       "failed",
-      "This project is published from the desktop app. Share it from there.",
+      t("This project is published from the desktop app. Share it from there."),
     );
   }
 }
@@ -111,7 +116,9 @@ async function publish(open: OpenProject, main: string | null) {
     open,
     shareError(
       "unavailable",
-      "Your latest edits haven't reached Polemic yet. Check your connection and publish again.",
+      t(
+        "Your latest edits haven't reached Polemic yet. Check your connection and publish again.",
+      ),
     ),
   );
   const pdf = open.pdf ? await upload(open, open.pdf, "application/pdf") : null;
@@ -134,7 +141,7 @@ async function publish(open: OpenProject, main: string | null) {
 function checkedUrl(url: unknown): string {
   const parsed = new URL(String(url), window.location.origin);
   if (parsed.origin !== window.location.origin || !parsed.pathname.startsWith("/r/")) {
-    throw shareError("failed", "The server sent an unexpected review link.");
+    throw shareError("failed", t("The server sent an unexpected review link."));
   }
   return parsed.href;
 }
@@ -223,7 +230,8 @@ export const reviewCommands: Record<string, (args: Args) => unknown> = {
   share_leave: async (args) => {
     const open = project(args);
     const me = await signedInAccount();
-    if (!me) throw shareError("signedOut", "Sign in to your Polemic account first.");
+    if (!me)
+      throw shareError("signedOut", t("Sign in to your Scholarkit account first."));
     await gone(
       call(`/api/projects/${open.id}/members/${encodeURIComponent(me.id)}`, {
         method: "DELETE",
@@ -281,7 +289,10 @@ async function aboutSnapshot<T>(pending: Promise<T>): Promise<T> {
     return await pending;
   } catch (e) {
     if (isShareErrorOf(e, "notFound")) {
-      throw shareError("failed", "This snapshot is no longer kept. Pick a newer one.");
+      throw shareError(
+        "failed",
+        t("This snapshot is no longer kept. Pick a newer one."),
+      );
     }
     throw e;
   }

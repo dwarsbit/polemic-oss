@@ -2,6 +2,7 @@ import { FilePen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSuggestStore } from "@/store/suggest";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /**
  * The Suggest switch: in the editor toolbars as a labeled button, in
@@ -12,8 +13,8 @@ export function SuggestToggle({ compact = false }: { compact?: boolean }) {
   const setEnabled = useSuggestStore((s) => s.setEnabled);
   const message = useSuggestStore((s) => s.message);
   const title = enabled
-    ? "Suggesting: edits are recorded as suggestions. Click to edit directly."
-    : "Editing: click to record edits as suggestions.";
+    ? t("Suggesting: edits are recorded as suggestions. Click to edit directly.")
+    : t("Editing: click to record edits as suggestions.");
   if (compact) {
     return (
       <span className="flex min-w-0 items-center gap-2">
@@ -28,7 +29,7 @@ export function SuggestToggle({ compact = false }: { compact?: boolean }) {
           onClick={() => setEnabled(!enabled)}
         >
           <FilePen className="size-3" />
-          {enabled ? "Suggesting" : "Editing"}
+          {enabled ? t("Suggesting") : t("Editing")}
         </button>
         {message && <span className="truncate text-foreground">{message}</span>}
       </span>
@@ -45,7 +46,7 @@ export function SuggestToggle({ compact = false }: { compact?: boolean }) {
       onClick={() => setEnabled(!enabled)}
     >
       <FilePen className="size-4" />
-      Suggest
+      {t("Suggest")}
     </Button>
   );
 }

@@ -73,7 +73,7 @@ impl ShareError {
     pub fn signed_out() -> Self {
         Self::new(
             ShareErrorKind::SignedOut,
-            "Sign in to your Polemic account to share this project.",
+            "Sign in to your Scholarkit account to share this project.",
         )
     }
 }
@@ -133,7 +133,7 @@ fn error_for(status: u16, body: &ErrorBody) -> ShareError {
             "Sharing is unavailable right now. Try again later.",
         ),
         _ if !body.message.is_empty() => ShareError::new(Failed, body.message.clone()),
-        _ => ShareError::new(Failed, format!("The Polemic server answered {status}.")),
+        _ => ShareError::new(Failed, format!("The Scholarkit server answered {status}.")),
     }
 }
 
@@ -2010,7 +2010,7 @@ mod tests {
         assert!(block(session.history_files(ID, "../x")).is_err());
     }
 
-    /// Against a running Polemic server: POLEMIC_E2E_SERVER, a desktop
+    /// Against a running Scholarkit server: POLEMIC_E2E_SERVER, a desktop
     /// token in POLEMIC_E2E_TOKEN, and a Yjs update in POLEMIC_E2E_UPDATE
     /// (base64) that names fig/a.png's asset. Keeps the project when
     /// POLEMIC_E2E_KEEP is set and prints its id.

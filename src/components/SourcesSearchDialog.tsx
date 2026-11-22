@@ -25,6 +25,7 @@ import { zoteroLocalSearch, zoteroWebSearch } from "@/lib/zotero";
 import { sourceName, useSourcesStore, type SourceDef } from "@/store/sources";
 import { useSettingsStore } from "@/store/settings";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 interface BibHit {
   source: SourceDef;
@@ -53,6 +54,7 @@ export function SourcesSearchDialog({
   const sources = useSourcesStore((s) => s.sources);
   const sourceFiles = useSourcesStore((s) => s.sourceFiles);
   const bibTexts = useSourcesStore((s) => s.bibTexts);
+  const projectNames = useSourcesStore((s) => s.projectNames);
   const error = useSourcesStore((s) => s.error);
 
   const [query, setQuery] = useState("");
@@ -147,8 +149,8 @@ export function SourcesSearchDialog({
     setAdded((prev) => new Set([...prev, hit.entry.key]));
     setMessage(
       result.alreadyPresent
-        ? `${hit.entry.key} is already in the project.`
-        : `Added ${hit.entry.key} to ${result.target}.`,
+        ? t("{key} is already in the project.", { key: hit.entry.key })
+        : t("Added {key} to {target}.", { key: hit.entry.key, target: result.target }),
     );
   }
 
@@ -161,8 +163,8 @@ export function SourcesSearchDialog({
     setAdded((prev) => new Set([...prev, hit.item.key ?? bib.key]));
     setMessage(
       result.alreadyPresent
-        ? `${bib.key} is already in the project.`
-        : `Added ${bib.key} to ${result.target}.`,
+        ? t("{key} is already in the project.", { key: bib.key })
+        : t("Added {key} to {target}.", { key: bib.key, target: result.target }),
     );
   }
 
@@ -200,14 +202,14 @@ export function SourcesSearchDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>Add from Sources</DialogTitle>
+          <DialogTitle>{t("Add from Sources")}</DialogTitle>
         </DialogHeader>
         <div className="relative">
           <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             autoFocus
             className="h-7 rounded-md pl-6 text-xs"
-            placeholder="Search your sources"
+            placeholder={t("Search your sources")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -223,7 +225,7 @@ export function SourcesSearchDialog({
           ) : !anySource ? (
             <div className="p-2">
               <p className="text-xs text-muted-foreground">
-                No sources are available. Add or enable one in Settings.
+                {t("No sources are available. Add or enable one in Settings.")}
               </p>
               <Button
                 variant="link"
@@ -233,7 +235,7 @@ export function SourcesSearchDialog({
                   useSettingsStore.getState().openSettings("bibliography");
                 }}
               >
-                Open Settings
+                {t("Open Settings")}
               </Button>
             </div>
           ) : (
@@ -241,14 +243,14 @@ export function SourcesSearchDialog({
               {sections.length === 0 && (
                 <p className="p-2 text-xs text-muted-foreground">
                   {trim.length > 0
-                    ? "No references match your search."
-                    : "Type in the search field to search your sources."}
+                    ? t("No references match your search.")
+                    : t("Type in the search field to search your sources.")}
                 </p>
               )}
               {sections.map(({ source, bib, zotero }) => (
                 <div key={source.id}>
                   <p className="px-2 pb-1 pt-2 text-2xs font-medium text-muted-foreground">
-                    {sourceName(source)}
+                    {sourceName(source, projectNames)}
                   </p>
                   <ul className="space-y-0.5 p-1">
                     {bib.slice(0, 50).map((hit) => {
@@ -289,7 +291,7 @@ export function SourcesSearchDialog({
         {message !== null && <p className="text-xs text-muted-foreground">{message}</p>}
         <div className="flex justify-end">
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            Done
+            {t("Done")}
           </Button>
         </div>
       </DialogContent>
@@ -329,7 +331,7 @@ function HitRow({
           present ? "text-muted-foreground" : "text-foreground",
         )}
       >
-        {present ? "in project" : "add"}
+        {present ? t("in project") : t("add")}
       </span>
       <Plus
         className={cn(

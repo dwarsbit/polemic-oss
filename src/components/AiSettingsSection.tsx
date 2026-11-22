@@ -20,6 +20,7 @@ import {
 } from "@/lib/ai-providers";
 import { aiListModels, type AiSettings } from "@/lib/tauri";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 const link = "underline underline-offset-2 hover:text-foreground";
 
@@ -148,15 +149,15 @@ export function AiSettingsSection() {
   return (
     <div className="divide-y divide-border">
       <SettingsRow
-        label="Provider"
+        label={t("Provider")}
         description={<ProviderNote provider={provider} />}
         control={
           <Select
             value={provider?.id ?? ""}
             onValueChange={(v) => void chooseProvider(v)}
           >
-            <SelectTrigger className="w-44" aria-label="Provider">
-              <SelectValue placeholder="Choose a provider" />
+            <SelectTrigger className="w-44" aria-label={t("Provider")}>
+              <SelectValue placeholder={t("Choose a provider")} />
             </SelectTrigger>
             <SelectContent>
               {AI_PROVIDERS.map((p) => (
@@ -171,14 +172,14 @@ export function AiSettingsSection() {
 
       {provider?.id === CUSTOM_PROVIDER.id && (
         <SettingsRow
-          label="Base URL"
-          description="Up to /v1. Remote servers need https."
+          label={t("Base URL")}
+          description={t("Up to /v1. Remote servers need https.")}
           control={
             <Input
               key={`url:${ai.baseUrl ?? ""}`}
               className="h-8 w-44 text-xs"
               placeholder="https://example.com/v1"
-              aria-label="Base URL"
+              aria-label={t("Base URL")}
               defaultValue={ai.baseUrl ?? ""}
               onBlur={(e) => void saveBaseUrl(e.target.value)}
               onKeyDown={(e) => {
@@ -192,7 +193,7 @@ export function AiSettingsSection() {
       {provider !== null &&
         (provider.needsKey || provider.id === CUSTOM_PROVIDER.id) && (
           <SettingsRow
-            label="API key"
+            label={t("API key")}
             description={<KeyNote provider={provider} baseUrl={ai.baseUrl} />}
             control={
               <Input
@@ -200,8 +201,8 @@ export function AiSettingsSection() {
                 className="h-8 w-44 text-xs"
                 type="password"
                 autoComplete="off"
-                placeholder={provider.needsKey ? "Paste your key" : "None"}
-                aria-label="API key"
+                placeholder={provider.needsKey ? t("Paste your key") : t("None")}
+                aria-label={t("API key")}
                 defaultValue={ai.apiKey ?? ""}
                 onBlur={(e) => void saveKey(e.target.value)}
                 onKeyDown={(e) => {
@@ -214,7 +215,7 @@ export function AiSettingsSection() {
 
       {provider !== null && (
         <SettingsRow
-          label="Model"
+          label={t("Model")}
           description={
             <ModelNote
               provider={provider}
@@ -228,8 +229,8 @@ export function AiSettingsSection() {
               value={other ? OTHER : listed ? model : ""}
               onValueChange={chooseModel}
             >
-              <SelectTrigger className="w-44" aria-label="Model">
-                <SelectValue placeholder="Choose a model" />
+              <SelectTrigger className="w-44" aria-label={t("Model")}>
+                <SelectValue placeholder={t("Choose a model")} />
               </SelectTrigger>
               <SelectContent>
                 {options.map((m) => (
@@ -237,7 +238,7 @@ export function AiSettingsSection() {
                     {m}
                   </SelectItem>
                 ))}
-                <SelectItem value={OTHER}>Other…</SelectItem>
+                <SelectItem value={OTHER}>{t("Other…")}</SelectItem>
               </SelectContent>
             </Select>
           }
@@ -247,8 +248,8 @@ export function AiSettingsSection() {
               <Input
                 key={`model:${model}`}
                 className="h-8 w-44 text-xs"
-                placeholder="Model name"
-                aria-label="Model name"
+                placeholder={t("Model name")}
+                aria-label={t("Model name")}
                 autoFocus={typingModel}
                 defaultValue={listed ? "" : model}
                 onBlur={(e) => {
@@ -277,14 +278,26 @@ export function AiSettingsSection() {
 /** Under the provider: where requests go. */
 function ProviderNote({ provider }: { provider: AiProvider | null }) {
   if (provider === null)
-    return <>Your own account with a provider, or a model on this computer.</>;
+    return <>{t("Your own account with a provider, or a model on this computer.")}</>;
   if (provider.id === CUSTOM_PROVIDER.id) {
-    return <>Any OpenAI-compatible API whose models support tool calls.</>;
+    return <>{t("Any OpenAI-compatible API whose models support tool calls.")}</>;
   }
   if (!provider.needsKey) {
-    return <>A model served by {provider.name} on this computer. Nothing leaves it.</>;
+    return (
+      <>
+        {t("A model served by {name} on this computer. Nothing leaves it.", {
+          name: provider.name,
+        })}
+      </>
+    );
   }
-  return <>Your questions and the files the assistant reads go to {provider.host}.</>;
+  return (
+    <>
+      {t("Your questions and the files the assistant reads go to {host}.", {
+        host: provider.host,
+      })}
+    </>
+  );
 }
 
 /** Under the key: where it is kept and sent, and where to get one. */
@@ -299,9 +312,12 @@ function KeyNote({
   return (
     <>
       {provider.needsKey
-        ? "Stored on this machine"
-        : "Optional. Stored on this machine"}
-      {host ? ` and sent only to ${host}.` : "."}
+        ? host
+          ? t("Stored on this machine and sent only to {host}.", { host })
+          : t("Stored on this machine.")
+        : host
+          ? t("Optional. Stored on this machine and sent only to {host}.", { host })
+          : t("Optional. Stored on this machine.")}
       {provider.keyUrl && (
         <>
           {" "}
@@ -310,7 +326,7 @@ function KeyNote({
             className={link}
             onClick={() => void openUrl(provider.keyUrl!)}
           >
-            Get a key
+            {t("Get a key")}
           </button>
         </>
       )}
@@ -333,7 +349,9 @@ function ModelNote({
   const local = !provider.needsKey && provider.id !== CUSTOM_PROVIDER.id;
   const action = (
     <button type="button" className={link} disabled={!canLoad} onClick={onLoad}>
-      {loaded.state === "idle" ? `Load models from ${provider.name}` : "Load again"}
+      {loaded.state === "idle"
+        ? t("Load models from {name}", { name: provider.name })
+        : t("Load again")}
     </button>
   );
   switch (loaded.state) {
@@ -341,7 +359,7 @@ function ModelNote({
       return (
         <span className="inline-flex items-center gap-1" role="status">
           <Loader2 className="size-3 animate-spin" />
-          Loading models…
+          {t("Loading models…")}
         </span>
       );
     case "ok":
@@ -367,9 +385,13 @@ function ModelNote({
       return (
         <>
           {local
-            ? "The models you have pulled. "
-            : "Pick one that supports tool calls. "}
-          {canLoad ? action : provider.needsKey ? "Add a key to load the list." : null}
+            ? t("The models you have pulled.")
+            : t("Pick one that supports tool calls.")}{" "}
+          {canLoad
+            ? action
+            : provider.needsKey
+              ? t("Add a key to load the list.")
+              : null}
         </>
       );
   }

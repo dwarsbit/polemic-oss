@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { t } from "@scholarkit/i18n";
 
 /**
  * The header of every panel card: a sentence-case title, an optional
@@ -36,7 +37,7 @@ export function SectionHeader({
       {onToggle && (
         <button
           type="button"
-          title={collapsed ? "Expand" : "Collapse"}
+          title={collapsed ? t("Expand") : t("Collapse")}
           className="-mr-1 rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
           onClick={onToggle}
         >

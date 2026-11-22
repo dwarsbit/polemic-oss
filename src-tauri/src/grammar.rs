@@ -2,7 +2,7 @@
 //! LaTeX). Two engines: Harper, built in, offline, English only; and
 //! LanguageTool, any language, either through a server the user
 //! configures (one running locally, or the public service, opt-in like
-//! the DOI lookup) or through the Polemic account's server, which
+//! the DOI lookup) or through the Scholarkit account's server, which
 //! speaks LanguageTool's API under /api/grammar/v2 on every plan.
 //! Spelling stays with `spell`, so Harper's own spellcheck
 //! rule is off. Offsets are UTF-16 code units, as JavaScript counts.
@@ -243,7 +243,7 @@ fn split_matches(
 pub enum Provider<'a> {
     /// Harper, built in.
     Builtin,
-    /// LanguageTool on the Polemic account's server.
+    /// LanguageTool on the Scholarkit account's server.
     Polemic,
     /// The user's own LanguageTool server, up to /v2.
     LanguageTool(&'a str),
@@ -275,7 +275,7 @@ pub struct Endpoint<'a> {
     pub max_chars: usize,
 }
 
-/// The Polemic server's limit per check (GRAMMAR_MAX_CHARS).
+/// The Scholarkit server's limit per check (GRAMMAR_MAX_CHARS).
 pub const POLEMIC_MAX_CHARS: usize = 100_000;
 
 /// Why a check failed, for the grammar status in the UI.
@@ -316,7 +316,7 @@ impl GrammarError {
     pub fn signed_out() -> Self {
         Self::new(
             GrammarErrorKind::SignedOut,
-            "Sign in to your Polemic account to check grammar with Polemic.",
+            "Sign in to your Scholarkit account to check grammar with Polemic.",
         )
     }
 }
@@ -361,7 +361,7 @@ fn rate_limited(seconds: u64) -> GrammarError {
 }
 
 /// The error for a non-2xx answer. `polemic`: the answer came from a
-/// Polemic server (401 and 402 are about the account, 404 means it
+/// Scholarkit server (401 and 402 are about the account, 404 means it
 /// has no grammar service). LanguageTool's own 4xx answers are plain
 /// text and pass through as the message.
 fn error_for(status: u16, retry_after: Option<&str>, body: &str, polemic: bool) -> GrammarError {
@@ -382,9 +382,10 @@ fn error_for(status: u16, retry_after: Option<&str>, body: &str, polemic: bool) 
             PlanRequired,
             "Grammar checking with Polemic needs a paid plan on this server.",
         ),
-        404 if polemic => {
-            GrammarError::new(Unavailable, "This Polemic server has no grammar checking.")
-        }
+        404 if polemic => GrammarError::new(
+            Unavailable,
+            "This Scholarkit server has no grammar checking.",
+        ),
         413 => GrammarError::new(TooLong, "A paragraph is too long to check."),
         429 => rate_limited(
             retry_after
@@ -467,7 +468,7 @@ async fn request_check(
         if polemic {
             GrammarError::new(
                 GrammarErrorKind::Unavailable,
-                "Could not reach the Polemic server.",
+                "Could not reach the Scholarkit server.",
             )
         } else {
             GrammarError::new(
@@ -896,7 +897,7 @@ mod tests {
         assert_eq!(error.kind, GrammarErrorKind::Unavailable);
     }
 
-    /// Against a running Polemic server with managed grammar and a
+    /// Against a running Scholarkit server with managed grammar and a
     /// desktop token (see account's e2e test for getting one). With
     /// POLEMIC_E2E_EXPECT=planRequired, the account is on the free plan.
     ///

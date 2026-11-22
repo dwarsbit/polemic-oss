@@ -19,6 +19,7 @@ import {
   type InviteRole,
 } from "@/lib/tauri";
 import { useAccountStore } from "@/store/account";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Who works on the project, for its owner: a form to invite someone by
@@ -47,11 +48,11 @@ export function SharePeople({ share }: { share: Share }) {
 
   return (
     <section className="space-y-2.5">
-      <h3 className="text-sm font-medium">People</h3>
+      <h3 className="text-sm font-medium">{t("People")}</h3>
       <InviteForm share={share} />
       {empty ? (
         <p className="text-xs text-muted-foreground">
-          Invite co-authors to edit, or a supervisor to comment.
+          {t("Invite co-authors to edit, or a supervisor to comment.")}
         </p>
       ) : (
         <ul className="space-y-2.5 pt-1">
@@ -60,13 +61,15 @@ export function SharePeople({ share }: { share: Share }) {
               <Avatar name={me.name} photo={account?.avatar} size="sm" />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-xs font-medium">
-                  {me.name} (you)
+                  {t("{name} (you)", { name: me.name })}
                 </span>
                 <span className="block truncate text-xs text-muted-foreground">
                   {me.email}
                 </span>
               </span>
-              <span className="w-32 px-2.5 text-xs text-muted-foreground">Owner</span>
+              <span className="w-32 px-2.5 text-xs text-muted-foreground">
+                {t("Owner")}
+              </span>
               <span className="size-6 shrink-0" aria-hidden />
             </li>
           )}
@@ -88,7 +91,7 @@ export function SharePeople({ share }: { share: Share }) {
               >
                 <SelectTrigger
                   className="h-7 w-32 text-xs"
-                  aria-label={`What ${m.name} can do`}
+                  aria-label={t("What {name} can do", { name: m.name })}
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -105,8 +108,8 @@ export function SharePeople({ share }: { share: Share }) {
               <Button
                 size="icon-xs"
                 variant="ghost"
-                aria-label={`Remove ${m.name}`}
-                title="Remove from the project"
+                aria-label={t("Remove {name}", { name: m.name })}
+                title={t("Remove from the project")}
                 disabled={busy !== null}
                 onClick={() =>
                   void run(m.userId, () => shareRemoveMember(dir, m.userId))
@@ -127,14 +130,16 @@ export function SharePeople({ share }: { share: Share }) {
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-xs font-medium">{i.email}</span>
                 <span className="block text-xs text-muted-foreground">
-                  Invited · {ROLE_LABELS[i.role].toLowerCase()}
+                  {t("Invited · {toLowerCase}", {
+                    toLowerCase: ROLE_LABELS[i.role].toLowerCase(),
+                  })}
                 </span>
               </span>
               <Button
                 size="icon-xs"
                 variant="ghost"
-                aria-label={`Cancel the invite for ${i.email}`}
-                title="Cancel invite"
+                aria-label={t("Cancel the invite for {email}", { email: i.email })}
+                title={t("Cancel invite")}
                 disabled={busy !== null}
                 onClick={() => void run(i.id, () => shareCancelInvite(dir, i.id))}
               >

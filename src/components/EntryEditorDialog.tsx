@@ -30,6 +30,7 @@ import {
 } from "@/lib/bib-entries";
 import type { CiteStyle } from "@/lib/citation-preview";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /** A key is anything BibTeX can parse: no commas, braces, or spaces. */
 function isValidKey(key: string): boolean {
@@ -112,7 +113,7 @@ export function EntryEditorDialog({
           <div className="flex gap-2">
             <div className="min-w-0 flex-1">
               <label className="mb-1 block text-xs text-muted-foreground">
-                Citation key
+                {t("Citation key")}
               </label>
               <Input
                 autoFocus
@@ -128,7 +129,9 @@ export function EntryEditorDialog({
               />
             </div>
             <div className="w-36">
-              <label className="mb-1 block text-xs text-muted-foreground">Type</label>
+              <label className="mb-1 block text-xs text-muted-foreground">
+                {t("Type")}
+              </label>
               <Select
                 value={draft.type}
                 onValueChange={(type) => setDraft({ ...draft, type })}
@@ -148,18 +151,18 @@ export function EntryEditorDialog({
           </div>
           {keyTaken && (
             <p className="text-xs text-destructive">
-              A different entry with this key already exists.
+              {t("A different entry with this key already exists.")}
             </p>
           )}
           {keyInvalid && effectiveKey.length > 0 && (
             <p className="text-xs text-destructive">
-              Keys cannot contain commas, spaces, braces, or quotes.
+              {t("Keys cannot contain commas, spaces, braces, or quotes.")}
             </p>
           )}
           {allowFile && (
             <div>
               <label className="mb-1 block text-xs text-muted-foreground">
-                Save into
+                {t("Save into")}
               </label>
               <Select value={file} onValueChange={setFile}>
                 <SelectTrigger className="h-7 w-full text-xs">
@@ -196,7 +199,7 @@ export function EntryEditorDialog({
                   />
                   <button
                     type="button"
-                    title={`Remove ${field.name}`}
+                    title={t("Remove {name}", { name: field.name })}
                     className="flex size-5 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
                     onClick={() =>
                       setDraft({
@@ -226,7 +229,7 @@ export function EntryEditorDialog({
                 <SelectTrigger className="h-7 w-full text-xs">
                   <span className="flex items-center gap-1 text-muted-foreground">
                     <Plus className="size-3" />
-                    Add field
+                    {t("Add field")}
                   </span>
                 </SelectTrigger>
                 <SelectContent>
@@ -241,8 +244,10 @@ export function EntryEditorDialog({
           )}
           {missing.length > 0 && (
             <p className="text-xs text-warning">
-              Missing for {typeLabel(draft.type)}: {missing.join(", ")}. This is only a
-              warning; you can still save.
+              {t(
+                "Missing for {typeLabel}: {join}. This is only a warning; you can still save.",
+                { typeLabel: typeLabel(draft.type), join: missing.join(", ") },
+              )}
             </p>
           )}
           <CitationPreview
@@ -253,7 +258,7 @@ export function EntryEditorDialog({
         </div>
         <DialogFooter>
           <Button variant="ghost" size="sm" onClick={close}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             size="sm"
@@ -270,7 +275,7 @@ export function EntryEditorDialog({
               close();
             }}
           >
-            Save
+            {t("Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

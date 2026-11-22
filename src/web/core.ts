@@ -10,10 +10,12 @@ import { accountCommands } from "@/web/account";
 import { projectCommands } from "@/web/projects";
 import { reviewCommands } from "@/web/review";
 import { settingsCommands } from "@/web/settings";
+import { sourceCommands } from "@/web/sources";
 import { writingCommands } from "@/web/writing";
+import { t } from "@scholarkit/i18n";
 
 /** Why a command fails in the browser. Shown to the user as is. */
-export const NOT_AVAILABLE = "This isn't available in your browser yet.";
+export const NOT_AVAILABLE = t("This isn't available in your browser yet.");
 
 type Handler = (args: Record<string, unknown>) => unknown;
 
@@ -23,6 +25,7 @@ const nothing: Record<string, Handler> = {
   git_available: () => false,
   set_project_menu_enabled: () => undefined,
   set_menu_checked: () => undefined,
+  set_menu_labels: () => undefined,
 };
 
 const commands: Record<string, Handler> = {
@@ -31,6 +34,7 @@ const commands: Record<string, Handler> = {
   ...projectCommands,
   ...reviewCommands,
   ...writingCommands,
+  ...sourceCommands,
   ...nothing,
 };
 

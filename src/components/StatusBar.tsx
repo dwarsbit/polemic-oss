@@ -10,12 +10,16 @@ import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
 import { cn } from "@/lib/utils";
+import { formatNumber, t, tn } from "@scholarkit/i18n";
+
+const wordCount = (n: number) =>
+  tn(n, "{count} word", "{count} words", { count: formatNumber(n) });
 
 /** The distribution's name from pdflatex's version line, e.g.
  *  "pdfTeX 3.14… (TeX Live 2025)" gives "TeX Live 2025". */
 export function distributionName(tool: ToolInfo): string {
   const match = tool.version?.match(/\((TeX Live \d{4}|MiKTeX[^)]*)/);
-  return match ? match[1].trim() : "TeX found";
+  return match ? match[1].trim() : t("TeX found");
 }
 
 function Dot({ className }: { className: string }) {
@@ -34,14 +38,15 @@ function CompileStatus() {
       return (
         <span className="flex items-center gap-1.5">
           <Loader2 className="size-3 animate-spin" />
-          Compiling…
+          {t("Compiling…")}
         </span>
       );
     case "ok":
       return (
         <span className="flex items-center gap-1.5">
           <Dot className="bg-success" />
-          Compiled{via}
+          {t("Compiled")}
+          {via}
         </span>
       );
     case "error":
@@ -56,19 +61,19 @@ function CompileStatus() {
       return (
         <span className="flex items-center gap-1.5">
           <Dot className="bg-muted-foreground/50" />
-          Not compiled yet
+          {t("Not compiled yet")}
         </span>
       );
   }
 }
 
 const GRAMMAR_PROBLEMS: Record<GrammarError["kind"], string> = {
-  signedOut: "Grammar: signed out",
-  planRequired: "Grammar: needs a paid plan",
-  tooLong: "Grammar: paragraph too long",
-  rateLimited: "Grammar: paused",
-  unavailable: "Grammar unavailable",
-  failed: "Grammar check failed",
+  signedOut: t("Grammar: signed out"),
+  planRequired: t("Grammar: needs a paid plan"),
+  tooLong: t("Grammar: paragraph too long"),
+  rateLimited: t("Grammar: paused"),
+  unavailable: t("Grammar unavailable"),
+  failed: t("Grammar check failed"),
 };
 
 /** Why grammar checking stopped, when it did; opens its settings. */
@@ -103,10 +108,10 @@ export function StatusBar() {
   return (
     <footer className="flex h-7 shrink-0 items-center justify-between px-3 text-2xs text-muted-foreground">
       <div className="flex min-w-0 items-center gap-3">
-        <span className="truncate">{activeFile ?? "No file open"}</span>
+        <span className="truncate">{activeFile ?? t("No file open")}</span>
         {activeFile !== null && (
           <span className="shrink-0 tabular-nums">
-            {totalWords(countWords(content)).toLocaleString()} words
+            {wordCount(totalWords(countWords(content)))}
           </span>
         )}
         {activeFile?.endsWith(".tex") && <SuggestToggle compact />}
@@ -126,7 +131,7 @@ export function StatusBar() {
               {distributionName(tex.pdflatex)}
             </span>
           ) : (
-            <span className="text-destructive">No TeX distribution found</span>
+            <span className="text-destructive">{t("No TeX distribution found")}</span>
           ))}
       </div>
     </footer>

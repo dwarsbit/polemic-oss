@@ -14,6 +14,7 @@
 
 import { parseChanges, type Change, type SourceRange } from "@/lib/changes";
 import { findMathRegion } from "@/lib/math-region";
+import { t } from "@scholarkit/i18n";
 
 export interface SuggestOk {
   ok: true;
@@ -63,8 +64,8 @@ function syntaxOf(text: string): Syntax {
 }
 
 const SYNTAX_MESSAGE: Record<"comment" | "brace", string> = {
-  comment: "Comments can't be suggested. Type \\% for a percent sign.",
-  brace: "That would unbalance the braces of a suggestion.",
+  comment: t("Comments can't be suggested. Type \\% for a percent sign."),
+  brace: t("That would unbalance the braces of a suggestion."),
 };
 
 const opts = (author: string) => `[id=${author}]`;
@@ -146,9 +147,9 @@ function insideCommandName(source: string, pos: number): boolean {
 
 function boundaryProblem(source: string, pos: number): string | null {
   if (insideMath(source, pos)) {
-    return "Can't suggest inside math. Select the whole formula to replace it.";
+    return t("Can't suggest inside math. Select the whole formula to replace it.");
   }
-  if (insideCommandName(source, pos)) return "Can't suggest inside a command name.";
+  if (insideCommandName(source, pos)) return t("Can't suggest inside a command name.");
   return null;
 }
 
@@ -199,7 +200,7 @@ export function suggestInsert(
   author: string,
   pending: SourceRange | null = null,
 ): SuggestResult {
-  if (text === "") return refuse("Nothing to insert.");
+  if (text === "") return refuse(t("Nothing to insert."));
   // Still typing an own suggestion the parser can't read yet.
   if (pending !== null && pending.from <= pos && pos <= pending.to) {
     const next = splice(source, pos, pos, text);
@@ -235,7 +236,7 @@ export function suggestInsert(
     const content = source.slice(body.from, at) + text + source.slice(at, body.to);
     if (SEPARATOR.test(content)) {
       if (own.kind !== "added") {
-        return refuse("Can't add a paragraph break inside a replacement.");
+        return refuse(t("Can't add a paragraph break inside a replacement."));
       }
       // Split the suggestion around the break; the caret marker finds
       // the caret again in the result.
@@ -327,7 +328,7 @@ export function suggestDelete(
   pending: SourceRange | null = null,
   caret: "start" | "end" = "start",
 ): SuggestResult {
-  if (from >= to) return refuse("Nothing to delete.");
+  if (from >= to) return refuse(t("Nothing to delete."));
   if (pending !== null && pending.from <= from && to <= pending.to) {
     const nextTo = pending.to - (to - from);
     const content = source.slice(pending.from, from) + source.slice(to, pending.to);
@@ -344,12 +345,12 @@ export function suggestDelete(
   for (const pos of [from, to]) {
     if (insideMath(source, pos)) {
       return refuse(
-        "Can't suggest inside math. Select the whole formula to delete it.",
+        t("Can't suggest inside math. Select the whole formula to delete it."),
       );
     }
   }
   if (insideCommandName(source, from) || insideCommandName(source, to)) {
-    return refuse("Select whole commands to suggest deleting them.");
+    return refuse(t("Select whole commands to suggest deleting them."));
   }
 
   const changes = parseChanges(source);
@@ -389,8 +390,8 @@ export function suggestDelete(
       if (syntax !== "ok") {
         problem ??= refuse(
           syntax === "comment"
-            ? "Comments can't be suggested for deletion."
-            : "Select whole commands to suggest deleting them.",
+            ? t("Comments can't be suggested for deletion.")
+            : t("Select whole commands to suggest deleting them."),
         );
         return;
       }
@@ -736,7 +737,7 @@ export function suggestReplace(
     const bad = contentProblem(syntax);
     if (bad) return bad;
     if (SEPARATOR.test(content))
-      return refuse("Can't add a paragraph break inside a suggestion.");
+      return refuse(t("Can't add a paragraph break inside a suggestion."));
     return {
       ok: true,
       source: splice(source, from, to, text),

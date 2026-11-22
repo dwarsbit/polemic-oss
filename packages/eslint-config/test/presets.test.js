@@ -1,7 +1,7 @@
 // @ts-check
 import { ESLint } from "eslint";
 import { describe, expect, it } from "vitest";
-import { base, next, node, react } from "../src/index.js";
+import { base, i18n, next, node, react } from "../src/index.js";
 
 /**
  * @param {import("eslint").Linter.Config[]} config
@@ -71,5 +71,32 @@ describe("presets", () => {
     const code = 'export function A() {\n  return <img src="/logo.png" alt="" />;\n}\n';
     const rules = await lint(next, code, "app/page.tsx");
     expect(rules).toContain("@next/next/no-img-element");
+  });
+});
+
+describe("i18n", () => {
+  const config = [...react, ...i18n];
+
+  it("flags JSX text and text attributes outside t()", async () => {
+    const code = 'export const A = () => <p title="Open the file">Open</p>;\n';
+    const rules = await lint(config, code, "example.tsx");
+    expect(rules).toEqual(["scholarkit/no-literal-text", "scholarkit/no-literal-text"]);
+  });
+
+  it("lets translated text, symbols and other attributes through", async () => {
+    const code =
+      'declare const t: (m: string) => string;\nexport const A = () => <p className="flex" title={t("Open")}>{t("Open")} · 3</p>;\n';
+    expect(await lint(config, code, "example.tsx")).toEqual([]);
+  });
+
+  it("lets examples through: URLs, addresses, commands", async () => {
+    const code =
+      'export const A = () => <><input placeholder="https://example.com/v1" /><input placeholder="name@university.edu" /><input placeholder="\\label" /></>;\n';
+    expect(await lint(config, code, "example.tsx")).toEqual([]);
+  });
+
+  it("leaves tests alone", async () => {
+    const code = "export const A = () => <p>Open</p>;\n";
+    expect(await lint(config, code, "example.test.tsx")).toEqual([]);
   });
 });

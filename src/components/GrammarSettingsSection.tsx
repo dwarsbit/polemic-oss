@@ -17,6 +17,8 @@ import {
   type GrammarSettings,
 } from "@/lib/tauri";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 /** The public LanguageTool service (opt-in: the text leaves the machine). */
 const PUBLIC_LANGUAGETOOL = "https://api.languagetool.org/v2";
@@ -114,36 +116,41 @@ export function GrammarSettingsSection() {
           }}
         >
           <ToggleButton value="builtin" size="sm">
-            Built in
+            {t("Built in")}
           </ToggleButton>
           <ToggleButton
             value="polemic"
             size="sm"
             disabled={!signedIn && provider !== "polemic"}
-            title={signedIn ? undefined : "Sign in to your Polemic account first"}
+            title={signedIn ? undefined : t("Sign in to your Scholarkit account first")}
           >
-            Polemic
+            {t("Polemic")}
           </ToggleButton>
           <ToggleButton value="languagetool" size="sm">
-            LanguageTool server
+            {t("LanguageTool server")}
           </ToggleButton>
         </ToggleButtonGroup>
 
         {provider === "builtin" && (
           <p className="mt-2 text-xs text-muted-foreground">
-            Offline and English only.
+            {t("Offline and English only.")}
             {!signedIn && (
               <>
                 {" "}
-                With a free Polemic account, Polemic checks every language:{" "}
-                <button
-                  type="button"
-                  className="underline underline-offset-2 hover:text-foreground"
-                  onClick={() => openSettings("account")}
-                >
-                  sign in
-                </button>
-                .
+                {rich(
+                  "With a free Scholarkit account, Polemic checks every language: <0>sign in</0>.",
+                  [
+                    (c) => (
+                      <button
+                        type="button"
+                        className="underline underline-offset-2 hover:text-foreground"
+                        onClick={() => openSettings("account")}
+                      >
+                        {c}
+                      </button>
+                    ),
+                  ],
+                )}
               </>
             )}
           </p>
@@ -153,20 +160,30 @@ export function GrammarSettingsSection() {
           <p className="mt-2 text-xs text-muted-foreground">
             {signedIn || account === null ? (
               <>
-                Every language, checked on {account?.server ?? "your Polemic server"}.
-                Included on every plan.
+                {account?.server
+                  ? t("Every language, checked on {server}. Included on every plan.", {
+                      server: account.server,
+                    })
+                  : t(
+                      "Every language, checked on your Scholarkit server. Included on every plan.",
+                    )}
               </>
             ) : (
               <>
-                You are not signed in.{" "}
-                <button
-                  type="button"
-                  className="underline underline-offset-2 hover:text-foreground"
-                  onClick={() => openSettings("account")}
-                >
-                  Sign in
-                </button>{" "}
-                to your Polemic account, or pick another checker.
+                {rich(
+                  "You are not signed in. <0>Sign in</0> to your Scholarkit account, or pick another checker.",
+                  [
+                    (c) => (
+                      <button
+                        type="button"
+                        className="underline underline-offset-2 hover:text-foreground"
+                        onClick={() => openSettings("account")}
+                      >
+                        {c}
+                      </button>
+                    ),
+                  ],
+                )}
               </>
             )}
           </p>
@@ -175,7 +192,7 @@ export function GrammarSettingsSection() {
         {provider === "languagetool" && (
           <div className="mt-3">
             <label className="text-xs text-muted-foreground" htmlFor="languagetool-url">
-              Server, up to /v2
+              {t("Server, up to /v2")}
             </label>
             <div className="mt-1 flex gap-2">
               <Input
@@ -185,22 +202,27 @@ export function GrammarSettingsSection() {
                 onChange={(e) => setUrl(e.target.value)}
               />
               <Button variant="outline" size="sm" onClick={() => void saveUrl(url)}>
-                {saved ? "Saved" : "Save"}
+                {saved ? t("Saved") : t("Save")}
               </Button>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {grammar.languageToolUrl
-                ? "Checks every language"
-                : "Until a server is set, the built-in checker runs"}
-              . Run one locally, or{" "}
-              <button
-                type="button"
-                className="underline underline-offset-2 hover:text-foreground"
-                onClick={() => void saveUrl(PUBLIC_LANGUAGETOOL)}
-              >
-                use the public LanguageTool service
-              </button>
-              , which sends your paragraphs to languagetool.org.
+                ? t("Checks every language.")
+                : t("Until a server is set, the built-in checker runs.")}{" "}
+              {rich(
+                "Run one locally, or <0>use the public LanguageTool service</0>, which sends your paragraphs to languagetool.org.",
+                [
+                  (c) => (
+                    <button
+                      type="button"
+                      className="underline underline-offset-2 hover:text-foreground"
+                      onClick={() => void saveUrl(PUBLIC_LANGUAGETOOL)}
+                    >
+                      {c}
+                    </button>
+                  ),
+                ],
+              )}
             </p>
           </div>
         )}
@@ -216,7 +238,7 @@ export function GrammarSettingsSection() {
                   className="underline underline-offset-2"
                   onClick={() => void openUrl(accountPage)}
                 >
-                  See plans
+                  {t("See plans")}
                 </button>
               </>
             )}
@@ -228,7 +250,7 @@ export function GrammarSettingsSection() {
                   className="underline underline-offset-2"
                   onClick={() => openSettings("account")}
                 >
-                  Account settings
+                  {t("Account settings")}
                 </button>
               </>
             )}
@@ -302,8 +324,15 @@ function GrammarRulesList() {
   return (
     <div>
       <p className="text-xs text-muted-foreground">
-        Rules switched off ({grammar.disabledRules.length}). Right-click an underline
-        and pick “Turn off this rule”{rules.length > 0 ? ", or find one here" : ""}.
+        {rules.length > 0
+          ? t(
+              "Rules switched off ({count}). Right-click an underline and pick “Turn off this rule”, or find one here.",
+              { count: grammar.disabledRules.length },
+            )
+          : t(
+              "Rules switched off ({count}). Right-click an underline and pick “Turn off this rule”.",
+              { count: grammar.disabledRules.length },
+            )}
       </p>
       {grammar.disabledRules.length > 0 && (
         <ul className="mt-1 divide-y">
@@ -313,7 +342,7 @@ function GrammarRulesList() {
       {rules.length > 0 && (
         <Input
           className="mt-2"
-          placeholder="Find a rule (e.g. passive, comma, article)"
+          placeholder={t("Find a rule (e.g. passive, comma, article)")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

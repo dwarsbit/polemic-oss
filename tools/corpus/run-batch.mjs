@@ -44,7 +44,7 @@ const WORKERS = Number(option("workers", "2"));
 const MINUTES = Number(option("minutes", "0"));
 const deadline = MINUTES > 0 ? Date.now() + MINUTES * 60_000 : Infinity;
 const TIMEOUT_S = 240; // the compile service's own limit
-const UA = "polemic-corpus-test (https://github.com/dwarsbit/polemic)";
+const UA = "polemic-corpus-test (https://github.com/dwarsbit/polemic-oss)";
 if (!RESULTS) {
   console.error("usage: node run-batch.mjs --results <dir> [--size 100]");
   process.exit(2);

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.25.0 (unreleased)
+
+### Added
+
+- The desktop app keeps itself up to date. It checks for a new version when it starts and once a day, downloads it in the background and shows **Update ready**. Choose **Restart now** to install it; your work is saved first. **What’s new** lists the changes. Turn the check off, or check now, under **Settings → Updates**. This version is the last one you download by hand.
+- In the browser, **Settings → Bibliography → Sources** is there too, so "Add from Sources…" can cite from more than the project's own bibliography. Add a .bib file from any of your projects, or all of them in one project, with **Add source → BibTeX file from a project…**. It is read from your account each time, so changes to it show up on every device.
+- Zotero cloud works in the browser: add your zotero.org API key under **Add source → Zotero cloud…**. The key is kept in that browser only. The Zotero app stays in the desktop app, since a browser can't connect to it.
+
+### Changed
+
+- Polemic’s source code moved to [github.com/dwarsbit/polemic-oss](https://github.com/dwarsbit/polemic-oss), and **About Polemic** links there. Releases and updates come from there too.
+
+### Fixed
+
+- The desktop app comes with newer versions of the libraries that clean up HTML and make secure connections, which fix known security issues in them.
+
 ## 0.24.0 (2026-11-12)
 
 ### Changed

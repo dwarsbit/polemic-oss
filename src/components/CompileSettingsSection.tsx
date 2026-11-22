@@ -15,6 +15,8 @@ import {
 import { features } from "@/lib/target";
 import { usePreviewStore } from "@/store/preview";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 const link = "underline underline-offset-2 hover:text-foreground";
 
@@ -58,7 +60,7 @@ export function CompileSettingsSection() {
   }
 
   const signedIn = account?.signedIn === true && cloud !== "signedOut";
-  const server = account?.server ?? "your Polemic server";
+  const server = account?.server ?? t("your Scholarkit server");
   const accountPage = account ? `${account.server}/account` : null;
   // Servers from before the Free plan answered 402 without a subscription.
   const planRequired = cloud === "planRequired";
@@ -74,30 +76,31 @@ export function CompileSettingsSection() {
         }}
       >
         <ToggleButton value="local" size="sm">
-          On this computer
+          {t("On this computer")}
         </ToggleButton>
         <ToggleButton
           value="polemic"
           size="sm"
           disabled={!usable && provider !== "polemic"}
-          title={usable ? undefined : "Needs a Polemic account"}
+          title={usable ? undefined : t("Needs a Scholarkit account")}
         >
-          With Polemic
+          {t("With Polemic")}
         </ToggleButton>
       </ToggleButtonGroup>
 
       <p className="text-xs text-muted-foreground" role="status">
         {provider === "local" ? (
           <>
-            latexmk and your TeX distribution, below.{" "}
+            {t("latexmk and your TeX distribution, below.")}{" "}
             {usable &&
-              "With Polemic, the server compiles and nothing needs to be installed."}
+              t("With Polemic, the server compiles and nothing needs to be installed.")}
           </>
         ) : (
           <>
-            On {server}, with TeX Live and the same latexmk rules. Fonts installed only
-            on this computer are not there: put their files in the project. Your plan
-            sets the compile time you get each day.
+            {t(
+              "On {server}, with TeX Live and the same latexmk rules. Fonts installed only on this computer are not there: put their files in the project. Your plan sets the compile time you get each day.",
+              { server },
+            )}
             {accountPage && (
               <>
                 {" "}
@@ -106,7 +109,7 @@ export function CompileSettingsSection() {
                   className={link}
                   onClick={() => void openUrl(accountPage)}
                 >
-                  See your usage
+                  {t("See your usage")}
                 </button>
               </>
             )}
@@ -116,20 +119,23 @@ export function CompileSettingsSection() {
 
       {account !== null && !signedIn && (
         <p className="text-xs text-muted-foreground">
-          Compiling with Polemic needs a free Polemic account.{" "}
-          <button
-            type="button"
-            className={link}
-            onClick={() => openSettings("account")}
-          >
-            Sign in
-          </button>{" "}
-          first.
+          {t("Compiling with Polemic needs a free Scholarkit account.")}{" "}
+          {rich("<0>Sign in</0> first.", [
+            (c) => (
+              <button
+                type="button"
+                className={link}
+                onClick={() => openSettings("account")}
+              >
+                {c}
+              </button>
+            ),
+          ])}
         </p>
       )}
       {signedIn && planRequired && (
         <p className="text-xs text-muted-foreground">
-          Compiling with Polemic needs a paid plan on {server}.
+          {t("Compiling with Polemic needs a paid plan on {server}.", { server })}
           {accountPage && (
             <>
               {" "}
@@ -138,7 +144,7 @@ export function CompileSettingsSection() {
                 className={link}
                 onClick={() => void openUrl(accountPage)}
               >
-                See plans
+                {t("See plans")}
               </button>
             </>
           )}
@@ -146,8 +152,10 @@ export function CompileSettingsSection() {
       )}
       {signedIn && cloud === "disabled" && (
         <p className="text-xs text-muted-foreground">
-          {server} has no cloud compile. Ask its administrator, or compile on this
-          computer.
+          {t(
+            "{server} has no cloud compile. Ask its administrator, or compile on this computer.",
+            { server },
+          )}
         </p>
       )}
       {error && <p className="text-xs text-destructive">{error}</p>}
@@ -178,7 +186,7 @@ export function CompileErrorActions({ kind }: { kind: CompileError["kind"] | nul
 
   if (!features.localTex) {
     return kind === "limitReached" || kind === "planRequired"
-      ? action("See your plan", () => void openUrl("/account"))
+      ? action(t("See your plan"), () => void openUrl("/account"))
       : null;
   }
 
@@ -186,13 +194,19 @@ export function CompileErrorActions({ kind }: { kind: CompileError["kind"] | nul
     case "noTex":
       return (
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          {action("Compile with Polemic", () => void compileOn("polemic"))}
+          {action(t("Compile with Polemic"), () => void compileOn("polemic"))}
           <span className="text-muted-foreground">
-            on Polemic's server, or{" "}
-            <button type="button" className={link} onClick={() => openSettings("tex")}>
-              install TeX
-            </button>
-            .
+            {rich("on Polemic's server, or <0>install TeX</0>.", [
+              (c) => (
+                <button
+                  type="button"
+                  className={link}
+                  onClick={() => openSettings("tex")}
+                >
+                  {c}
+                </button>
+              ),
+            ])}
           </span>
         </div>
       );
@@ -200,13 +214,13 @@ export function CompileErrorActions({ kind }: { kind: CompileError["kind"] | nul
     case "planRequired":
       return (
         <div className="flex flex-wrap gap-2">
-          {action("Account settings", () => openSettings("account"))}
-          {action("Compile on this computer", () => void compileOn("local"))}
+          {action(t("Account settings"), () => openSettings("account"))}
+          {action(t("Compile on this computer"), () => void compileOn("local"))}
         </div>
       );
     case "disabled":
     case "limitReached":
-      return action("Compile on this computer", () => void compileOn("local"));
+      return action(t("Compile on this computer"), () => void compileOn("local"));
     default:
       return null;
   }

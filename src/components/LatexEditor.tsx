@@ -143,6 +143,7 @@ import { setEditorCommandHandler } from "@/lib/editor-commands";
 import { useProjectStore } from "@/store/project";
 import { useSuggestStore } from "@/store/suggest";
 import { suggestionAuthor, useCloudCompile } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 interface SpellPopover {
   issue: WritingIssue;
@@ -775,12 +776,12 @@ export function LatexEditor({ visible = true }: { visible?: boolean }) {
                 void showNativeContextMenu([
                   {
                     id: "add-comment",
-                    text: "Add comment",
+                    text: t("Add comment"),
                     action: addCommentAtCursor,
                   },
                   {
                     id: "add-file-comment",
-                    text: "Comment on File",
+                    text: t("Comment on File"),
                     action: () => {
                       const file = useProjectStore.getState().activeFile;
                       if (file !== null) {
@@ -791,13 +792,13 @@ export function LatexEditor({ visible = true }: { visible?: boolean }) {
                   {
                     id: "ask-assistant",
                     text: view.state.selection.main.empty
-                      ? "Ask the assistant"
-                      : "Ask the assistant about the selection",
+                      ? t("Ask the assistant")
+                      : t("Ask the assistant about the selection"),
                     action: () => askAboutSelection(),
                   },
                   {
                     id: "toggle-line-comment",
-                    text: "Toggle Line Comment",
+                    text: t("Toggle Line Comment"),
                     action: () => {
                       view.focus();
                       toggleComment(view);
@@ -808,29 +809,29 @@ export function LatexEditor({ visible = true }: { visible?: boolean }) {
                     ? [
                         {
                           id: "edit-table",
-                          text: "Edit Table…",
+                          text: t("Edit Table…"),
                           action: () => void editTableAt(view, pos),
                         },
                       ]
                     : []),
                   {
                     id: "insert-table",
-                    text: "Insert Table…",
+                    text: t("Insert Table…"),
                     action: () => useDialogsStore.getState().setTableDialogOpen(true),
                   },
                   {
                     id: "wrap-figure",
-                    text: "Wrap in Figure",
+                    text: t("Wrap in Figure"),
                     action: () => wrapFigure(),
                   },
                   {
                     id: "insert-tikz",
-                    text: "Insert TikZ Picture",
+                    text: t("Insert TikZ Picture"),
                     action: () => insertTikzSnippet("scaffold"),
                   },
                   {
                     id: "packages",
-                    text: "Packages…",
+                    text: t("Packages…"),
                     action: () =>
                       useDialogsStore.getState().setPackagesDialogOpen(true),
                   },

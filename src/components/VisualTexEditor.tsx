@@ -86,6 +86,8 @@ import {
 } from "@/lib/visual/writing";
 import { useGrammarStatus } from "@/lib/grammar-check";
 import { formatShortcut } from "@/lib/platform";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 /** The cursor's place in the document, for face switches. */
 function anchorFromDoc(editor: NonNullable<ReturnType<typeof useEditor>>): FaceAnchor {
@@ -169,7 +171,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
   };
 
   const headingLabel =
-    HEADING_KINDS.find((k) => k.cmd === active?.headingCmd)?.label ?? "Body text";
+    HEADING_KINDS.find((k) => k.cmd === active?.headingCmd)?.label ?? t("Body text");
 
   const insertFootnote = () => {
     editor
@@ -195,7 +197,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
     insertInstance: boolean,
   ): string | null {
     if (!addNewtheorem(editor, env, display)) {
-      return "This file has no preamble to hold the declaration.";
+      return t("This file has no preamble to hold the declaration.");
     }
     if (insertInstance) insertEnvBlock(editor, env);
     editor.commands.focus();
@@ -208,12 +210,12 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="h-7 gap-1 px-2 text-xs">
             <Plus className="size-3.5" />
-            Insert
+            {t("Insert")}
             <ChevronDown className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="max-h-[28rem] overflow-y-auto">
-          <DropdownMenuLabel>Environments</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("Environments")}</DropdownMenuLabel>
           {INSERT_QUOTE_ENVS.map((entry) => (
             <DropdownMenuItem
               key={entry.env}
@@ -223,7 +225,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Theorem environments</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("Theorem environments")}</DropdownMenuLabel>
           {(theoremEnvs ?? []).map((entry) => (
             <DropdownMenuItem
               key={entry.env}
@@ -236,22 +238,22 @@ function VisualToolbar({ editor }: { editor: Editor }) {
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Inline &amp; floats</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("Inline & floats")}</DropdownMenuLabel>
           <DropdownMenuItem onSelect={toggle(insertFootnote)}>
-            Footnote (\footnote)
+            {t("Footnote (\\footnote)")}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={toggle(insertDisplayMath)}>
-            Display math (\[…\])
+            {t("Display math (\\[…\\])")}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={toggle(() => insertAtCursor(FIGURE_SCAFFOLD))}>
-            Figure
+            {t("Figure")}
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={toggle(() => insertAtCursor(TABLE_SCAFFOLD))}>
-            Table
+            {t("Table")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={() => setTheoremOpen(true)}>
-            New theorem environment…
+            {t("New theorem environment…")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -283,7 +285,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
           </DropdownMenuRadioGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={() => setHeadingKind(editor, null)}>
-            Body text
+            {t("Body text")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -292,7 +294,9 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Undo (${formatShortcut("Mod+Z")})`}
+          title={t("Undo ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+Z"),
+          })}
           disabled={!active?.canUndo}
           onClick={toggle(() => editor.chain().undo().run())}
         >
@@ -301,7 +305,9 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Redo (${formatShortcut("Mod+Shift+Z")})`}
+          title={t("Redo ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+Shift+Z"),
+          })}
           disabled={!active?.canRedo}
           onClick={toggle(() => editor.chain().redo().run())}
         >
@@ -313,7 +319,9 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant={active?.bold ? "secondary" : "ghost"}
           size="icon-sm"
-          title={`Bold (${formatShortcut("Mod+B")})`}
+          title={t("Bold ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+B"),
+          })}
           onClick={toggle(() => editor.chain().toggleBold().run())}
         >
           <Bold className="size-4" />
@@ -321,7 +329,9 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant={active?.italic ? "secondary" : "ghost"}
           size="icon-sm"
-          title={`Emphasis (${formatShortcut("Mod+I")})`}
+          title={t("Emphasis ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+I"),
+          })}
           onClick={toggle(() => editor.chain().toggleItalic().run())}
         >
           <Italic className="size-4" />
@@ -329,7 +339,9 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant={active?.underline ? "secondary" : "ghost"}
           size="icon-sm"
-          title={`Underline (${formatShortcut("Mod+U")})`}
+          title={t("Underline ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+U"),
+          })}
           onClick={toggle(() => editor.chain().toggleUnderline().run())}
         >
           <Underline className="size-4" />
@@ -337,7 +349,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant={active?.code ? "secondary" : "ghost"}
           size="icon-sm"
-          title="Monospace (\\texttt)"
+          title={t("Monospace (\\\\texttt)")}
           onClick={toggle(() => editor.chain().toggleCode().run())}
         >
           <Type className="size-4" />
@@ -348,7 +360,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant={active?.bullet ? "secondary" : "ghost"}
           size="icon-sm"
-          title="Bulleted list (itemize)"
+          title={t("Bulleted list (itemize)")}
           onClick={toggle(() => editor.chain().toggleBulletList().run())}
         >
           <List className="size-4" />
@@ -356,7 +368,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant={active?.ordered ? "secondary" : "ghost"}
           size="icon-sm"
-          title="Numbered list (enumerate)"
+          title={t("Numbered list (enumerate)")}
           onClick={toggle(() => editor.chain().toggleOrderedList().run())}
         >
           <ListOrdered className="size-4" />
@@ -367,7 +379,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon-sm"
-          title="Inline math ($…$, or type it directly)"
+          title={t("Inline math ($…$, or type it directly)")}
           onClick={() => {
             editor
               .chain()
@@ -382,7 +394,7 @@ function VisualToolbar({ editor }: { editor: Editor }) {
         <Button
           variant="ghost"
           size="icon-sm"
-          title="Display math"
+          title={t("Display math")}
           onClick={() => {
             editor
               .chain()
@@ -698,22 +710,29 @@ export function VisualTexEditor() {
       <VisualToolbar editor={editor} />
       {(rawCount ?? 0) > 0 && (
         <p className="shrink-0 border-b bg-accent/40 px-3 py-1 text-xs text-muted-foreground">
-          Some constructs are shown as raw LaTeX. Double-click to edit them in place, or
-          switch to Code.
+          {t(
+            "Some constructs are shown as raw LaTeX. Double-click to edit them in place, or switch to Code.",
+          )}
         </p>
       )}
       {missingMaketitle === true && (
         <p className="flex shrink-0 items-center gap-2 border-b bg-accent/40 px-3 py-1 text-xs text-muted-foreground">
           <AlertTriangle className="size-3.5 shrink-0 text-warning" />
-          No \maketitle: the title will not appear in the PDF.
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-5 px-1.5 text-xs"
-            onClick={() => insertMaketitle(editor)}
-          >
-            Insert \maketitle
-          </Button>
+          {rich(
+            "No \\maketitle: the title will not appear in the PDF.<0>Insert \\maketitle</0>",
+            [
+              (c) => (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-5 px-1.5 text-xs"
+                  onClick={() => insertMaketitle(editor)}
+                >
+                  {c}
+                </Button>
+              ),
+            ],
+          )}
         </p>
       )}
       <style>{changeCss}</style>

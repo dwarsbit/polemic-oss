@@ -6,6 +6,7 @@
  */
 
 import type { CompileIssue } from "@/lib/tauri";
+import { t } from "@scholarkit/i18n";
 
 /** The place of an error that -file-line-error prints: a file of the
  *  project, or one outside it (the TeX distribution, a parent folder). */
@@ -105,7 +106,9 @@ function warningLine(message: string): number | null {
 
 function errorHint(message: string): string | null {
   if (message.includes("-shell-escape")) {
-    return "Polemic compiles without shell escape, so packages that run other programs (minted, the TikZ externalization library) don't work. The listings package highlights code without it.";
+    return t(
+      "Polemic compiles without shell escape, so packages that run other programs (minted, the TikZ externalization library) don't work. The listings package highlights code without it.",
+    );
   }
   return null;
 }
@@ -243,7 +246,7 @@ function stopReason(lines: string[], at: number): string | null {
   }
   for (let i = at + 1; i < Math.min(lines.length, at + 8); i++) {
     const aborted = /^\*\*\* \((job aborted, .+)\)$/.exec(lines[i]);
-    if (aborted) return `Emergency stop (${aborted[1]}).`;
+    if (aborted) return t("Emergency stop ({reason}).", { reason: aborted[1] });
   }
   return null;
 }
@@ -440,7 +443,7 @@ function bibToolReasons(
         }
       } else if (line.startsWith("A bad cross reference---")) {
         const rest = `${line.slice("A bad cross reference---".length)} ${lines[i + 1] ?? ""}`;
-        reasons.push([`A bad cross reference: ${rest.trim()}`, null]);
+        reasons.push([t("A bad cross reference: {rest}", { rest: rest.trim() }), null]);
       } else if (line.startsWith("I couldn't open") || line.startsWith("I found no")) {
         reasons.push([line.split("---")[0].trim(), null]);
       }
@@ -468,49 +471,74 @@ function bibToolHint(tool: BibTool, reason: string): string {
   const lower = reason.toLowerCase();
   const biberFallback =
     tool === "biber"
-      ? " For now, backend=bibtex in the biblatex options avoids biber."
+      ? ` ${t("For now, backend=bibtex in the biblatex options avoids biber.")}`
       : "";
   if (lower.includes("command not found") || lower.includes("is not recognized")) {
-    return `${toolName(tool)} is not installed or not on the PATH. Install it with your TeX distribution.${biberFallback}`;
+    return (
+      t(
+        "{tool} is not installed or not on the PATH. Install it with your TeX distribution.",
+        { tool: toolName(tool) },
+      ) + biberFallback
+    );
   }
   if (lower.includes("control file version") || lower.includes("expected version")) {
-    return "biber and biblatex come from different releases. Update your TeX distribution so they match.";
+    return t(
+      "biber and biblatex come from different releases. Update your TeX distribution so they match.",
+    );
   }
   if (lower.includes("cannot find") || lower.includes("couldn't open database")) {
     return tool === "biber"
-      ? "Check the \\addbibresource path: it is relative to the main file and includes the .bib extension."
-      : "Check the \\bibliography path: it is relative to the main file and leaves out the .bib extension.";
+      ? t(
+          "Check the \\addbibresource path: it is relative to the main file and includes the .bib extension.",
+        )
+      : t(
+          "Check the \\bibliography path: it is relative to the main file and leaves out the .bib extension.",
+        );
   }
   if (lower.includes("found no \\citation")) {
-    return "BibTeX needs at least one \\cite (or \\nocite{*}) before it builds a bibliography.";
+    return t(
+      "BibTeX needs at least one \\cite (or \\nocite{*}) before it builds a bibliography.",
+    );
   }
   if (lower.includes("found no \\bibdata")) {
-    return "Add \\bibliography{name} (without .bib) where the bibliography should appear.";
+    return t(
+      "Add \\bibliography{name} (without .bib) where the bibliography should appear.",
+    );
   }
   if (lower.includes("found no \\bibstyle")) {
-    return "Add a style, e.g. \\bibliographystyle{plain}.";
+    return t("Add a style, e.g. \\bibliographystyle{plain}.");
   }
   if (lower.startsWith("repeated entry")) {
-    return "Two entries in the .bib file have the same key. Rename or remove one of them.";
+    return t(
+      "Two entries in the .bib file have the same key. Rename or remove one of them.",
+    );
   }
   if (lower.startsWith("a bad cross reference")) {
-    return "The crossref field names an entry that is not in the .bib file.";
+    return t("The crossref field names an entry that is not in the .bib file.");
   }
   if (
     lower.includes("syntax error") ||
     lower.includes("bibtex subsystem") ||
     lower.startsWith("i was expecting")
   ) {
-    return "An entry in the .bib file is malformed; the Bibliography panel flags entries it cannot parse.";
+    return t(
+      "An entry in the .bib file is malformed; the Bibliography panel flags entries it cannot parse.",
+    );
   }
   if (
     tool === "biber" &&
     !lower.startsWith("error") &&
     (lower.startsWith("biber:") || lower.includes("lipo") || lower.includes("killed"))
   ) {
-    return `biber crashed before reading your files, which points at the biber installation. Update your TeX distribution.${biberFallback}`;
+    return (
+      t(
+        "biber crashed before reading your files, which points at the biber installation. Update your TeX distribution.",
+      ) + biberFallback
+    );
   }
-  return `The compile log has ${toolName(tool)}'s full output.`;
+  return t("The compile log has {toolName}'s full output.", {
+    toolName: toolName(tool),
+  });
 }
 
 /** The failure of biber or BibTeX in a latexmk run, as one issue with a hint. */
@@ -524,7 +552,9 @@ export function parseBibToolFailure(
   const first = reasons[0];
   const message = first
     ? `${toolName(tool)} failed: ${first[0]}`
-    : `${toolName(tool)} failed, so citations and the bibliography were not built`;
+    : t("{toolName} failed, so citations and the bibliography were not built", {
+        toolName: toolName(tool),
+      });
   return {
     severity: "error",
     file: first?.[1]?.[0] ?? null,
@@ -537,16 +567,27 @@ export function parseBibToolFailure(
 }
 
 /** The tool behind a latexmk rule that is not TeX or the bibliography,
- *  and what it builds: [tool, "the glossary"]. */
+ *  and the message when it fails. */
 function otherTool(rule: string): [string, string] | null {
   const words = rule.split(/\s+/);
   if (words[0] === "cusdep") {
     if (words[1] === "glo" || words[1] === "acn")
-      return ["makeglossaries", "the glossary"];
-    if (words[1] === "nlo") return ["makeindex", "the nomenclature"];
+      return [
+        "makeglossaries",
+        t("{tool} failed, so the glossary was not built", { tool: "makeglossaries" }),
+      ];
+    if (words[1] === "nlo")
+      return [
+        "makeindex",
+        t("{tool} failed, so the nomenclature was not built", { tool: "makeindex" }),
+      ];
     return null;
   }
-  if (words[0] === "makeindex") return ["makeindex", "the index"];
+  if (words[0] === "makeindex")
+    return [
+      "makeindex",
+      t("{tool} failed, so the index was not built", { tool: "makeindex" }),
+    ];
   return null;
 }
 
@@ -563,9 +604,9 @@ export function parseRunFailure(latexmkOutput: string): CompileIssue | null {
       severity: "error",
       file: null,
       line: null,
-      message: `${tool[0]} failed, so ${tool[1]} was not built`,
+      message: tool[1],
       detail: [],
-      hint: `The compile log has the full output of ${tool[0]}.`,
+      hint: t("The compile log has the full output of {tool}.", { tool: tool[0] }),
       reading: null,
     };
   }
@@ -574,9 +615,11 @@ export function parseRunFailure(latexmkOutput: string): CompileIssue | null {
       severity: "error",
       file: null,
       line: null,
-      message: "The document kept changing between runs, so the compile stopped",
+      message: t("The document kept changing between runs, so the compile stopped"),
       detail: [],
-      hint: "Something changes on every run, such as a reference that moves to another page each time. The compile log shows what changed.",
+      hint: t(
+        "Something changes on every run, such as a reference that moves to another page each time. The compile log shows what changed.",
+      ),
       reading: null,
     };
   }
@@ -592,8 +635,9 @@ export function isRerunBibToolWarning(issue: CompileIssue): boolean {
 export function addFontHints(issues: CompileIssue[]): void {
   for (const issue of issues) {
     if (!issue.hint && issue.message.includes('fontspec Error: The font "')) {
-      issue.hint =
-        "Polemic's server has TeX Live's fonts, not the ones installed on this computer. Put the font file (.otf or .ttf) in the project and load it by file name, e.g. \\setmainfont{MyFont-Regular.otf}.";
+      issue.hint = t(
+        "Polemic's server has TeX Live's fonts, not the ones installed on this computer. Put the font file (.otf or .ttf) in the project and load it by file name, e.g. \\setmainfont{MyFont-Regular.otf}.",
+      );
     }
   }
 }

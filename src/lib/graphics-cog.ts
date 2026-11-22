@@ -2,6 +2,7 @@ import { StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView, WidgetType } from "@codemirror/view";
 import type { DecorationSet } from "@codemirror/view";
 import { isMac } from "@/lib/platform";
+import { t } from "@scholarkit/i18n";
 
 /**
  * The inline "image options" cog: a zero-width widget right after the
@@ -19,7 +20,9 @@ class CogWidget extends WidgetType {
   override toDOM() {
     const wrap = document.createElement("span");
     wrap.className = "cm-graphics-cog";
-    wrap.title = `Image options (or ${isMac ? "⌘" : "Ctrl+"}click the command)`;
+    wrap.title = t("Image options (or {mod}click the command)", {
+      mod: isMac ? "⌘" : "Ctrl+",
+    });
     wrap.innerHTML =
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
       '<path d="M20 7h-9"/>' +

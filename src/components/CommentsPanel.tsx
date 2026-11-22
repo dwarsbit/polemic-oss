@@ -23,6 +23,7 @@ import { useProjectStore } from "@/store/project";
 import type { Comment, CommentAuthor } from "@/lib/tauri";
 import { cn } from "cn";
 import { formatShortcut } from "@/lib/platform";
+import { t } from "@scholarkit/i18n";
 
 /** A reviewer's name; a typed one is marked as unchecked. */
 function AuthorName({
@@ -36,8 +37,8 @@ function AuthorName({
     <span
       title={
         author.verified
-          ? "Signed in on the review page"
-          : "Name typed on the review page, not checked"
+          ? t("Signed in on the review page")
+          : t("Name typed on the review page, not checked")
       }
     >
       {author.name}
@@ -63,14 +64,14 @@ function Replies({ replies }: { replies: Comment[] }) {
       <span className="min-w-0 flex-1 break-words">
         {reply.text}
         <span className="block text-2xs text-muted-foreground">
-          {reply.author ? <AuthorName author={reply.author} /> : "You"}
+          {reply.author ? <AuthorName author={reply.author} /> : t("You")}
         </span>
       </span>
       <Button
         variant="ghost"
         size="icon-xs"
         className="size-5"
-        title={reply.resolved ? "Mark unresolved" : "Mark resolved"}
+        title={reply.resolved ? t("Mark unresolved") : t("Mark resolved")}
         onClick={() => void update(reply.id, { resolved: !reply.resolved })}
       >
         <Check className="size-3" />
@@ -79,7 +80,7 @@ function Replies({ replies }: { replies: Comment[] }) {
         variant="ghost"
         size="icon-xs"
         className="size-5"
-        title="Delete reply"
+        title={t("Delete reply")}
         onClick={() => void remove(reply.id)}
       >
         <Trash2 className="size-3" />
@@ -120,7 +121,7 @@ function NoteRow({
         <button
           type="button"
           className="min-w-0 flex-1 text-left"
-          title={`Jump to line ${note.line}`}
+          title={t("Jump to line {line}", { line: note.line })}
           onClick={onJump}
         >
           <span className="line-clamp-3 break-words text-foreground">{note.note}</span>
@@ -128,13 +129,16 @@ function NoteRow({
       </div>
       <div className="mt-0.5 flex items-center pl-3.5 text-2xs text-muted-foreground">
         <span className="min-w-0 flex-1 truncate">
-          Suggestion note · {authorName} · line {note.line}
+          {t("Suggestion note · {authorName} · line {line}", {
+            authorName,
+            line: note.line,
+          })}
         </span>
         <Button
           variant="ghost"
           size="icon-xs"
           className="size-5 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100"
-          title="Reply"
+          title={t("Reply")}
           onClick={() =>
             openCommentDialog({
               kind: "new",
@@ -150,7 +154,7 @@ function NoteRow({
           variant="ghost"
           size="icon-xs"
           className="size-5 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100"
-          title="Edit note"
+          title={t("Edit note")}
           onClick={() =>
             openCommentDialog({
               kind: "note",
@@ -177,7 +181,7 @@ function NoteRow({
             variant="ghost"
             size="icon-xs"
             className="size-5"
-            title={reply.resolved ? "Mark unresolved" : "Mark resolved"}
+            title={reply.resolved ? t("Mark unresolved") : t("Mark resolved")}
             onClick={() => void update(reply.id, { resolved: !reply.resolved })}
           >
             <Check className="size-3" />
@@ -186,7 +190,7 @@ function NoteRow({
             variant="ghost"
             size="icon-xs"
             className="size-5"
-            title="Delete reply"
+            title={t("Delete reply")}
             onClick={() => void remove(reply.id)}
           >
             <Trash2 className="size-3" />
@@ -292,12 +296,14 @@ export function CommentsPanel() {
   if (comments.length === 0 && notes.length === 0) {
     return (
       <div className="flex h-full flex-col">
-        <SectionHeader label="Comments" />
+        <SectionHeader label={t("Comments")} />
         <div className="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-center">
           <MessageSquareOff className="size-5 text-muted-foreground" />
           <p className="text-xs text-muted-foreground">
-            No comments yet. Select text and press {formatShortcut("Mod+Alt+C")}, or
-            right-click in the editor.
+            {t(
+              "No comments yet. Select text and press {formatShortcut}, or right-click in the editor.",
+              { formatShortcut: formatShortcut("Mod+Alt+C") },
+            )}
           </p>
         </div>
       </div>
@@ -308,7 +314,7 @@ export function CommentsPanel() {
     <div className="h-full overflow-y-auto">
       <div className="sticky top-0 z-10 bg-card">
         <SectionHeader
-          label="Comments"
+          label={t("Comments")}
 
           actions={
             <Button
@@ -316,7 +322,9 @@ export function CommentsPanel() {
               size="icon-xs"
               aria-pressed={hideResolved}
               onClick={() => setHideResolved((value) => !value)}
-              title={hideResolved ? "Show resolved comments" : "Hide resolved comments"}
+              title={
+                hideResolved ? t("Show resolved comments") : t("Hide resolved comments")
+              }
             >
               {hideResolved ? <EyeOff /> : <Eye />}
             </Button>
@@ -334,7 +342,7 @@ export function CommentsPanel() {
           )}
           onClick={() => setCategoryFilter(null)}
         >
-          All
+          {t("All")}
         </button>
         {[
           ...new Set(
@@ -365,7 +373,7 @@ export function CommentsPanel() {
         {notes.length > 0 && (
           <button
             type="button"
-            title="Notes on suggestions"
+            title={t("Notes on suggestions")}
             className={cn(
               "flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs",
               categoryFilter === NOTES
@@ -375,7 +383,7 @@ export function CommentsPanel() {
             onClick={() => setCategoryFilter(categoryFilter === NOTES ? null : NOTES)}
           >
             <span className="size-2 rounded-full border border-dashed border-current" />
-            Suggestion notes
+            {t("Suggestion notes")}
           </button>
         )}
       </div>
@@ -392,7 +400,9 @@ export function CommentsPanel() {
                   note={note}
                   color={noteStyles.get(note.author)?.color}
                   authorName={
-                    noteStyles.get(note.author)?.name ?? note.author ?? "Unknown author"
+                    noteStyles.get(note.author)?.name ??
+                    note.author ??
+                    t("Unknown author")
                   }
                   replies={comments.filter(
                     (c) =>
@@ -427,12 +437,12 @@ export function CommentsPanel() {
                         className="min-w-0 flex-1 text-left"
                         title={
                           comment.anchor === null
-                            ? "File comment"
+                            ? t("File comment")
                             : line !== null
-                              ? `Jump to line ${line}`
+                              ? t("Jump to line {line}", { line })
                               : orphaned
-                                ? "Anchor no longer found"
-                                : "Open file"
+                                ? t("Anchor no longer found")
+                                : t("Open file")
                         }
                         onClick={() => void jumpTo(file, comment.id)}
                       >
@@ -443,7 +453,7 @@ export function CommentsPanel() {
                       <Button
                         variant="ghost"
                         size="icon-xs"
-                        title={comment.resolved ? "Reopen" : "Resolve"}
+                        title={comment.resolved ? t("Reopen") : t("Resolve")}
                         onClick={() =>
                           void update(comment.id, { resolved: !comment.resolved })
                         }
@@ -464,7 +474,7 @@ export function CommentsPanel() {
                           <AuthorName author={comment.author} suffix=" · " />
                         )}
                         {orphaned
-                          ? "anchor not found"
+                          ? t("anchor not found")
                           : comment.anchor === null
                             ? "file"
                             : file === activeFile && line !== null
@@ -475,7 +485,7 @@ export function CommentsPanel() {
                         variant="ghost"
                         size="icon-xs"
                         className="size-5 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100"
-                        title="Reply"
+                        title={t("Reply")}
                         onClick={() =>
                           openCommentDialog({
                             kind: "new",
@@ -491,7 +501,7 @@ export function CommentsPanel() {
                         variant="ghost"
                         size="icon-xs"
                         className="size-5 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100"
-                        title="Edit comment"
+                        title={t("Edit comment")}
                         onClick={() =>
                           openCommentDialog({ kind: "edit", id: comment.id })
                         }
@@ -502,7 +512,7 @@ export function CommentsPanel() {
                         variant="ghost"
                         size="icon-xs"
                         className="size-5 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100"
-                        title="Delete comment"
+                        title={t("Delete comment")}
                         onClick={() => void remove(comment.id)}
                       >
                         <Trash2 className="size-3" />

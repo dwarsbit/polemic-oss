@@ -78,7 +78,7 @@ describe("arrangeIssues", () => {
   it("puts the limit that stopped the compile above TeX's errors", () => {
     const stopped = issue(
       "error",
-      "The compile was stopped after 5 minutes on the Polemic server.",
+      "The compile was stopped after 5 minutes on the Scholarkit server.",
     );
     const list = arrange([stopped, unknown(3, "\\frrac"), unknown(4, "\\frrac")]);
     expect(list.first.map((row) => row.title)).toEqual([

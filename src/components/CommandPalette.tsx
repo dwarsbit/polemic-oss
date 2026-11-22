@@ -48,11 +48,11 @@ import { useProjectStore } from "@/store/project";
 import { resolveVersionControl, useSettingsStore } from "@/store/settings";
 import { features } from "@/lib/target";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /** Commands for desktop features the browser build leaves out. */
 const HIDDEN_COMMANDS = new Set([
   ...(features.localFiles ? [] : ["open-project", "reveal-build"]),
-  ...(features.referenceSources ? [] : ["sources"]),
   ...(features.desktopAccount ? [] : ["account"]),
   ...(features.versionControl ? [] : ["commit", "snapshot"]),
 ]);
@@ -92,10 +92,10 @@ export function CommandPalette() {
     const app: Command[] = [
       {
         id: "open-project",
-        title: "Open project…",
+        title: t("Open project…"),
         icon: FolderOpen,
         shortcut: formatShortcut("Mod+O"),
-        keywords: "folder existing",
+        keywords: t("folder existing"),
         run: () =>
           void openProjectDialog()
             .then((info) => info && useProjectStore.getState().openProject(info.path))
@@ -103,35 +103,35 @@ export function CommandPalette() {
       },
       {
         id: "sources",
-        title: "Bibliography sources…",
+        title: t("Bibliography sources…"),
         icon: BookOpen,
-        keywords: "bibliography sources zotero bib settings",
+        keywords: t("bibliography sources zotero bib settings"),
         run: () => useSettingsStore.getState().openSettings("bibliography"),
       },
       {
         id: "settings",
-        title: "Settings…",
+        title: t("Settings…"),
         icon: Settings,
-        keywords: "preferences theme language spellcheck",
+        keywords: t("preferences theme language spellcheck"),
         run: () => useSettingsStore.getState().setSettingsDialogOpen(true),
       },
       {
         id: "account",
-        title: "Polemic account…",
+        title: t("Scholarkit account…"),
         icon: UserRound,
-        keywords: "sign in sign out login logout plan free student pro server",
+        keywords: t("sign in sign out login logout plan free student pro server"),
         run: () => useSettingsStore.getState().openSettings("account"),
       },
       {
         id: "shortcuts",
-        title: "Keyboard shortcuts",
+        title: t("Keyboard shortcuts"),
         icon: Keyboard,
         shortcut: formatShortcut("Mod+Alt+/"),
         run: () => useDialogsStore.getState().setShortcutsOpen(true),
       },
       {
         id: "about",
-        title: "About Polemic",
+        title: t("About Polemic"),
         icon: Sparkles,
         run: () => useDialogsStore.getState().setAboutOpen(true),
       },
@@ -143,195 +143,195 @@ export function CommandPalette() {
     return [
       {
         id: "save",
-        title: "Save",
+        title: t("Save"),
         icon: Save,
         shortcut: formatShortcut("Mod+S"),
         run: () => void store.saveActiveFile(),
       },
       {
         id: "format",
-        title: "Format document",
+        title: t("Format document"),
         icon: WandSparkles,
         shortcut: formatShortcut("Shift+Alt+F"),
         run: () => formatDocument(),
       },
       {
         id: "compile",
-        title: "Compile",
+        title: t("Compile"),
         icon: Play,
         shortcut: formatShortcut("Mod+Shift+R"),
         run: () => void usePreviewStore.getState().compileNow(),
       },
       {
         id: "export-pdf",
-        title: "Export PDF…",
+        title: t("Export PDF…"),
         icon: FileText,
         shortcut: formatShortcut("Mod+E"),
         run: () => void exportPdfAs(),
       },
       {
         id: "close-project",
-        title: "Close project",
+        title: t("Close project"),
         icon: FolderOpen,
         shortcut: formatShortcut("Mod+Shift+W"),
-        keywords: "new switch projects view",
+        keywords: t("new switch projects view"),
         run: () => void store.leaveProject(),
       },
       {
         id: "reveal-build",
-        title: "Reveal build folder",
+        title: t("Reveal build folder"),
         icon: FolderOpen,
         run: () => void revealBuildFolder(project.path),
       },
       {
         id: "toggle-line-comment",
-        title: "Toggle line comment",
+        title: t("Toggle line comment"),
         icon: Percent,
         shortcut: formatShortcut("Mod+/"),
-        keywords: "comment out uncomment percent code",
+        keywords: t("comment out uncomment percent code"),
         run: () => runEditorCommand("toggle-comment"),
       },
       {
         id: "add-comment",
-        title: "Add comment",
+        title: t("Add comment"),
         icon: MessageSquare,
         shortcut: formatShortcut("Mod+Alt+C"),
-        keywords: "note annotation review",
+        keywords: t("note annotation review"),
         run: () => addCommentAtCursor(),
       },
       {
         id: "add-file-comment",
-        title: "Add comment on file",
+        title: t("Add comment on file"),
         icon: MessageSquare,
-        keywords: "note annotation file",
+        keywords: t("note annotation file"),
         run: () => addFileComment(),
       },
       {
         id: "toggle-sidebar",
-        title: "Toggle navigator",
+        title: t("Toggle navigator"),
         icon: PanelLeft,
         shortcut: formatShortcut("Mod+Alt+B"),
-        keywords: "sidebar files outline symbols hide show",
+        keywords: t("sidebar files outline symbols hide show"),
         run: () => runPanelCommand("toggle-sidebar"),
       },
       {
         id: "toggle-preview",
-        title: "Toggle PDF preview",
+        title: t("Toggle PDF preview"),
         icon: PanelRight,
         shortcut: formatShortcut("Mod+Shift+P"),
-        keywords: "pdf hide show",
+        keywords: t("pdf hide show"),
         run: () => runPanelCommand("toggle-preview"),
       },
       {
         id: "toggle-right",
-        title: "Toggle properties",
+        title: t("Toggle properties"),
         icon: PanelRight,
         shortcut: formatShortcut("Mod+J"),
-        keywords: "right panel git snapshots history comments hide show",
+        keywords: t("right panel git snapshots history comments hide show"),
         run: () => runPanelCommand("toggle-right"),
       },
       {
         id: "toggle-search",
-        title: "Find in project",
+        title: t("Find in project"),
         icon: Search,
         shortcut: formatShortcut("Mod+Shift+F"),
-        keywords: "find grep across files",
+        keywords: t("find grep across files"),
         run: () => runPanelCommand("toggle-search"),
       },
       {
         id: "toggle-issues",
-        title: "Toggle issues",
+        title: t("Toggle issues"),
         icon: AlertTriangle,
         shortcut: formatShortcut("Mod+Shift+M"),
-        keywords: "errors warnings problems hide show",
+        keywords: t("errors warnings problems hide show"),
         run: () => runPanelCommand("toggle-issues"),
       },
       {
         id: "toggle-log",
-        title: "Toggle compile log",
+        title: t("Toggle compile log"),
         icon: ScrollText,
-        keywords: "latexmk output hide show",
+        keywords: t("latexmk output hide show"),
         run: () => runPanelCommand("toggle-log"),
       },
       {
         id: "insert-table",
-        title: "Insert table…",
+        title: t("Insert table…"),
         icon: TableProperties,
         shortcut: formatShortcut("Mod+Shift+T"),
-        keywords: "tabular booktabs rows columns skeleton",
+        keywords: t("tabular booktabs rows columns skeleton"),
         run: () => useDialogsStore.getState().setTableDialogOpen(true),
       },
       {
         id: "csv-import",
-        title: "Table or plot from CSV…",
+        title: t("Table or plot from CSV…"),
         icon: TableProperties,
-        keywords: "csv data import spreadsheet pgfplots plot chart booktabs",
+        keywords: t("csv data import spreadsheet pgfplots plot chart booktabs"),
         run: () => useDialogsStore.getState().setCsvImport({ path: null }),
       },
       {
         id: "packages",
-        title: "Packages…",
+        title: t("Packages…"),
         icon: Package,
         shortcut: formatShortcut("Mod+Alt+P"),
-        keywords: "ctan usepackage libraries install latex",
+        keywords: t("ctan usepackage libraries install latex"),
         run: () => useDialogsStore.getState().setPackagesDialogOpen(true),
       },
       {
         id: "wrap-figure",
-        title: "Figure from image…",
+        title: t("Figure from image…"),
         icon: Image,
         shortcut: formatShortcut("Mod+Alt+G"),
-        keywords: "wrap includegraphics caption float graphic",
+        keywords: t("wrap includegraphics caption float graphic"),
         run: () => wrapFigure(),
       },
       {
         id: "insert-citation",
-        title: "Insert citation…",
+        title: t("Insert citation…"),
         icon: Quote,
         shortcut: formatShortcut("Mod+Shift+C"),
-        keywords: "cite reference bibliography",
+        keywords: t("cite reference bibliography"),
         run: () => insertWithCompletion("\\cite{}", 6),
       },
       {
         id: "insert-reference",
-        title: "Insert reference…",
+        title: t("Insert reference…"),
         icon: Link,
-        keywords: "ref label cross-reference",
+        keywords: t("ref label cross-reference"),
         run: () => insertWithCompletion("\\ref{}", 5),
       },
       {
         id: "insert-footnote",
-        title: "Insert footnote",
+        title: t("Insert footnote"),
         icon: Superscript,
         run: () => insertAtCursor("\\footnote{}", 10),
       },
       {
         id: "insert-display-math",
-        title: "Insert display math",
+        title: t("Insert display math"),
         icon: Sigma,
-        keywords: "equation formula",
+        keywords: t("equation formula"),
         run: () => insertAtCursor("\\[\n  \n\\]", "\\[\n  ".length),
       },
       {
         id: "document-settings",
-        title: "Document settings…",
+        title: t("Document settings…"),
         icon: FileCog,
-        keywords: "class paper title author",
+        keywords: t("class paper title author"),
         run: () => useDialogsStore.getState().setDocumentSettingsOpen(true),
       },
       {
         id: "share",
-        title: "Share…",
+        title: t("Share…"),
         icon: Share2,
-        keywords: "publish review link reviewer supervisor",
+        keywords: t("publish review link reviewer supervisor"),
         run: () => useDialogsStore.getState().setShareOpen(true),
       },
       {
         id: "commit",
-        title: versionControl === "git" ? "Commit…" : "Show snapshots",
+        title: versionControl === "git" ? t("Commit…") : t("Show snapshots"),
         icon: GitBranch,
         shortcut: formatShortcut("Mod+K"),
-        keywords: "git version control history",
+        keywords: t("git version control history"),
         run: () => runPanelCommand("show-version-control"),
       },
       ...TIKZ_SNIPPETS.map((snippet) => ({
@@ -345,16 +345,18 @@ export function CommandPalette() {
         ? [
             {
               id: "snapshot",
-              title: "Take snapshot",
+              title: t("Take snapshot"),
               icon: Camera,
-              keywords: "backup version save",
+              keywords: t("backup version save"),
               run: () => void useProjectStore.getState().takeSnapshot(),
             },
           ]
         : []),
       {
         id: "toggle-autocompile",
-        title: `Turn auto-compile ${usePreviewStore.getState().autoCompile ? "off" : "on"}`,
+        title: usePreviewStore.getState().autoCompile
+          ? t("Turn auto-compile off")
+          : t("Turn auto-compile on"),
         icon: Zap,
         run: () => usePreviewStore.getState().toggleAutoCompile(),
       },
@@ -366,9 +368,9 @@ export function CommandPalette() {
     if (!project) return [];
     return collectFilePaths(files).map((path) => ({
       id: `open:${path}`,
-      title: `Open: ${path}`,
+      title: t("Open: {path}", { path }),
       icon: FileText,
-      keywords: "go to switch tab",
+      keywords: t("go to switch tab"),
       run: () => void useProjectStore.getState().openFile(path),
     }));
   }, [files, project]);
@@ -430,7 +432,7 @@ export function CommandPalette() {
     >
       <div
         role="dialog"
-        aria-label="Command palette"
+        aria-label={t("Command palette")}
         className="h-fit w-[min(560px,calc(100%-2rem))] overflow-hidden rounded-2xl border bg-popover text-popover-foreground shadow-xl"
         onClick={(event) => event.stopPropagation()}
       >
@@ -442,13 +444,13 @@ export function CommandPalette() {
             setSelected(0);
           }}
           onKeyDown={onKeyDown}
-          placeholder="Type a command or file name…"
+          placeholder={t("Type a command or file name…")}
           className="w-full border-b bg-transparent px-4 py-2.5 text-sm outline-none placeholder:text-muted-foreground"
         />
         <div ref={listRef} className="max-h-[50vh] overflow-y-auto p-1.5">
           {results.length === 0 && (
             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-              No matching commands.
+              {t("No matching commands.")}
             </p>
           )}
           {results.map((result, index) => {

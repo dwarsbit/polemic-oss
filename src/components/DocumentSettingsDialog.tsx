@@ -26,6 +26,8 @@ import * as api from "@/lib/tauri";
 import { useDialogsStore } from "@/store/dialogs";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
+import { t, tn } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 const CLASS_PRESETS = ["article", "report", "book", "scrartcl", "scrreprt", "beamer"];
 
@@ -34,10 +36,10 @@ const CUSTOM = "__custom__";
 type EngineChoice = api.TexEngine | "auto";
 
 const ENGINES: { value: EngineChoice; label: string }[] = [
-  { value: "auto", label: "Automatic" },
+  { value: "auto", label: t("Automatic") },
   { value: "pdflatex", label: "pdfLaTeX" },
-  { value: "xelatex", label: "XeLaTeX" },
-  { value: "lualatex", label: "LuaLaTeX" },
+  { value: "xelatex", label: t("XeLaTeX") },
+  { value: "lualatex", label: t("LuaLaTeX") },
 ];
 
 type Draft = Omit<DocumentSettings, "packageCount"> & { packageCount: number };
@@ -179,11 +181,11 @@ export function DocumentSettingsDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileCog className="size-4" />
-            Document settings
+            {t("Document settings")}
           </DialogTitle>
         </DialogHeader>
         <label className="flex flex-col gap-1 text-xs">
-          TeX engine
+          {t("TeX engine")}
           <Select
             value={engine}
             onValueChange={(value) => setEngine(value as EngineChoice)}
@@ -201,22 +203,24 @@ export function DocumentSettingsDialog({
           </Select>
           {engine === "auto" && (
             <span className="text-muted-foreground">
-              Reads a <span className="font-mono">% !TEX program</span> line, else uses
-              XeLaTeX when the preamble loads fontspec, else pdfLaTeX.
+              {rich(
+                "Reads a <0>% !TEX program</0> line, else uses XeLaTeX when the preamble loads fontspec, else pdfLaTeX.",
+                [(c) => <span className="font-mono">{c}</span>],
+              )}
             </span>
           )}
         </label>
         {draft === null || !available ? (
           <p className="text-sm text-muted-foreground">
             {mainFile === null
-              ? "This project has no main file."
-              : `No configurable document class found in ${mainFile}.`}
+              ? t("This project has no main file.")
+              : t("No configurable document class found in {mainFile}.", { mainFile })}
           </p>
         ) : (
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-3">
               <label className="flex flex-col gap-1 text-xs">
-                Class
+                {t("Class")}
                 <Select
                   value={classPreset}
                   onValueChange={(value) => {
@@ -232,12 +236,12 @@ export function DocumentSettingsDialog({
                         {preset}
                       </SelectItem>
                     ))}
-                    <SelectItem value={CUSTOM}>Custom…</SelectItem>
+                    <SelectItem value={CUSTOM}>{t("Custom…")}</SelectItem>
                   </SelectContent>
                 </Select>
               </label>
               <label className="flex flex-col gap-1 text-xs">
-                Font size
+                {t("Font size")}
                 <Select
                   value={draft.fontSize === "" ? "default" : draft.fontSize}
                   onValueChange={(value) =>
@@ -248,15 +252,15 @@ export function DocumentSettingsDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="default">Class default</SelectItem>
-                    <SelectItem value="10pt">10pt</SelectItem>
-                    <SelectItem value="11pt">11pt</SelectItem>
-                    <SelectItem value="12pt">12pt</SelectItem>
+                    <SelectItem value="default">{t("Class default")}</SelectItem>
+                    <SelectItem value="10pt">{t("10pt")}</SelectItem>
+                    <SelectItem value="11pt">{t("11pt")}</SelectItem>
+                    <SelectItem value="12pt">{t("12pt")}</SelectItem>
                   </SelectContent>
                 </Select>
               </label>
               <label className="flex flex-col gap-1 text-xs">
-                Paper
+                {t("Paper")}
                 <Select
                   value={draft.paper === "" ? "default" : draft.paper}
                   onValueChange={(value) =>
@@ -267,16 +271,16 @@ export function DocumentSettingsDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="default">Class default</SelectItem>
+                    <SelectItem value="default">{t("Class default")}</SelectItem>
                     <SelectItem value="a4paper">A4</SelectItem>
-                    <SelectItem value="letterpaper">Letter</SelectItem>
+                    <SelectItem value="letterpaper">{t("Letter")}</SelectItem>
                     <SelectItem value="a5paper">A5</SelectItem>
-                    <SelectItem value="legalpaper">Legal</SelectItem>
+                    <SelectItem value="legalpaper">{t("Legal")}</SelectItem>
                   </SelectContent>
                 </Select>
               </label>
               <label className="flex flex-col gap-1 text-xs">
-                Layout
+                {t("Layout")}
                 <Select
                   value={draft.twoColumn ? "twocolumn" : "onecolumn"}
                   onValueChange={(value) => set("twoColumn", value === "twocolumn")}
@@ -285,35 +289,35 @@ export function DocumentSettingsDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="onecolumn">One column</SelectItem>
-                    <SelectItem value="twocolumn">Two columns</SelectItem>
+                    <SelectItem value="onecolumn">{t("One column")}</SelectItem>
+                    <SelectItem value="twocolumn">{t("Two columns")}</SelectItem>
                   </SelectContent>
                 </Select>
               </label>
             </div>
             {classPreset === CUSTOM && (
               <label className="flex flex-col gap-1 text-xs">
-                Custom class
+                {t("Custom class")}
                 <Input
                   value={draft.className}
                   onChange={(e) => set("className", e.target.value)}
-                  placeholder="IEEEtran, acmart, …"
+                  placeholder={t("IEEEtran, acmart, …")}
                 />
               </label>
             )}
             <label className="flex flex-col gap-1 text-xs">
-              Other class options
+              {t("Other class options")}
               <Input
                 value={draft.customOptions}
                 onChange={(e) => set("customOptions", e.target.value)}
-                placeholder="twoside, fleqn, …"
+                placeholder={t("twoside, fleqn, …")}
               />
             </label>
             <div className="flex items-center justify-between rounded-lg border px-3 py-2">
               <div>
-                <p className="text-xs font-medium">Draft mode</p>
+                <p className="text-xs font-medium">{t("Draft mode")}</p>
                 <p className="text-xs text-muted-foreground">
-                  No floats, single spacing for review copies
+                  {t("No floats, single spacing for review copies")}
                 </p>
               </div>
               <Switch checked={draft.draft} onCheckedChange={(v) => set("draft", v)} />
@@ -321,34 +325,36 @@ export function DocumentSettingsDialog({
             {draft.suggestionsInPdf !== null && (
               <div className="flex items-center justify-between rounded-lg border px-3 py-2">
                 <div>
-                  <p className="text-xs font-medium">Show suggestions in the PDF</p>
+                  <p className="text-xs font-medium">
+                    {t("Show suggestions in the PDF")}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    Off: the PDF shows the text with every suggestion accepted
+                    {t("Off: the PDF shows the text with every suggestion accepted")}
                   </p>
                 </div>
                 <Switch
                   checked={draft.suggestionsInPdf}
-                  aria-label="Show suggestions in the PDF"
+                  aria-label={t("Show suggestions in the PDF")}
                   onCheckedChange={(v) => set("suggestionsInPdf", v)}
                 />
               </div>
             )}
             <div className="flex flex-col gap-2 rounded-lg border px-3 py-2.5">
-              <p className="text-xs font-medium">Title metadata</p>
+              <p className="text-xs font-medium">{t("Title metadata")}</p>
               <Input
                 value={draft.title}
                 onChange={(e) => set("title", e.target.value)}
-                placeholder="Title (\title{…})"
+                placeholder={t("Title (\\title{…})")}
               />
               <Input
                 value={draft.author}
                 onChange={(e) => set("author", e.target.value)}
-                placeholder="Author (\author{…})"
+                placeholder={t("Author (\\author{…})")}
               />
               <Input
                 value={draft.date}
                 onChange={(e) => set("date", e.target.value)}
-                placeholder="Date (\date{…})"
+                placeholder={t("Date (\\date{…})")}
               />
             </div>
             <button
@@ -360,15 +366,17 @@ export function DocumentSettingsDialog({
               }}
             >
               <span>
-                {draft.packageCount} package{draft.packageCount === 1 ? "" : "s"}
+                {tn(draft.packageCount, "{count} package", "{count} packages")}
               </span>
-              <span className="text-xs text-muted-foreground">Manage packages →</span>
+              <span className="text-xs text-muted-foreground">
+                {t("Manage packages →")}
+              </span>
             </button>
           </div>
         )}
         <DialogFooter>
           <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             size="sm"
@@ -378,7 +386,7 @@ export function DocumentSettingsDialog({
             }
             onClick={() => void save()}
           >
-            Save
+            {t("Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

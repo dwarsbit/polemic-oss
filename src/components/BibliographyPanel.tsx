@@ -49,6 +49,7 @@ import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { useUiStore } from "@/store/ui";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
 
 interface BibRow {
   entry: BibEntry;
@@ -198,10 +199,13 @@ export function BibliographyPanel() {
   const backend: BibBackend = biblatex === null ? "bibtex" : "biblatex";
   const previewNote =
     biblatex === null
-      ? "biblatex is not loaded in this project; showing its default numeric style."
+      ? t("biblatex is not loaded in this project; showing its default numeric style.")
       : biblatex.known
         ? undefined
-        : `Project style “${biblatex.name}” is approximated by ${biblatex.style}.`;
+        : t("Project style “{name}” is approximated by {style}.", {
+            name: biblatex.name,
+            style: biblatex.style,
+          });
 
   const rows = useMemo<BibRow[]>(() => {
     const counts = new Map<string, number>();
@@ -335,15 +339,15 @@ export function BibliographyPanel() {
       return;
     }
     if (newKey.length === 0) {
-      setRenameError("Enter a key.");
+      setRenameError(t("Enter a key."));
       return;
     }
     if (!/^[^,\s{}"]+$/.test(newKey)) {
-      setRenameError("Keys cannot contain commas, spaces, braces, or quotes.");
+      setRenameError(t("Keys cannot contain commas, spaces, braces, or quotes."));
       return;
     }
     if (allKeys.includes(newKey)) {
-      setRenameError(`An entry with key "${newKey}" already exists.`);
+      setRenameError(t('An entry with key "{newKey}" already exists.', { newKey }));
       return;
     }
     setRename(null);
@@ -366,7 +370,7 @@ export function BibliographyPanel() {
       bibRenames += 1;
     }
     if (bibRenames === 0 && texPlan.size === 0) {
-      setRenameError(`No entry found for "${oldKey}".`);
+      setRenameError(t('No entry found for "{oldKey}".', { oldKey }));
       return;
     }
     const occurrences = [...texPlan.values()].reduce(
@@ -374,8 +378,11 @@ export function BibliographyPanel() {
       0,
     );
     setMessage(
-      `Renamed in ${texPlan.size} file${texPlan.size === 1 ? "" : "s"}, ` +
-        `${occurrences} citation${occurrences === 1 ? "" : "s"}.`,
+      `${tn(texPlan.size, "Renamed in {count} file,", "Renamed in {count} files,")} ${tn(
+        occurrences,
+        "{count} citation.",
+        "{count} citations.",
+      )}`,
     );
     diskCache.current.files = [];
     setScanTick((tick) => tick + 1);
@@ -396,7 +403,7 @@ export function BibliographyPanel() {
         await applyFileEdits(texFile, texEdits);
       }
     }
-    setMessage(`Saved ${draft.key}.`);
+    setMessage(t("Saved {key}.", { key: draft.key }));
     diskCache.current.files = [];
     setScanTick((tick) => tick + 1);
     window.setTimeout(() => setMessage(null), 5000);
@@ -430,7 +437,7 @@ export function BibliographyPanel() {
       void invalidateGitState();
     }
     store.refreshDocMeta(file, next);
-    setMessage(`Added ${draft.key} to ${file}.`);
+    setMessage(t("Added {key} to {file}.", { key: draft.key, file }));
     diskCache.current.files = [];
     setScanTick((tick) => tick + 1);
     window.setTimeout(() => setMessage(null), 5000);
@@ -486,7 +493,7 @@ export function BibliographyPanel() {
                 autoFocus
                 className="h-6 min-w-0 flex-1 rounded-md px-1 font-mono text-xs"
                 value={rename.draft}
-                title="Enter to rename everywhere, Esc to cancel"
+                title={t("Enter to rename everywhere, Esc to cancel")}
                 onFocus={(e) => e.currentTarget.select()}
                 onChange={(e) =>
                   setRename({ key: row.entry.key, draft: e.target.value })
@@ -511,7 +518,7 @@ export function BibliographyPanel() {
                 variant="ghost"
                 size="icon-sm"
                 className="ml-1 size-5 shrink-0"
-                title="Cancel"
+                title={t("Cancel")}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   setRename(null);
@@ -534,7 +541,10 @@ export function BibliographyPanel() {
                   void showNativeContextMenu([
                     ...citeCommands.map((command) => ({
                       id: `insert-${command}`,
-                      text: `Insert \\${command}{${row.entry.key}}`,
+                      text: t("Insert \\{command}{{key}}", {
+                        command,
+                        key: row.entry.key,
+                      }),
                       action: () => insertCitation(row.entry.key, command),
                     })),
                   ]);
@@ -547,12 +557,12 @@ export function BibliographyPanel() {
               </button>
               {row.cited === 0 ? (
                 <span className="mr-1 shrink-0 rounded-full border border-warning/50 px-1.5 py-0 text-2xs leading-4 text-warning">
-                  Unused
+                  {t("Unused")}
                 </span>
               ) : (
                 <span
                   className="mr-1.5 shrink-0 text-2xs tabular-nums text-muted-foreground"
-                  title={`${row.cited} citation${row.cited === 1 ? "" : "s"}`}
+                  title={tn(row.cited, "{count} citation", "{count} citations")}
                 >
                   {row.cited}
                 </span>
@@ -560,9 +570,11 @@ export function BibliographyPanel() {
               {row.incomplete && (
                 <span
                   className="mr-1 shrink-0 text-2xs text-warning"
-                  title={`Missing fields: ${missingFields(row.entry, backend).join(", ")}`}
+                  title={t("Missing fields: {join}", {
+                    join: missingFields(row.entry, backend).join(", "),
+                  })}
                 >
-                  Incomplete
+                  {t("Incomplete")}
                 </span>
               )}
               <span className="max-w-20 shrink-0 truncate text-2xs text-muted-foreground">
@@ -571,7 +583,7 @@ export function BibliographyPanel() {
               <button
                 type="button"
                 className="ml-1 flex size-5 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-                title={`Rename ${row.entry.key} (F2)`}
+                title={t("Rename {key} (F2)", { key: row.entry.key })}
                 onClick={() => startRename(row.entry.key)}
               >
                 <Pencil className="size-3" />
@@ -589,14 +601,14 @@ export function BibliographyPanel() {
   return (
     <div className="flex h-full flex-col">
       <SectionHeader
-        label="Bibliography"
+        label={t("Bibliography")}
 
         actions={
           <>
             <Button
               variant="ghost"
               size="icon-sm"
-              title="Add from Sources…"
+              title={t("Add from Sources…")}
               onClick={() => setSourcesDialogOpen(true)}
             >
               <BookPlus className="size-4" />
@@ -604,7 +616,7 @@ export function BibliographyPanel() {
             <Button
               variant="ghost"
               size="icon-sm"
-              title="Import by DOI or arXiv ID…"
+              title={t("Import by DOI or arXiv ID…")}
               onClick={() => setImportDialogOpen(true)}
             >
               <DownloadCloud className="size-4" />
@@ -612,7 +624,7 @@ export function BibliographyPanel() {
             <Button
               variant="ghost"
               size="icon-sm"
-              title="New entry"
+              title={t("New entry")}
               disabled={bibTexts.length === 0}
               onClick={() => {
                 const target = bibTexts[0]?.file;
@@ -630,7 +642,7 @@ export function BibliographyPanel() {
           <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-7 rounded-md pl-6 text-xs"
-            placeholder="Search entries"
+            placeholder={t("Search entries")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -643,7 +655,9 @@ export function BibliographyPanel() {
         {scanned === null ? null : bibTexts.length === 0 ? (
           <div className="space-y-2.5 px-2 pt-2">
             <p className="text-xs text-muted-foreground">
-              No bibliography yet. Create bibliography.bib to start adding entries.
+              {t(
+                "No bibliography yet. Create bibliography.bib to start adding entries.",
+              )}
             </p>
             <Button
               size="sm"
@@ -651,7 +665,7 @@ export function BibliographyPanel() {
               onClick={() => void createBib()}
             >
               <Plus className="size-3.5" />
-              Create bibliography.bib
+              {t("Create bibliography.bib")}
             </Button>
             {createError !== null && (
               <p className="text-xs text-destructive" title={createError}>
@@ -662,8 +676,8 @@ export function BibliographyPanel() {
         ) : rows.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
             {query.trim().length > 0
-              ? "No entries match your search."
-              : "No entries yet. Add one with + or from your sources."}
+              ? t("No entries match your search.")
+              : t("No entries yet. Add one with + or from your sources.")}
           </p>
         ) : (
           groups.map(([type, typeRows]) => {
@@ -675,7 +689,7 @@ export function BibliographyPanel() {
                   {typeRows.length > 1 ? (
                     <button
                       type="button"
-                      title={isCollapsed ? "Expand" : "Collapse"}
+                      title={isCollapsed ? t("Expand") : t("Collapse")}
                       className="flex size-5 shrink-0 items-center justify-center"
                       onClick={() => toggle(key)}
                     >
@@ -711,7 +725,7 @@ export function BibliographyPanel() {
             <div className="flex items-center rounded hover:bg-accent">
               <button
                 type="button"
-                title={collapsed.has("undefined") ? "Expand" : "Collapse"}
+                title={collapsed.has("undefined") ? t("Expand") : t("Collapse")}
                 className="flex size-5 shrink-0 items-center justify-center"
                 onClick={() => toggle("undefined")}
               >
@@ -723,7 +737,7 @@ export function BibliographyPanel() {
                 />
               </button>
               <span className="min-w-0 flex-1 truncate py-1.5 text-xs font-medium text-warning">
-                Undefined citations
+                {t("Undefined citations")}
               </span>
               <span className="mr-1 shrink-0 text-2xs tabular-nums text-muted-foreground">
                 {undefinedCitations.length}
@@ -738,7 +752,11 @@ export function BibliographyPanel() {
                   <button
                     type="button"
                     className="min-w-0 flex-1 truncate py-1.5 text-left font-mono text-xs"
-                    title={`${cite.count} citation${cite.count === 1 ? "" : "s"} without an entry`}
+                    title={tn(
+                      cite.count,
+                      "{count} citation without an entry",
+                      "{count} citations without an entry",
+                    )}
                     onClick={() => goTo(cite.file, cite.line)}
                   >
                     {cite.key}
@@ -766,7 +784,7 @@ export function BibliographyPanel() {
           onOpenChange={(open) => {
             if (!open) setDialog(null);
           }}
-          title={dialog.kind === "new" ? "New BibTeX entry" : `Edit ${dialog.key}`}
+          title={dialog.kind === "new" ? t("New BibTeX entry") : `Edit ${dialog.key}`}
           initial={dialogInitializer(dialog, dialogRow, allKeys, backend)}
           existingKeys={allKeys}
           bibFiles={[...new Set([...bibTexts.map((file) => file.file), dialog.file])]}

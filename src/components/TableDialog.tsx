@@ -14,6 +14,7 @@ import { ensurePackages } from "@/lib/editor-figure";
 import { insertAtCursor } from "@/lib/editor-insert";
 import { generateTable, tableLabel, type TableSpec } from "@/lib/table-generate";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 const PLACEMENTS = ["h", "ht", "htbp"];
 const MAX_COLUMNS = 20;
@@ -39,7 +40,7 @@ function Counter({
         size="icon-sm"
         disabled={value <= 1}
         onClick={() => onChange(Math.max(1, value - 1))}
-        title={`Fewer ${label.toLowerCase()}`}
+        title={t("Fewer {toLowerCase}", { toLowerCase: label.toLowerCase() })}
       >
         <Minus className="size-3" />
       </Button>
@@ -49,7 +50,7 @@ function Counter({
         size="icon-sm"
         disabled={value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
-        title={`More ${label.toLowerCase()}`}
+        title={t("More {toLowerCase}", { toLowerCase: label.toLowerCase() })}
       >
         <Plus className="size-3" />
       </Button>
@@ -118,28 +119,28 @@ export function TableDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Insert table</DialogTitle>
+          <DialogTitle>{t("Insert table")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <div className="flex items-center gap-8">
             <Counter
-              label="Columns"
+              label={t("Columns")}
               value={columns}
               onChange={changeColumns}
               max={MAX_COLUMNS}
             />
-            <Counter label="Rows" value={rows} onChange={setRows} max={MAX_ROWS} />
+            <Counter label={t("Rows")} value={rows} onChange={setRows} max={MAX_ROWS} />
           </div>
           <div className="flex items-center gap-2">
             <span className="w-16 shrink-0 text-xs text-muted-foreground">
-              Alignment
+              {t("Alignment")}
             </span>
             <div className="flex flex-wrap gap-1">
               {alignment.map((align, index) => (
                 <button
                   key={index}
                   type="button"
-                  title={`Column ${index + 1} alignment`}
+                  title={t("Column {column} alignment", { column: index + 1 })}
                   className="size-6 rounded-md border text-center font-mono text-xs hover:bg-accent"
                   onClick={() => cycleAlignment(index)}
                 >
@@ -151,16 +152,16 @@ export function TableDialog({
           <div className="flex items-center gap-8">
             <label className="flex items-center gap-2 text-xs">
               <Switch checked={header} onCheckedChange={setHeader} />
-              Header row
+              {t("Header row")}
             </label>
             <label className="flex items-center gap-2 text-xs">
               <Switch checked={booktabs} onCheckedChange={setBooktabs} />
-              Booktabs rules
+              {t("Booktabs rules")}
             </label>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-16 shrink-0 text-xs text-muted-foreground">
-              Placement
+              {t("Placement")}
             </span>
             <div className="flex gap-1">
               {PLACEMENTS.map((p) => (
@@ -182,14 +183,14 @@ export function TableDialog({
           </div>
           <Input
             className="h-8 text-sm"
-            placeholder="Caption (optional)"
+            placeholder={t("Caption (optional)")}
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
           />
           <Input
             className="h-8 font-mono text-sm"
             placeholder="\label"
-            title={caption ? "Derived from the caption" : undefined}
+            title={caption ? t("Derived from the caption") : undefined}
             value={effectiveLabel}
             onChange={(e) => {
               setLabel(e.target.value);
@@ -199,10 +200,10 @@ export function TableDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button size="sm" onClick={insert}>
-            Insert table
+            {t("Insert table")}
           </Button>
         </DialogFooter>
       </DialogContent>

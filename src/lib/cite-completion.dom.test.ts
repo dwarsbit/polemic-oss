@@ -54,8 +54,9 @@ describe("accepting a cite command", () => {
       state: EditorState.create({ doc: "\\parenc", extensions: [latexAutocompletion] }),
       parent,
     });
+    // Not focused: happy-dom fires selectionchange while CodeMirror is still updating,
+    // which browsers never do, and CodeMirror 6.43.15 throws on it.
     view.dispatch({ selection: { anchor: view.state.doc.length } });
-    view.focus();
     startCompletion(view);
     await settle(view);
     expect(currentCompletions(view.state)[0]?.label).toBe("\\parencite");

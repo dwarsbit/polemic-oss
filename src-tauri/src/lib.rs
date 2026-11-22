@@ -284,7 +284,7 @@ fn output_with_timeout(
 
 /// Rules for the tools latexmk does not know by itself: makeglossaries
 /// for the glossaries package, makeindex for nomencl. Perl that latexmk
-/// runs with -e; the Polemic server runs the same rules
+/// runs with -e; the Scholarkit server runs the same rules
 /// (apps/compile/src/latexmk.ts).
 const LATEXMK_RULES: &str = concat!(
     "add_cus_dep('glo', 'gls', 0, 'makeglossaries'); ",
@@ -777,7 +777,7 @@ fn update_grammar_settings(
 struct HarperState(std::sync::Mutex<Option<(String, grammar::Harper)>>);
 
 /// Grammar issues per prose block: LanguageTool (the user's server or
-/// the Polemic account's) when chosen, else Harper for English;
+/// the Scholarkit account's) when chosen, else Harper for English;
 /// nothing for other languages.
 #[tauri::command]
 async fn check_grammar(
@@ -1450,7 +1450,7 @@ async fn compile_with_polemic(
                 file: None,
                 line: None,
                 message: format!(
-                    "The compile was stopped after {CLOUD_COMPILE_MINUTES} minutes on the Polemic server."
+                    "The compile was stopped after {CLOUD_COMPILE_MINUTES} minutes on the Scholarkit server."
                 ),
                 detail: Vec::new(),
                 hint: Some(
@@ -2358,7 +2358,7 @@ const PROJECT_MENU_ITEMS_MORE: [&str; 5] = [
 ];
 
 /// Menu item id → the frontend event it emits.
-const MENU_EVENTS: [(&str, &str); 43] = [
+const MENU_EVENTS: [(&str, &str); 44] = [
     ("new_project", "menu://new-project"),
     ("open_project", "menu://open-project"),
     ("save", "menu://save"),
@@ -2401,6 +2401,7 @@ const MENU_EVENTS: [(&str, &str); 43] = [
     ("shortcuts", "menu://shortcuts"),
     ("report_issue", "menu://report-issue"),
     ("about", "menu://about"),
+    ("check_updates", "menu://check-updates"),
     ("component_gallery", "menu://component-gallery"),
 ];
 
@@ -2454,6 +2455,38 @@ fn set_project_menu_enabled(state: tauri::State<MenuState>, enabled: bool) -> Re
             set_item_enabled(&item, enabled)
                 .map_err(|e| format!("failed to update menu item {id}: {e}"))?;
         }
+    }
+    Ok(())
+}
+
+/// Show the menus in the interface language: the frontend sends the text of
+/// each submenu and item by id. Items it leaves out, and the items the
+/// system provides (Undo, Cut, Quit and the like), keep their text.
+#[tauri::command]
+fn set_menu_labels(
+    state: tauri::State<MenuState>,
+    labels: std::collections::HashMap<String, String>,
+) -> Result<(), String> {
+    let guard = state.0.lock().map_err(|e| e.to_string())?;
+    let Some(menu) = guard.as_ref() else {
+        return Ok(());
+    };
+    for item in menu.items().unwrap_or_default() {
+        if let tauri::menu::MenuItemKind::Submenu(submenu) = &item {
+            if let Some(text) = labels.get(submenu.id().as_ref()) {
+                submenu
+                    .set_text(text)
+                    .map_err(|e| format!("failed to rename menu {}: {e}", text))?;
+            }
+        }
+    }
+    for (id, text) in &labels {
+        let result = match find_menu_item(menu, id) {
+            Some(tauri::menu::MenuItemKind::MenuItem(item)) => item.set_text(text),
+            Some(tauri::menu::MenuItemKind::Check(item)) => item.set_text(text),
+            _ => Ok(()),
+        };
+        result.map_err(|e| format!("failed to rename menu item {id}: {e}"))?;
     }
     Ok(())
 }
@@ -2556,17 +2589,18 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     let shortcuts = item("shortcuts", "Keyboard shortcuts", Some("CmdOrCtrl+Alt+/"))?;
     let report_issue = item("report_issue", "Report an issue…", None)?;
     let about = item("about", "About Polemic", None)?;
+    let check_updates = item("check_updates", "Check for updates…", None)?;
 
     // The Develop menu: tools that only exist in dev builds. The whole
     // submenu is compiled out in release, so the menu item never ships.
     #[cfg(debug_assertions)]
     let component_gallery = item("component_gallery", "Component gallery", None)?;
     #[cfg(debug_assertions)]
-    let develop_menu = SubmenuBuilder::new(handle, "Develop")
+    let develop_menu = SubmenuBuilder::with_id(handle, "menu_develop", "Develop")
         .item(&component_gallery)
         .build()?;
 
-    let file_builder = SubmenuBuilder::new(handle, "File")
+    let file_builder = SubmenuBuilder::with_id(handle, "menu_file", "File")
         .item(&new_project)
         .item(&open_project)
         .separator()
@@ -2579,7 +2613,7 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     // The native Edit menu: its predefined items deliver Cmd+X/C/V and
     // friends to the focused webview (the custom menu replaced the
     // Tauri default, which ships this submenu).
-    let edit_builder = SubmenuBuilder::new(handle, "Edit")
+    let edit_builder = SubmenuBuilder::with_id(handle, "menu_edit", "Edit")
         .undo()
         .redo()
         .separator()
@@ -2594,7 +2628,7 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         .item(&format)
         .item(&toggle_comment)
         .item(&add_comment);
-    let insert_menu = SubmenuBuilder::new(handle, "Insert")
+    let insert_menu = SubmenuBuilder::with_id(handle, "menu_insert", "Insert")
         .item(&insert_table)
         .item(&wrap_figure)
         .item(&insert_tikz)
@@ -2606,7 +2640,7 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         .item(&insert_footnote)
         .item(&insert_display_math)
         .build()?;
-    let view_menu = SubmenuBuilder::new(handle, "View")
+    let view_menu = SubmenuBuilder::with_id(handle, "menu_view", "View")
         .item(&face_code)
         .item(&face_visual)
         .separator()
@@ -2622,7 +2656,7 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         .item(&zoom_in)
         .item(&zoom_out)
         .build()?;
-    let project_menu = SubmenuBuilder::new(handle, "Project")
+    let project_menu = SubmenuBuilder::with_id(handle, "menu_project", "Project")
         .item(&packages)
         .item(&document_settings)
         .item(&sources)
@@ -2632,7 +2666,7 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         .separator()
         .item(&share)
         .build()?;
-    let help_builder = SubmenuBuilder::new(handle, "Help")
+    let help_builder = SubmenuBuilder::with_id(handle, "menu_help", "Help")
         .item(&help)
         .item(&shortcuts)
         .separator()
@@ -2640,8 +2674,9 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
 
     #[cfg(target_os = "macos")]
     let menu = {
-        let app_menu = SubmenuBuilder::new(handle, "Polemic")
+        let app_menu = SubmenuBuilder::with_id(handle, "menu_app", "Polemic")
             .item(&about)
+            .item(&check_updates)
             .separator()
             .item(&settings)
             .separator()
@@ -2653,7 +2688,7 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
             .separator()
             .quit()
             .build()?;
-        let window_menu = SubmenuBuilder::new(handle, "Window")
+        let window_menu = SubmenuBuilder::with_id(handle, "menu_window", "Window")
             .minimize()
             .maximize_with_text("Zoom")
             .separator()
@@ -2678,12 +2713,16 @@ fn build_app_menu(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     };
 
     // Windows and Linux have no app menu: Settings ends Edit, Exit ends
-    // File, and About ends Help.
+    // File, and Check for updates and About end Help.
     #[cfg(not(target_os = "macos"))]
     let menu = {
         let file_menu = file_builder.separator().quit_with_text("Exit").build()?;
         let edit_menu = edit_builder.separator().item(&settings).build()?;
-        let help_menu = help_builder.separator().item(&about).build()?;
+        let help_menu = help_builder
+            .separator()
+            .item(&check_updates)
+            .item(&about)
+            .build()?;
         let menu_builder = MenuBuilder::new(handle).items(&[
             &file_menu,
             &edit_menu,
@@ -2825,6 +2864,8 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_deep_link::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             create_main_window(app)?;
             {
@@ -2933,6 +2974,7 @@ pub fn run() {
             set_spellcheck_language,
             set_project_menu_enabled,
             set_menu_checked,
+            set_menu_labels,
             set_panel_layout,
             set_preview_zoom,
             set_pinned_project,

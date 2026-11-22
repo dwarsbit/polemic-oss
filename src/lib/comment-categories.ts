@@ -1,3 +1,4 @@
+import { t } from "@scholarkit/i18n";
 /** Comment categories with their gutter/panel colors. */
 
 export interface CommentCategory {
@@ -10,32 +11,32 @@ export interface CommentCategory {
 export const COMMENT_CATEGORIES: CommentCategory[] = [
   {
     id: "change",
-    label: "Change needed",
+    label: t("Change needed"),
     color: "oklch(70.5% 0.213 47.604)", // orange-500
   },
   {
     id: "source",
-    label: "Source needed",
+    label: t("Source needed"),
     color: "oklch(68.5% 0.169 237.323)", // sky-500
   },
   {
     id: "question",
-    label: "Question",
+    label: t("Question"),
     color: "oklch(60.6% 0.25 292.717)", // violet-500
   },
   {
     id: "wording",
-    label: "Wording",
+    label: t("Wording"),
     color: "oklch(64.5% 0.246 16.439)", // rose-500
   },
   {
     id: "verify",
-    label: "Verify",
+    label: t("Verify"),
     color: "oklch(69.6% 0.17 162.48)", // emerald-500
   },
   {
     id: "note",
-    label: "Note",
+    label: t("Note"),
     color: "oklch(55.4% 0.046 257.417)", // slate-500
   },
 ];

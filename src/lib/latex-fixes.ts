@@ -14,6 +14,7 @@ import type { SourceEdit } from "./label-index";
 import { loadedPackages } from "./packages";
 import { MATH_SYMBOL_CATEGORIES } from "./math-symbols";
 import type { CompileIssue } from "./tauri";
+import { t } from "@scholarkit/i18n";
 
 export type FixRule =
   | "undefined-control-sequence"
@@ -158,7 +159,7 @@ function fixUndefinedControlSequence(
   if (at === -1) return null;
   const from = (line?.from ?? 0) + at;
   return {
-    title: `Change \\${cmd} to \\${suggestion}`,
+    title: t("Change \\{cmd} to \\{suggestion}", { cmd, suggestion }),
     edits: [{ from, to: from + cmd.length + 1, insert: "\\" + suggestion }],
   };
 }
@@ -194,7 +195,9 @@ function fixMissingMath(issue: CompileIssue, ctx: FixContext): TexFix | null {
   if (at === -1) return null;
   const token = mathTokenBounds(text, at);
   return {
-    title: `Wrap ${text.slice(token.from, token.to)} in math mode ($…$)`,
+    title: t("Wrap {slice} in math mode ($…$)", {
+      slice: text.slice(token.from, token.to),
+    }),
     edits: [
       { from: line.from + token.from, to: line.from + token.from, insert: "$" },
       { from: line.from + token.to, to: line.from + token.to, insert: "$" },
@@ -257,7 +260,7 @@ function fixEnvironmentPackage(issue: CompileIssue, ctx: FixContext): TexFix | n
   for (let i = 0; i <= anchor; i++) offset += lines[i].length + 1;
   const insert = `\n\\usepackage{${pkg}}`;
   return {
-    title: `Load ${pkg} for the ${env} environment`,
+    title: t("Load {pkg} for the {env} environment", { pkg, env }),
     edits: [{ from: offset - 1, to: offset - 1, insert }],
   };
 }
@@ -298,7 +301,7 @@ function fixMismatchedEnd(issue: CompileIssue, ctx: FixContext): TexFix | null {
     const lead = ctx.doc.slice(lineStart, at);
     const ownLine = lead.trim() === "";
     return {
-      title: `Add \\end{${begin}} before \\end{${end}}`,
+      title: t("Add \\end{{begin}} before \\end{{end}}", { begin, end }),
       edits: [
         ownLine
           ? { from: lineStart, to: lineStart, insert: `${lead}\\end{${begin}}\n` }
@@ -308,7 +311,7 @@ function fixMismatchedEnd(issue: CompileIssue, ctx: FixContext): TexFix | null {
   }
   const nameFrom = at + 5;
   return {
-    title: `Change \\end{${end}} to \\end{${begin}}`,
+    title: t("Change \\end{{end}} to \\end{{begin}}", { end, begin }),
     edits: [{ from: nameFrom, to: nameFrom + end.length, insert: begin }],
   };
 }
@@ -336,7 +339,12 @@ function fixDefinition(
     if (found) {
       const from = line.from + found.index + 1;
       return {
-        title: `Change \\${wrong}${kind} to \\${right}${kind}`,
+        title: t("Change \\{wrong}{kind} to \\{right}{kind2}", {
+          wrong,
+          kind,
+          right,
+          kind2: kind,
+        }),
         edits: [{ from, to: from + wrong.length, insert: right }],
       };
     }
@@ -386,7 +394,7 @@ function fixUnclosedArgument(issue: CompileIssue, ctx: FixContext): TexFix | nul
     if (openBraces(kept) !== 1) return null;
     const lineNo = ctx.doc.slice(0, at).split("\n").length;
     return {
-      title: `Add the missing } at the end of line ${lineNo}`,
+      title: t("Add the missing } at the end of line {lineNo}", { lineNo }),
       edits: [{ from: at + kept.length, to: at + kept.length, insert: "}" }],
     };
   }
@@ -459,7 +467,7 @@ function fixMissingFile(issue: CompileIssue, ctx: FixContext): TexFix | null {
   if (open === -1 || close === -1 || close < at) return null;
   if (text.slice(open + 1, close).trim() === target) return null;
   return {
-    title: `Change the path to ${target}`,
+    title: t("Change the path to {target}", { target }),
     edits: [{ from: line.from + open + 1, to: line.from + close, insert: target }],
   };
 }
@@ -471,7 +479,9 @@ function fixUndefinedReference(issue: CompileIssue, ctx: FixContext): TexFix | n
   const labels = extractLabelPositions(ctx.doc).map((pos) => pos.name);
   if (labels.includes(name)) {
     return {
-      title: `Recompile to settle cross-references (\\label{${name}} exists)`,
+      title: t("Recompile to settle cross-references (\\label{{name}} exists)", {
+        name,
+      }),
       edits: [],
       action: "recompile",
     };
@@ -486,7 +496,7 @@ function fixUndefinedReference(issue: CompileIssue, ctx: FixContext): TexFix | n
       insert: suggestion,
     }));
   if (edits.length === 0) return null;
-  return { title: `Change the reference to ${suggestion}`, edits };
+  return { title: t("Change the reference to {suggestion}", { suggestion }), edits };
 }
 
 function fixUndefinedCitation(issue: CompileIssue, ctx: FixContext): TexFix | null {
@@ -495,7 +505,7 @@ function fixUndefinedCitation(issue: CompileIssue, ctx: FixContext): TexFix | nu
   if (key === null || ctx.bibKeys.length === 0) return null;
   if (ctx.bibKeys.includes(key)) {
     return {
-      title: `Recompile to pick up ${key} from the bibliography`,
+      title: t("Recompile to pick up {key} from the bibliography", { key }),
       edits: [],
       action: "recompile",
     };
@@ -506,12 +516,12 @@ function fixUndefinedCitation(issue: CompileIssue, ctx: FixContext): TexFix | nu
     .filter((cite) => cite.key === key)
     .map((cite) => ({ from: cite.from, to: cite.to, insert: suggestion }));
   if (edits.length === 0) return null;
-  return { title: `Change the citation key to ${suggestion}`, edits };
+  return { title: t("Change the citation key to {suggestion}", { suggestion }), edits };
 }
 
 function fixRerun(): TexFix {
   return {
-    title: "Recompile to settle cross-references",
+    title: t("Recompile to settle cross-references"),
     edits: [],
     action: "recompile",
   };

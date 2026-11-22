@@ -30,12 +30,13 @@ import {
 import { copyText, useShare, type Share } from "@/hooks/useShare";
 import { type ReviewLink } from "@/lib/tauri";
 import { features } from "@/lib/target";
+import { t } from "@scholarkit/i18n";
 
 const EXPIRY = [
-  { value: "never", label: "No expiry", days: null },
-  { value: "7", label: "7 days", days: 7 },
-  { value: "30", label: "30 days", days: 30 },
-  { value: "90", label: "90 days", days: 90 },
+  { value: "never", label: t("No expiry"), days: null },
+  { value: "7", label: t("7 days"), days: 7 },
+  { value: "30", label: t("30 days"), days: 30 },
+  { value: "90", label: t("90 days"), days: 90 },
 ] as const;
 
 const day = (iso: string) =>
@@ -71,11 +72,13 @@ function ShareBody() {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Share</DialogTitle>
+        <DialogTitle>{t("Share")}</DialogTitle>
         <DialogDescription className="text-xs">
           {invited
-            ? `${info?.owner?.name ?? "Someone"} shared this project with you.`
-            : "Invite people to work on this project, or send reviewers a link."}
+            ? info?.owner?.name
+              ? t("{name} shared this project with you.", { name: info.owner.name })
+              : t("Someone shared this project with you.")
+            : t("Invite people to work on this project, or send reviewers a link.")}
         </DialogDescription>
       </DialogHeader>
 
@@ -95,11 +98,14 @@ function ShareBody() {
 
           {invited && (
             <section className="space-y-1">
-              <h3 className="text-sm font-medium">Your role</h3>
+              <h3 className="text-sm font-medium">{t("Your role")}</h3>
               <p className="text-xs text-muted-foreground">
-                {ROLE_LABELS[!info || info.role === "owner" ? "editor" : info.role]}.
-                Only {info?.owner?.name ?? "the owner"} can invite people and make
-                review links.
+                {ROLE_LABELS[!info || info.role === "owner" ? "editor" : info.role]}.{" "}
+                {info?.owner?.name
+                  ? t("Only {name} can invite people and make review links.", {
+                      name: info.owner.name,
+                    })
+                  : t("Only the owner can invite people and make review links.")}
               </p>
             </section>
           )}
@@ -111,14 +117,14 @@ function ShareBody() {
           ) : confirm === "stop" ? (
             <div className="border-t pt-4">
               <Confirm
-                action="Stop sharing"
+                action={t("Stop sharing")}
                 busy={share.busy === "stop"}
                 onConfirm={() => void share.stop().then(() => setConfirm(null))}
                 onCancel={() => setConfirm(null)}
               >
-                Stop sharing this project? People you invited lose access, its review
-                links stop working and it no longer opens in your browser. Your files
-                stay on this computer.
+                {t(
+                  "Stop sharing this project? People you invited lose access, its review links stop working and it no longer opens in your browser. Your files stay on this computer.",
+                )}
               </Confirm>
             </div>
           ) : (
@@ -131,7 +137,7 @@ function ShareBody() {
                     onClick={() => void openUrl(projectPage)}
                   >
                     <ExternalLink />
-                    Open in browser
+                    {t("Open in browser")}
                   </Button>
                 ) : (
                   <span />
@@ -144,7 +150,7 @@ function ShareBody() {
                     className="text-muted-foreground hover:text-destructive"
                     onClick={() => setConfirm("leave")}
                   >
-                    Leave project…
+                    {t("Leave project…")}
                   </Button>
                 ) : (
                   features.localFiles && (
@@ -154,7 +160,7 @@ function ShareBody() {
                       className="text-muted-foreground hover:text-destructive"
                       onClick={() => setConfirm("stop")}
                     >
-                      Stop sharing…
+                      {t("Stop sharing…")}
                     </Button>
                   )
                 )}
@@ -189,9 +195,9 @@ function ReviewLinks({ share }: { share: Share }) {
 
   return (
     <section className="space-y-2.5">
-      <h3 className="text-sm font-medium">Review links</h3>
+      <h3 className="text-sm font-medium">{t("Review links")}</h3>
       <p className="text-xs text-muted-foreground">
-        Anyone with a link can read what you published last in their browser.
+        {t("Anyone with a link can read what you published last in their browser.")}
       </p>
 
       {links.length > 0 && (
@@ -212,16 +218,21 @@ function ReviewLinks({ share }: { share: Share }) {
                     {l.active === false && (
                       <span
                         className="rounded-full border px-1.5 text-[10px] font-normal text-muted-foreground"
-                        title="Your plan includes fewer active review links than you have. Delete a link, or upgrade on your account page."
+                        title={t(
+                          "Your plan includes fewer active review links than you have. Delete a link, or upgrade on your account page.",
+                        )}
                       >
-                        Paused
+                        {t("Paused")}
                       </span>
                     )}
                   </span>
                   <span className="block text-xs text-muted-foreground">
-                    Made {day(l.createdAt)}
-                    {l.expiresAt ? ` · expires ${day(l.expiresAt)}` : " · no expiry"}
-                    {!url && " · can’t be copied on this device"}
+                    {t("Made {day}", { day: day(l.createdAt) })}
+                    {" · "}
+                    {l.expiresAt
+                      ? t("expires {day}", { day: day(l.expiresAt) })
+                      : t("no expiry")}
+                    {!url && ` · ${t("can’t be copied on this device")}`}
                   </span>
                 </span>
                 {url && (
@@ -231,14 +242,14 @@ function ReviewLinks({ share }: { share: Share }) {
                     onClick={() => void copy(l.id, url)}
                   >
                     {copied === l.id ? <Check /> : <Copy />}
-                    {copied === l.id ? "Copied" : "Copy link"}
+                    {copied === l.id ? t("Copied") : t("Copy link")}
                   </Button>
                 )}
                 <Button
                   size="icon-xs"
                   variant="ghost"
-                  aria-label="Delete link"
-                  title="Delete link: it stops working"
+                  aria-label={t("Delete link")}
+                  title={t("Delete link: it stops working")}
                   onClick={() => void share.deleteLink(l.id)}
                 >
                   <Trash2 />
@@ -251,7 +262,7 @@ function ReviewLinks({ share }: { share: Share }) {
 
       <div className="flex flex-wrap items-center gap-2">
         <Select value={role} onValueChange={(v) => setRole(v as ReviewLink["role"])}>
-          <SelectTrigger className="h-7 text-xs" aria-label="What the link allows">
+          <SelectTrigger className="h-7 text-xs" aria-label={t("What the link allows")}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -263,7 +274,10 @@ function ReviewLinks({ share }: { share: Share }) {
           value={expiry}
           onValueChange={(v) => setExpiry(v as (typeof EXPIRY)[number]["value"])}
         >
-          <SelectTrigger className="h-7 text-xs" aria-label="When the link expires">
+          <SelectTrigger
+            className="h-7 text-xs"
+            aria-label={t("When the link expires")}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -281,7 +295,7 @@ function ReviewLinks({ share }: { share: Share }) {
           onClick={() => void create()}
         >
           {working && <Loader2 className="size-3 animate-spin" />}
-          Create link
+          {t("Create link")}
         </Button>
       </div>
 

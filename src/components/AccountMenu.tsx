@@ -14,6 +14,7 @@ import {
 import { accountSignOut, accountUsage, type AccountUsage } from "@/lib/tauri";
 import { useAccountStore } from "@/store/account";
 import { usePreviewStore } from "@/store/preview";
+import { t, tn } from "@scholarkit/i18n";
 
 /**
  * The signed-in account at the toolbar's right end: the avatar opens
@@ -65,8 +66,8 @@ export function AccountMenu() {
         <button
           type="button"
           className="ml-1 rounded-full outline-hidden ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
-          title={user ? `${user.name} (${user.email})` : "Polemic account"}
-          aria-label="Polemic account"
+          title={user ? `${user.name} (${user.email})` : t("Scholarkit account")}
+          aria-label={t("Scholarkit account")}
         >
           <Avatar name={user?.name} photo={status.avatar} size="sm" />
         </button>
@@ -75,7 +76,9 @@ export function AccountMenu() {
         <div className="flex items-center gap-3 px-3 pt-2 pb-3">
           <Avatar name={user?.name} photo={status.avatar} />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">{user?.name ?? "Signed in"}</p>
+            <p className="truncate text-sm font-medium">
+              {user?.name ?? t("Signed in")}
+            </p>
             {user && (
               <p className="truncate text-xs text-muted-foreground">{user.email}</p>
             )}
@@ -93,8 +96,13 @@ export function AccountMenu() {
               {links && (
                 <p className="mt-3 text-xs text-muted-foreground">
                   {links.limit === null
-                    ? "Unlimited review links"
-                    : `${links.count} of ${links.limit} active review ${links.limit === 1 ? "link" : "links"}`}
+                    ? t("Unlimited review links")
+                    : tn(
+                        links.limit,
+                        "{active} of {count} active review link",
+                        "{active} of {count} active review links",
+                        { active: links.count },
+                      )}
                 </p>
               )}
             </div>
@@ -103,12 +111,12 @@ export function AccountMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void openUrl(`${status.server}/account`)}>
           <UserRound />
-          Manage account
+          {t("Manage account")}
           <ExternalLink className="ml-auto size-3.5 text-muted-foreground" />
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => void signOut()}>
           <LogOut />
-          Sign out
+          {t("Sign out")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

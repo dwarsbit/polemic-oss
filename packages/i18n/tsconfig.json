@@ -1,0 +1,9 @@
+{
+  "extends": "@scholarkit/tsconfig/react-vite.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": ["src", "test"]
+}

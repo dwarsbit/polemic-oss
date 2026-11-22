@@ -18,21 +18,22 @@ import { currentText, writeFileEdits } from "@/lib/project-texts";
 import { changeForNote, noteKey } from "@/lib/suggestion-notes";
 import { flushPendingSerialize } from "@/lib/visual/pending-serialize";
 import { useCommentsStore } from "@/store/comments";
+import { t } from "@scholarkit/i18n";
 
 function anchorLabel(target: Exclude<CommentTarget, { kind: "note" }>): string {
-  if (target.kind === "new" && target.suggestion) return "a suggestion's note";
+  if (target.kind === "new" && target.suggestion) return t("a suggestion's note");
   if (target.kind === "new" && target.replyTo) return "a comment";
   if (target.kind === "edit") {
     const comment = useCommentsStore
       .getState()
       .comments.find((entry) => entry.id === target.id);
     if (!comment) return "";
-    if (comment.anchor === null) return "whole file";
+    if (comment.anchor === null) return t("whole file");
     return comment.anchor.text.includes("\n")
       ? "selection"
       : `line ${comment.anchor.line}`;
   }
-  if (target.anchor === null) return "whole file";
+  if (target.anchor === null) return t("whole file");
   return target.anchor.text.includes("\n") ? "selection" : `line ${target.anchor.line}`;
 }
 
@@ -83,7 +84,7 @@ function CommentForm({
   return (
     <>
       <p className="text-xs text-muted-foreground">
-        Attached to: {anchorLabel(target)}
+        {t("Attached to: {anchorLabel}", { anchorLabel: anchorLabel(target) })}
       </p>
       <div className="flex flex-wrap gap-1">
         {COMMENT_CATEGORIES.map((entry) => (
@@ -107,7 +108,7 @@ function CommentForm({
         autoFocus
         rows={4}
         value={text}
-        placeholder="Write a comment…"
+        placeholder={t("Write a comment…")}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) void save();
@@ -121,14 +122,14 @@ function CommentForm({
               <Switch
                 checked={resolved}
                 onCheckedChange={setResolved}
-                title="Resolved"
+                title={t("Resolved")}
               />
-              Resolved
+              {t("Resolved")}
             </div>
             <Button
               variant="destructive"
               size="icon-sm"
-              title="Delete comment"
+              title={t("Delete comment")}
               onClick={() => {
                 void remove(target.id).finally(onClose);
               }}
@@ -138,10 +139,10 @@ function CommentForm({
           </>
         )}
         <Button variant="outline" onClick={onClose}>
-          Cancel
+          {t("Cancel")}
         </Button>
         <Button disabled={text.trim() === ""} onClick={() => void save()}>
-          Save
+          {t("Save")}
         </Button>
       </DialogFooter>
     </>
@@ -178,7 +179,7 @@ function NoteForm({
           : changeForNote(source, noteKey(target.author, target.note));
       const ref = found?.range ?? target.at;
       if (ref === null) {
-        setError("The suggestion is no longer there.");
+        setError(t("The suggestion is no longer there."));
         return;
       }
       const edits = setNote(source, ref, value);
@@ -199,13 +200,13 @@ function NoteForm({
   return (
     <>
       <p className="text-xs text-muted-foreground">
-        Stored in the suggestion itself, so it travels with the file.
+        {t("Stored in the suggestion itself, so it travels with the file.")}
       </p>
       <Textarea
         autoFocus
         rows={3}
         value={text}
-        placeholder="Write a note…"
+        placeholder={t("Write a note…")}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) void write(text);
@@ -217,17 +218,17 @@ function NoteForm({
           <Button
             variant="destructive"
             size="icon-sm"
-            title="Delete note"
+            title={t("Delete note")}
             onClick={() => void write(null)}
           >
             <Trash2 />
           </Button>
         )}
         <Button variant="outline" onClick={onClose}>
-          Cancel
+          {t("Cancel")}
         </Button>
         <Button disabled={noteText(text) === ""} onClick={() => void write(text)}>
-          Save
+          {t("Save")}
         </Button>
       </DialogFooter>
     </>
@@ -248,13 +249,13 @@ export function CommentDialog({
           <DialogTitle>
             {target?.kind === "note"
               ? target.note === null
-                ? "Note on suggestion"
-                : "Edit suggestion note"
+                ? t("Note on suggestion")
+                : t("Edit suggestion note")
               : target?.kind === "edit"
-                ? "Edit comment"
+                ? t("Edit comment")
                 : target?.suggestion || target?.replyTo
-                  ? "Reply"
-                  : "New comment"}
+                  ? t("Reply")
+                  : t("New comment")}
           </DialogTitle>
         </DialogHeader>
         {target !== null &&

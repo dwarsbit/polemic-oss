@@ -49,6 +49,7 @@ import { useLinkStore } from "@/store/link";
 import { hasConflictMarkers } from "@/lib/conflict-markers";
 import { features, isWeb } from "@/lib/target";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 const COLUMN_PANEL_IDS = ["navigator", "editor", "preview", "properties"];
 const ROW_PANEL_IDS = ["columns", "issues"];
@@ -125,22 +126,22 @@ export function EditorView() {
   // The server's snapshots: the only ones in the browser, and next to
   // this computer's for a project that syncs with the account.
   const onlineSnapshots = isWeb
-    ? "Snapshots"
+    ? t("Snapshots")
     : projectPath !== null && linkedDir === projectPath
-      ? "Online snapshots"
+      ? t("Online snapshots")
       : null;
   const rightTabs = [
     ...(features.versionControl
       ? [
           {
             id: "version-control" as const,
-            label: versionControl === "git" ? "Git" : "Snapshots",
+            label: versionControl === "git" ? t("Git") : t("Snapshots"),
             icon: versionControl === "git" ? GitBranch : Camera,
           },
         ]
       : []),
     ...(features.versionControl && versionControl === "git"
-      ? [{ id: "history" as const, label: "History", icon: History }]
+      ? [{ id: "history" as const, label: t("History"), icon: History }]
       : []),
     ...(onlineSnapshots
       ? [
@@ -151,12 +152,12 @@ export function EditorView() {
           },
         ]
       : []),
-    { id: "comments" as const, label: "Comments", icon: MessageSquare },
-    { id: "suggestions" as const, label: "Suggestions", icon: FileDiff },
+    { id: "comments" as const, label: t("Comments"), icon: MessageSquare },
+    { id: "suggestions" as const, label: t("Suggestions"), icon: FileDiff },
     ...(features.assistant
-      ? [{ id: "assistant" as const, label: "Assistant", icon: Sparkles }]
+      ? [{ id: "assistant" as const, label: t("Assistant"), icon: Sparkles }]
       : []),
-    { id: "properties" as const, label: "Properties", icon: Info },
+    { id: "properties" as const, label: t("Properties"), icon: Info },
   ];
 
   // Start with the properties column collapsed unless a layout was

@@ -37,6 +37,8 @@ import { UsageSummary } from "@/components/UsageSummary";
 import { useDialogsStore } from "@/store/dialogs";
 import { useProjectStore } from "@/store/project";
 import { features } from "@/lib/target";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 /** Journal and conference templates share one segment with a menu, so
  *  the picker keeps the general-purpose templates up front. */
@@ -218,7 +220,7 @@ export function ProjectsView() {
             ref={nameInput}
             autoFocus
             className="h-9"
-            placeholder="New project name"
+            placeholder={t("New project name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
@@ -234,14 +236,14 @@ export function ProjectsView() {
             }}
             disabled={busy}
           >
-            Create
+            {t("Create")}
           </Button>
         </div>
         {templates.length > 0 && (
           <div className="mt-3">
             <div
               role="radiogroup"
-              aria-label="Template"
+              aria-label={t("Template")}
               className="flex flex-wrap gap-0.5 rounded-md bg-muted p-0.5"
             >
               {templates
@@ -269,7 +271,7 @@ export function ProjectsView() {
                       title={selectedPublisher?.description}
                       className={templateSegment(selectedPublisher !== undefined)}
                     >
-                      {selectedPublisher?.name ?? "Publisher"}
+                      {selectedPublisher?.name ?? t("Publisher")}
                       <ChevronDown className="size-3 opacity-60" />
                     </button>
                   </DropdownMenuTrigger>
@@ -294,29 +296,33 @@ export function ProjectsView() {
             </div>
             {missingPackages.length > 0 && (
               <p className="mt-2 text-xs text-warning">
-                This template needs {missingPackages.join(", ")}, which your TeX
-                distribution lacks. With TeX Live, install them with{" "}
-                <code className="font-mono">
-                  tlmgr install {missingPackages.join(" ")}
-                </code>
-                . MiKTeX installs them on the first compile.
+                {rich(
+                  "This template needs {packages}, which your TeX distribution lacks. With TeX Live, install them with <0>{command}</0>. MiKTeX installs them on the first compile.",
+                  [(c) => <code className="font-mono">{c}</code>],
+                  {
+                    packages: missingPackages.join(", "),
+                    command: `tlmgr install ${missingPackages.join(" ")}`,
+                  },
+                )}
               </p>
             )}
           </div>
         )}
         {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
         <h2 className="mt-5 mb-1.5 text-2xs font-semibold tracking-wider text-muted-foreground uppercase">
-          {features.localFiles ? "Recent" : "Projects"}
+          {features.localFiles ? t("Recent") : t("Projects")}
         </h2>
         {settings === null ? (
           <p className="px-2 py-1.5 text-sm text-muted-foreground">
-            {loadFailed ? "Couldn't load your projects." : "Loading…"}
+            {loadFailed ? t("Couldn't load your projects.") : t("Loading…")}
           </p>
         ) : projects.length === 0 ? (
           <p className="px-2 py-1.5 text-sm text-muted-foreground">
             {features.localFiles
-              ? "No projects yet. Create one above or open a folder."
-              : "No projects yet. Name one above, pick a template and select Create, or upload a zip of a project you have. Projects you share from the desktop app show up here too."}
+              ? t("No projects yet. Create one above or open a folder.")
+              : t(
+                  "No projects yet. Name one above, pick a template and select Create, or upload a zip of a project you have. Projects you share from the desktop app show up here too.",
+                )}
           </p>
         ) : (
           <ul className="-mx-1 space-y-0.5">
@@ -357,7 +363,7 @@ export function ProjectsView() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      title={pinned ? "Unpin project" : "Pin project"}
+                      title={pinned ? t("Unpin project") : t("Pin project")}
                       onClick={() => {
                         void setPinnedProject(project.path, !pinned).then(refresh);
                       }}
@@ -367,7 +373,7 @@ export function ProjectsView() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      title="Rename project"
+                      title={t("Rename project")}
                       onClick={() => {
                         setNewName(project.name);
                         setAction({ kind: "rename", ...project });
@@ -380,7 +386,9 @@ export function ProjectsView() {
                       size="icon-sm"
                       className="hover:text-destructive"
                       title={
-                        features.localFiles ? "Move project to trash" : "Delete project"
+                        features.localFiles
+                          ? t("Move project to trash")
+                          : t("Delete project")
                       }
                       onClick={() => setAction({ kind: "delete", ...project })}
                     >
@@ -396,11 +404,11 @@ export function ProjectsView() {
           {features.localFiles ? (
             <>
               <Button variant="outline" onClick={() => void handleOpenFolder()}>
-                Open folder…
+                {t("Open folder…")}
               </Button>
               <Button
                 variant="outline"
-                title="Clone a Git repository into a new project"
+                title={t("Clone a Git repository into a new project")}
                 onClick={() => {
                   setError(null);
                   setCloneUrl("");
@@ -408,26 +416,30 @@ export function ProjectsView() {
                   setAction({ kind: "clone" });
                 }}
               >
-                Clone from Git…
+                {t("Clone from Git…")}
               </Button>
               <Button
                 variant="outline"
-                title="Open a project from your Polemic account, made in your browser or on another computer"
+                title={t(
+                  "Open a project from your Scholarkit account, made in your browser or on another computer",
+                )}
                 onClick={() =>
                   useDialogsStore.getState().setAccountProjects({ projectId: null })
                 }
               >
-                Open from your account…
+                {t("Open from your account…")}
               </Button>
             </>
           ) : (
             <Button
               variant="outline"
-              title="Make a project from the files in a zip, named as above or after the zip"
+              title={t(
+                "Make a project from the files in a zip, named as above or after the zip",
+              )}
               disabled={busy}
               onClick={() => void handleUploadZip()}
             >
-              Upload a zip…
+              {t("Upload a zip…")}
             </Button>
           )}
         </div>
@@ -445,10 +457,10 @@ export function ProjectsView() {
           <DialogHeader>
             <DialogTitle>
               {action.kind === "rename"
-                ? "Rename project"
+                ? t("Rename project")
                 : action.kind === "clone"
-                  ? "Clone repository"
-                  : "Delete project"}
+                  ? t("Clone repository")
+                  : t("Delete project")}
             </DialogTitle>
           </DialogHeader>
           {action.kind === "rename" ? (
@@ -463,13 +475,19 @@ export function ProjectsView() {
           ) : action.kind === "delete" ? (
             features.localFiles ? (
               <p className="text-sm">
-                Move <span className="font-medium">{action.name}</span> to the trash?
-                You can restore it from there until you empty the trash.
+                {rich(
+                  "Move <0>{name}</0> to the trash? You can restore it from there until you empty the trash.",
+                  [(c) => <span className="font-medium">{c}</span>],
+                  { name: action.name },
+                )}
               </p>
             ) : (
               <p className="text-sm">
-                Delete <span className="font-medium">{action.name}</span> with its
-                files, comments and review links? This can't be undone.
+                {rich(
+                  "Delete <0>{name}</0> with its files, comments and review links? This can't be undone.",
+                  [(c) => <span className="font-medium">{c}</span>],
+                  { name: action.name },
+                )}
               </p>
             )
           ) : action.kind === "clone" ? (
@@ -484,7 +502,7 @@ export function ProjectsView() {
                 }}
               />
               <Input
-                placeholder="Project name"
+                placeholder={t("Project name")}
                 value={effectiveCloneName}
                 onChange={(e) => setCloneName(e.target.value)}
                 onKeyDown={(e) => {
@@ -492,15 +510,16 @@ export function ProjectsView() {
                 }}
               />
               <p className="text-xs text-muted-foreground">
-                The repository is cloned into your projects folder. A private repository
-                needs a git account in Settings, or an SSH key.
+                {t(
+                  "The repository is cloned into your projects folder. A private repository needs a git account in Settings, or an SSH key.",
+                )}
               </p>
             </div>
           ) : null}
           {error && <p className="text-xs text-destructive">{error}</p>}
           <DialogFooter>
             <Button variant="outline" onClick={() => setAction({ kind: "none" })}>
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               variant={action.kind === "delete" ? "destructive" : "default"}
@@ -512,13 +531,13 @@ export function ProjectsView() {
             >
               {action.kind === "delete"
                 ? features.localFiles
-                  ? "Move to trash"
-                  : "Delete"
+                  ? t("Move to trash")
+                  : t("Delete")
                 : action.kind === "clone"
                   ? busy
-                    ? "Cloning…"
-                    : "Clone"
-                  : "Rename"}
+                    ? t("Cloning…")
+                    : t("Clone")
+                  : t("Rename")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -543,8 +562,8 @@ export function formatOpened(time: number, now = new Date()): string {
   const day = (d: Date) =>
     new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
   const days = Math.round((day(now) - day(date)) / 86_400_000);
-  if (days === 0) return "Today";
-  if (days === 1) return "Yesterday";
+  if (days === 0) return t("Today");
+  if (days === 1) return t("Yesterday");
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

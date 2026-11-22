@@ -26,6 +26,7 @@ import {
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 function statusLabel(status: SnapshotChange["status"]): string {
   switch (status) {
@@ -138,17 +139,19 @@ export function SnapshotDiffDialog({
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="flex h-[70vh] max-h-[85vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
         <DialogHeader className="px-6 pt-6 pb-3">
-          <DialogTitle>Snapshot changes</DialogTitle>
+          <DialogTitle>{t("Snapshot changes")}</DialogTitle>
           <p className="text-xs text-muted-foreground">
-            {new Date(snapshot.createdAtMillis).toLocaleString()} compared with the
-            current project (unsaved edits included).
+            {t(
+              "{toLocaleString} compared with the current project (unsaved edits included).",
+              { toLocaleString: new Date(snapshot.createdAtMillis).toLocaleString() },
+            )}
           </p>
         </DialogHeader>
         <div className="grid flex-1 min-h-0 grid-cols-[220px_1fr] px-6 pb-6">
           <ScrollArea className="min-h-0 border-r pr-2">
             {(changes ?? []).length === 0 && (
               <p className="py-2 text-xs text-muted-foreground">
-                {changes === undefined ? "Loading…" : "No differences."}
+                {changes === undefined ? t("Loading…") : t("No differences.")}
               </p>
             )}
             <ul>
@@ -185,7 +188,7 @@ export function SnapshotDiffDialog({
                     variant="ghost"
                     size="icon"
                     className="size-6"
-                    title="Restore this file from the snapshot"
+                    title={t("Restore this file from the snapshot")}
                     onClick={() => void restoreActiveFile()}
                   >
                     <RotateCcw className="size-3.5" />
@@ -196,7 +199,7 @@ export function SnapshotDiffDialog({
             <ScrollArea className="min-h-0 flex-1">
               {!active && (
                 <p className="py-2 text-xs text-muted-foreground">
-                  Select a file to see its diff.
+                  {t("Select a file to see its diff.")}
                 </p>
               )}
               <DiffRows rows={rows} />

@@ -11,6 +11,7 @@ import {
 } from "@/lib/graphics-refs";
 import { extractLabelPositions, extractRefPositions } from "@/lib/label-refs";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 /** Re-runs the hints without a document change, e.g. when the file
  *  tree changes and a missing graphic may now exist. */
@@ -55,7 +56,7 @@ function refLabelDiagnostics(view: EditorView): Diagnostic[] {
         from: ref.from,
         to: ref.to,
         severity: "warning",
-        message: `Undefined label "${ref.name}"`,
+        message: t('Undefined label "{name}"', { name: ref.name }),
         actions: [],
       });
     }
@@ -66,7 +67,7 @@ function refLabelDiagnostics(view: EditorView): Diagnostic[] {
         from: label.from,
         to: label.to,
         severity: "info",
-        message: `Label "${label.name}" is not referenced`,
+        message: t('Label "{name}" is not referenced', { name: label.name }),
         actions: [],
       });
     }
@@ -81,7 +82,7 @@ function refLabelDiagnostics(view: EditorView): Diagnostic[] {
           from: cite.from,
           to: cite.to,
           severity: "warning",
-          message: `No BibTeX entry with key "${cite.key}"`,
+          message: t('No BibTeX entry with key "{key}"', { key: cite.key }),
           actions: [],
         });
       }
@@ -105,7 +106,7 @@ function refLabelDiagnostics(view: EditorView): Diagnostic[] {
           from: ref.from,
           to: ref.to,
           severity: "warning",
-          message: `No project file matches "${ref.path}"`,
+          message: t('No project file matches "{path}"', { path: ref.path }),
           actions: [],
         });
       }

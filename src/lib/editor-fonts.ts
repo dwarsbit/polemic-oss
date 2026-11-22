@@ -1,3 +1,4 @@
+import { t } from "@scholarkit/i18n";
 /**
  * Editor font registry. Bundled fonts (imported in index.css) render
  * identically on every machine; "system" defers to the platform default.
@@ -12,27 +13,27 @@ export interface EditorFont {
 export const EDITOR_FONTS: EditorFont[] = [
   {
     id: "system",
-    label: "System mono",
+    label: t("System mono"),
     stack: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
   },
   {
     id: "jetbrains-mono",
-    label: "JetBrains Mono",
+    label: t("JetBrains Mono"),
     stack: `"JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace`,
   },
   {
     id: "fira-code",
-    label: "Fira Code",
+    label: t("Fira Code"),
     stack: `"Fira Code Variable", ui-monospace, SFMono-Regular, Menlo, monospace`,
   },
   {
     id: "source-code-pro",
-    label: "Source Code Pro",
+    label: t("Source Code Pro"),
     stack: `"Source Code Pro Variable", ui-monospace, SFMono-Regular, Menlo, monospace`,
   },
   {
     id: "ibm-plex-mono",
-    label: "IBM Plex Mono",
+    label: t("IBM Plex Mono"),
     stack: `"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace`,
   },
 ];

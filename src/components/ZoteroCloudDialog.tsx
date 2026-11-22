@@ -9,8 +9,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { isWeb } from "@/lib/target";
 import { zoteroWebValidateKey } from "@/lib/zotero";
 import { useSourcesStore, type SourceDef } from "@/store/sources";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Create or edit a Zotero cloud source: a label plus the user ID and
@@ -44,11 +46,15 @@ export function ZoteroCloudDialog({
     const result = await zoteroWebValidateKey(apiKey);
     setValidating(false);
     if (result === null) {
-      setError("The key could not be validated. Check it and your connection.");
+      setError(t("The key could not be validated. Check it and your connection."));
       return;
     }
     setUserId(result.userID);
-    setInfo(`Key valid${result.username.length > 0 ? ` for ${result.username}` : ""}.`);
+    setInfo(
+      result.username.length > 0
+        ? t("Key valid for {username}.", { username: result.username })
+        : t("Key valid."),
+    );
   }
 
   async function save() {
@@ -73,30 +79,43 @@ export function ZoteroCloudDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {source === null ? "Add Zotero cloud source" : "Edit Zotero cloud source"}
+            {source === null
+              ? t("Add Zotero cloud source")
+              : t("Edit Zotero cloud source")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            A Zotero cloud source searches your library at zotero.org. Create a key at
-            zotero.org/settings/keys with library read access, then paste it below. The
-            user ID is filled in automatically.
+            {t(
+              "A Zotero cloud source searches your library at zotero.org. Create a key at zotero.org/settings/keys with library read access, then paste it below. The user ID is filled in automatically.",
+            )}
           </p>
+          {isWeb && (
+            <p className="text-xs text-muted-foreground">
+              {t(
+                "The key is kept in this browser only. On another computer, add it again.",
+              )}
+            </p>
+          )}
           <div>
-            <label className="mb-1 block text-xs text-muted-foreground">Label</label>
+            <label className="mb-1 block text-xs text-muted-foreground">
+              {t("Label")}
+            </label>
             <Input
               className="h-7 rounded-md text-xs"
-              placeholder="e.g. Work library"
+              placeholder={t("e.g. Work library")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted-foreground">API key</label>
+            <label className="mb-1 block text-xs text-muted-foreground">
+              {t("API key")}
+            </label>
             <div className="flex gap-1.5">
               <Input
                 className="h-7 min-w-0 flex-1 rounded-md font-mono text-xs"
-                placeholder="e.g. 9xXxXxXxXxXxXxXxXxXxXxXxX"
+                placeholder={t("e.g. 9xXxXxXxXxXxXxXxXxXxXxXxX")}
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
@@ -107,15 +126,21 @@ export function ZoteroCloudDialog({
                 disabled={apiKey.trim().length === 0 || validating}
                 onClick={() => void validate()}
               >
-                {validating ? <Loader2 className="size-3 animate-spin" /> : "Validate"}
+                {validating ? (
+                  <Loader2 className="size-3 animate-spin" />
+                ) : (
+                  t("Validate")
+                )}
               </Button>
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted-foreground">User ID</label>
+            <label className="mb-1 block text-xs text-muted-foreground">
+              {t("User ID")}
+            </label>
             <Input
               className="h-7 rounded-md text-xs"
-              placeholder="Your Zotero user ID"
+              placeholder={t("Your Zotero user ID")}
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
             />
@@ -125,14 +150,14 @@ export function ZoteroCloudDialog({
         </div>
         <DialogFooter>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             size="sm"
             disabled={userId.trim().length === 0 || apiKey.trim().length === 0}
             onClick={() => void save()}
           >
-            Save
+            {t("Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

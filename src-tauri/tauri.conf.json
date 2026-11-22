@@ -34,11 +34,22 @@
       "desktop": {
         "schemes": ["polemic"]
       }
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDkyNkJFMTkyMTUxMkE5OUYKUldTZnFSSVZrdUZya21Yc3NadVpYNUtUSFNKYTFwY3dQZytCTng5eFJETGwxZWhYbXFzc2tadVQK",
+      "endpoints": [
+        "https://app.scholarkit.app/api/updates/polemic/{{target}}/{{arch}}/{{bundle_type}}/{{current_version}}",
+        "https://github.com/dwarsbit/polemic-oss/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

@@ -57,6 +57,7 @@ import {
 } from "@/web/server";
 import { loadSettings, updateSettings } from "@/web/settings";
 import { pickedFile } from "@/web/uploads";
+import { t } from "@scholarkit/i18n";
 
 const PATH_PREFIX = "/projects/";
 const SYNC_PATH = "/api/sync";
@@ -163,7 +164,7 @@ function notFound(): ServerError {
   return new ServerError(
     404,
     "not_found",
-    "This project doesn't exist or isn't shared with you.",
+    t("This project doesn't exist or isn't shared with you."),
   );
 }
 
@@ -182,7 +183,9 @@ function connect(id: string, doc: Y.Doc): Promise<HocuspocusProvider> {
     const timer = setTimeout(() => {
       provider.destroy();
       reject(
-        new Error("Could not load the project. Check your connection and try again."),
+        new Error(
+          t("Could not load the project. Check your connection and try again."),
+        ),
       );
     }, 30_000);
     const provider = new HocuspocusProvider({
@@ -258,17 +261,22 @@ async function open(path: string): Promise<OpenProject> {
 /** The open project for a command's `projectDir`. */
 export function project(args: Args): OpenProject {
   const dir = String(args.projectDir ?? args.path ?? "");
-  if (!current || current.path !== dir) throw "This project isn't open.";
+  if (!current || current.path !== dir) throw t("This project isn't open.");
   return current;
 }
 
-const READ_ONLY_DESKTOP =
-  "This project is published from the desktop app. Change it there.";
+const READ_ONLY_DESKTOP = t(
+  "This project is published from the desktop app. Change it there.",
+);
 
 function storageFull(info: ServerProject): string {
   return info.role === "owner"
-    ? "Your storage is full, so this project can't be changed. Delete files or other projects to make room, or change your plan on your account page."
-    : `${info.owner.name}'s storage is full, so this project can't be changed for now.`;
+    ? t(
+        "Your storage is full, so this project can't be changed. Delete files or other projects to make room, or change your plan on your account page.",
+      )
+    : t("{name}'s storage is full, so this project can't be changed for now.", {
+        name: info.owner.name,
+      });
 }
 
 function requireWritable(open: OpenProject) {
@@ -276,7 +284,7 @@ function requireWritable(open: OpenProject) {
   if (open.info.writable) throw storageFull(open.info);
   throw open.info.source === "desktop" && open.info.role === "owner"
     ? READ_ONLY_DESKTOP
-    : "You can only read this project. Ask its owner to make you an editor.";
+    : t("You can only read this project. Ask its owner to make you an editor.");
 }
 
 /** The open project leaves the tab (back to the project list). */
@@ -369,8 +377,9 @@ function fileTree(open: OpenProject): FileEntry[] {
 function readText(open: OpenProject, path: string): string {
   const text = textAt(open.doc, path);
   if (text) return text.toString();
-  if (projectFiles(open.doc).assets.has(path)) throw `${path} isn't a text file.`;
-  throw `${path} doesn't exist.`;
+  if (projectFiles(open.doc).assets.has(path))
+    throw t("{path} isn't a text file.", { path });
+  throw t("{path} doesn't exist.", { path });
 }
 
 function exists(open: OpenProject, path: string): boolean {
@@ -432,10 +441,17 @@ function uploadError(open: OpenProject, e: unknown, path: string): unknown {
   if (!(e instanceof ServerError)) return e;
   if (e.code === "quota_exceeded") {
     return open.info.role === "owner"
-      ? `${path} doesn't fit in your storage. Delete files or other projects to make room, or change your plan on your account page.`
-      : `${path} doesn't fit in ${open.info.owner.name}'s storage.`;
+      ? t(
+          "{path} doesn't fit in your storage. Delete files or other projects to make room, or change your plan on your account page.",
+          { path },
+        )
+      : t("{path} doesn't fit in {name}'s storage.", {
+          path,
+          name: open.info.owner.name,
+        });
   }
-  if (e.code === "asset_too_large") return `${path} is larger than ${MAX_FILE_MB} MB.`;
+  if (e.code === "asset_too_large")
+    return t("{path} is larger than {MAX_FILE_MB} MB.", { path, MAX_FILE_MB });
   return e.message;
 }
 
@@ -449,7 +465,8 @@ async function addFiles(
   files: { path: string; bytes: Uint8Array }[],
 ): Promise<FolderEntry[]> {
   const big = files.find((file) => file.bytes.length > MAX_FILE_BYTES);
-  if (big) throw `${big.path} is larger than ${MAX_FILE_MB} MB.`;
+  if (big)
+    throw t("{path} is larger than {MAX_FILE_MB} MB.", { path: big.path, MAX_FILE_MB });
   const entries = await readSnapshot(files);
   const bytes = new Map(files.map((file) => [normalizePath(file.path), file.bytes]));
   for (const entry of entries) {
@@ -499,7 +516,7 @@ async function importAssets(open: OpenProject, sources: string[]): Promise<strin
         result.push(inside);
         continue;
       }
-      throw `Can't read ${source}.`;
+      throw t("Can't read {source}.", { source });
     }
     const path = freePath(open, `assets/${file.name}`, taken);
     files.push({ path, bytes: new Uint8Array(await file.arrayBuffer()) });
@@ -518,7 +535,7 @@ export function unzipProject(zip: Uint8Array): { path: string; bytes: Uint8Array
   try {
     entries = unzipSync(zip);
   } catch {
-    throw "This file isn't a zip file, or it is damaged.";
+    throw t("This file isn't a zip file, or it is damaged.");
   }
   const files = Object.entries(entries)
     .filter(([path]) => !path.endsWith("/") && !path.split("/").includes("__MACOSX"))
@@ -533,7 +550,7 @@ export function unzipProject(zip: Uint8Array): { path: string; bytes: Uint8Array
 /** Creates a project from a zip's files; nothing is left behind when it fails. */
 export async function importProjectZip(name: string, zip: File): Promise<ProjectInfo> {
   const files = unzipProject(new Uint8Array(await zip.arrayBuffer()));
-  if (files.length === 0) throw "This zip file is empty.";
+  if (files.length === 0) throw t("This zip file is empty.");
   const created = await request<ServerProject>("/api/projects", {
     method: "POST",
     json: { name, source: "online" },
@@ -553,7 +570,7 @@ export async function importProjectZip(name: string, zip: File): Promise<Project
 
 /** The open project as a zip: every file, the hidden ones included. */
 export async function projectZip(): Promise<{ name: string; bytes: Uint8Array }> {
-  if (!current) throw "This project isn't open.";
+  if (!current) throw t("This project isn't open.");
   const open = current;
   const { texts, assets } = projectFiles(open.doc);
   const files: Zippable = {};
@@ -645,35 +662,47 @@ function compileError(
 function compileErrorFor(e: ServerError): CompileError {
   const seconds = Math.min(3600, Math.max(1, e.retryAfter ?? DEFAULT_RETRY_AFTER));
   const wait = (text: string) =>
-    compileError("rateLimited", `${text} Try again in ${seconds} s.`, seconds);
+    compileError(
+      "rateLimited",
+      t("{text} Try again in {seconds} s.", { text, seconds }),
+      seconds,
+    );
   if (e.status === 402)
-    return compileError("planRequired", "Compiling needs a paid plan on this server.");
+    return compileError(
+      "planRequired",
+      t("Compiling needs a paid plan on this server."),
+    );
   if (e.status === 404 && e.code === "compile_disabled") {
-    return compileError("disabled", "This Polemic server has no cloud compile.");
+    return compileError("disabled", t("This Scholarkit server has no cloud compile."));
   }
   if (e.status === 409 && e.code === "superseded") {
     return compileError(
       "superseded",
-      "A newer compile from your account (another tab or computer) replaced this one.",
+      t(
+        "A newer compile from your account (another tab or computer) replaced this one.",
+      ),
     );
   }
   if (e.status === 409 && e.code === "assets_missing") {
     const missing = Array.isArray(e.body.missing) ? (e.body.missing as string[]) : [];
     return compileError(
       "failed",
-      `Some files of this project were never uploaded: ${missing.join(", ")}. Publish it again from the desktop app.`,
+      t(
+        "Some files of this project were never uploaded: {files}. Publish it again from the desktop app.",
+        { files: missing.join(", ") },
+      ),
     );
   }
   if (e.status === 413) return compileError("tooLarge", e.message);
   if (e.status === 429 && e.code === "compile_limit") {
     return compileError("limitReached", e.message, seconds);
   }
-  if (e.status === 429) return wait("Too many compiles.");
-  if (e.status === 503) return wait("Every compile slot on the server is busy.");
+  if (e.status === 429) return wait(t("Too many compiles."));
+  if (e.status === 503) return wait(t("Every compile slot on the server is busy."));
   if (e.status >= 500) {
     return compileError(
       "unavailable",
-      "Compiling is unavailable right now. Try again later.",
+      t("Compiling is unavailable right now. Try again later."),
     );
   }
   if (e.status === 0) return compileError("unavailable", e.message);
@@ -706,7 +735,7 @@ async function compile(open: OpenProject, main: string): Promise<CompileOutcome>
   compileController?.abort();
   const controller = new AbortController();
   compileController = controller;
-  const cancelled = () => compileError("cancelled", "The compile was stopped.");
+  const cancelled = () => compileError("cancelled", t("The compile was stopped."));
   const read = (path: string) => textAt(open.doc, path)?.toString() ?? null;
   const config = readJson<ProjectConfig>(open, ".polemic/project.json", {
     engine: null,
@@ -717,7 +746,9 @@ async function compile(open: OpenProject, main: string): Promise<CompileOutcome>
       open,
       compileError(
         "unavailable",
-        "Your latest edits haven't reached Polemic yet. Check your connection and compile again.",
+        t(
+          "Your latest edits haven't reached Polemic yet. Check your connection and compile again.",
+        ),
       ),
     );
     if (controller.signal.aborted) throw cancelled();
@@ -735,7 +766,10 @@ async function compile(open: OpenProject, main: string): Promise<CompileOutcome>
           if (e instanceof ServerError) {
             throw compileError(
               "failed",
-              `Could not download the compile's ${output.kind} (${e.status}). Compile again.`,
+              t("Could not download the compile's {kind} ({status}). Compile again.", {
+                kind: output.kind,
+                status: e.status,
+              }),
             );
           }
           throw e;
@@ -770,9 +804,12 @@ async function compile(open: OpenProject, main: string): Promise<CompileOutcome>
         severity: "error",
         file: null,
         line: null,
-        message: `The compile was stopped after ${SERVER_COMPILE_MINUTES} minutes on the Polemic server.`,
+        message: t(
+          "The compile was stopped after {SERVER_COMPILE_MINUTES} minutes on the Scholarkit server.",
+          { SERVER_COMPILE_MINUTES },
+        ),
         detail: [],
-        hint: "The document may loop forever; check recent macro changes.",
+        hint: t("The document may loop forever; check recent macro changes."),
       });
     }
     return {
@@ -798,11 +835,14 @@ function texFiles(open: OpenProject): string[] {
 
 /** What the start screen shows under a project's name. */
 function detailOf(project: ServerProject): string {
-  const whose = project.role === "owner" ? "Yours" : `Shared by ${project.owner.name}`;
+  const whose =
+    project.role === "owner"
+      ? t("Yours")
+      : t("Shared by {name}", { name: project.owner.name });
   if (project.writable) return whose;
   return project.source === "desktop" && project.role === "owner"
-    ? `${whose}, read-only: published from the desktop app`
-    : `${whose}, read-only`;
+    ? t("{whose}, read-only: published from the desktop app", { whose })
+    : t("{whose}, read-only", { whose });
 }
 
 async function serverProjects(): Promise<RecentProject[]> {
@@ -848,7 +888,7 @@ export async function requireAccount(): Promise<void> {
     found = await askAccount();
   } catch (e) {
     if (e instanceof ServerError && e.status >= 500) {
-      throw "Polemic is unavailable right now. Reload the page to try again.";
+      throw t("Polemic is unavailable right now. Reload the page to try again.");
     }
     throw errorText(e);
   }
@@ -929,7 +969,7 @@ export const projectCommands: Record<string, (args: Args) => unknown> = {
     const open = project(args);
     requireWritable(open);
     const path = cleanPath(args.path);
-    if (exists(open, path)) throw `${path} already exists.`;
+    if (exists(open, path)) throw t("{path} already exists.", { path });
     if (args.isDir) open.folders.add(path);
     else applyFileChange(open.doc, { path, kind: "text", text: "" });
   },
@@ -940,7 +980,7 @@ export const projectCommands: Record<string, (args: Args) => unknown> = {
     const from = cleanPath(args.path);
     const to = cleanPath(args.newPath);
     if (from === to) return;
-    if (exists(open, to)) throw `${to} already exists.`;
+    if (exists(open, to)) throw t("{to} already exists.", { to });
     applyRename(open.doc, from, to);
     for (const folder of [...open.folders]) {
       if (folder === from || folder.startsWith(from + "/")) {
@@ -971,7 +1011,7 @@ export const projectCommands: Record<string, (args: Args) => unknown> = {
     const text = textAt(open.doc, path);
     if (text) return encoder.encode(text.toString());
     const ref = projectFiles(open.doc).assets.get(path);
-    if (!ref) throw `${path} doesn't exist.`;
+    if (!ref) throw t("{path} doesn't exist.", { path });
     let bytes = open.assets.get(ref.hash);
     if (!bytes) {
       bytes = await fetchBytes(`/api/projects/${open.id}/assets/${ref.hash}`);
@@ -1044,22 +1084,22 @@ export const projectCommands: Record<string, (args: Args) => unknown> = {
 
   get_pdf: (args) => {
     const open = project(args);
-    if (!open.pdf) throw "No PDF yet. Compile the project first.";
+    if (!open.pdf) throw t("No PDF yet. Compile the project first.");
     return open.pdf;
   },
 
   synctex_forward: (args) => {
     const open = project(args);
-    if (!open.synctex) throw "Compile the project first.";
+    if (!open.synctex) throw t("Compile the project first.");
     const file = cleanPath(args.input ?? args.mainTex);
     const hit = forward(open.synctex, texFiles(open), file, Number(args.line));
-    if (!hit) throw "This line isn't in the PDF.";
+    if (!hit) throw t("This line isn't in the PDF.");
     return hit;
   },
 
   synctex_backward: (args) => {
     const open = project(args);
-    if (!open.synctex) throw "Compile the project first.";
+    if (!open.synctex) throw t("Compile the project first.");
     const hit = sourceAt(
       open.synctex,
       texFiles(open),
@@ -1067,7 +1107,7 @@ export const projectCommands: Record<string, (args: Args) => unknown> = {
       Number(args.x),
       Number(args.y),
     );
-    if (!hit) throw "Nothing in the project matches this place in the PDF.";
+    if (!hit) throw t("Nothing in the project matches this place in the PDF.");
     return hit;
   },
 };

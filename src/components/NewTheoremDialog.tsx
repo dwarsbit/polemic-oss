@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { t } from "@scholarkit/i18n";
 
 /**
  * The shared "New theorem environment" dialog: both faces declare
@@ -45,11 +46,11 @@ export function NewTheoremDialog({
   function commit() {
     const name = env.trim();
     if (!/^[a-zA-Z]+$/.test(name)) {
-      setError("The environment name may only use letters.");
+      setError(t("The environment name may only use letters."));
       return;
     }
     if (existingEnvs.includes(name)) {
-      setError(`"${name}" is already declared.`);
+      setError(t('"{name}" is already declared.', { name }));
       return;
     }
     const failure = onCommit(name, display, insertInstance);
@@ -70,15 +71,15 @@ export function NewTheoremDialog({
     >
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>New theorem environment</DialogTitle>
+          <DialogTitle>{t("New theorem environment")}</DialogTitle>
           <DialogDescription>
-            Declares \newtheorem in the preamble; amsthm loads when missing.
+            {t("Declares \\newtheorem in the preamble; amsthm loads when missing.")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3">
           <div className="grid gap-1.5">
             <label htmlFor="theorem-env" className="text-xs text-muted-foreground">
-              Environment name
+              {t("Environment name")}
             </label>
             <Input
               id="theorem-env"
@@ -96,12 +97,12 @@ export function NewTheoremDialog({
           </div>
           <div className="grid gap-1.5">
             <label htmlFor="theorem-name" className="text-xs text-muted-foreground">
-              Display name
+              {t("Display name")}
             </label>
             <Input
               id="theorem-name"
               value={display}
-              placeholder="Exercise (default: capitalized name)"
+              placeholder={t("Exercise (default: capitalized name)")}
               onChange={(e) => {
                 setDisplay(e.target.value);
                 setError(null);
@@ -118,17 +119,17 @@ export function NewTheoremDialog({
               onCheckedChange={setInsertInstance}
             />
             <label htmlFor="theorem-instance" className="text-xs text-muted-foreground">
-              Insert an instance right away
+              {t("Insert an instance right away")}
             </label>
           </div>
           {error !== null && <p className="text-xs text-destructive">{error}</p>}
         </div>
         <DialogFooter>
           <Button variant="outline" size="sm" onClick={close}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button size="sm" onClick={commit}>
-            Add
+            {t("Add")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -29,12 +29,13 @@ import { isWeb } from "@/lib/target";
 import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 /** "Show in Finder" and its counterparts on the other platforms. */
 const REVEAL_LABEL = isMac
-  ? "Show in Finder"
+  ? t("Show in Finder")
   : isWindows
-    ? "Show in Explorer"
-    : "Show in file manager";
+    ? t("Show in Explorer")
+    : t("Show in file manager");
 
 /**
  * The persistent window header: the project menu (rename, reveal,
@@ -133,7 +134,7 @@ export function TopBar() {
                     variant="ghost"
                     size="sm"
                     className="max-w-80 gap-1.5 px-2"
-                    title="Project"
+                    title={t("Project")}
                   >
                     <FolderOpen className="size-3.5 text-muted-foreground" />
                     <span className="truncate">{project?.name ?? ""}</span>
@@ -157,7 +158,7 @@ export function TopBar() {
                     }}
                   >
                     <Pencil />
-                    Rename project…
+                    {t("Rename project…")}
                   </DropdownMenuItem>
                   {isTauri() && (
                     <DropdownMenuItem onSelect={revealProject}>
@@ -167,7 +168,7 @@ export function TopBar() {
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onSelect={switchProject}>
-                    Close project
+                    {t("Close project")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -195,7 +196,11 @@ export function TopBar() {
             size="icon-sm"
             aria-pressed={previewVisible}
             onClick={togglePreview}
-            title={`${previewVisible ? "Hide" : "Show"} PDF preview (${modKey}Shift+P)`}
+            title={
+              previewVisible
+                ? t("Hide PDF preview ({modKey}Shift+P)", { modKey })
+                : t("Show PDF preview ({modKey}Shift+P)", { modKey })
+            }
           >
             <Eye className={previewVisible ? undefined : "text-muted-foreground"} />
           </Button>
@@ -208,7 +213,11 @@ export function TopBar() {
               className="relative"
               aria-pressed={autoCompile}
               onClick={toggleAutoCompile}
-              title={`Auto-compile on save (${autoCompile ? "on" : "off"})`}
+              title={
+                autoCompile
+                  ? t("Auto-compile on save (on)")
+                  : t("Auto-compile on save (off)")
+              }
             >
               <Zap
                 className={
@@ -228,12 +237,12 @@ export function TopBar() {
             <Button
               variant="outline"
               size="sm"
-              title={`Compile (${modKey}Shift+R)`}
+              title={t("Compile ({modKey}Shift+R)", { modKey })}
               onClick={() => void compileNow()}
               disabled={status === "compiling"}
             >
               {status === "compiling" ? <Loader2 className="animate-spin" /> : <Play />}
-              Compile
+              {t("Compile")}
             </Button>
           </ButtonGroup>
         )}

@@ -85,7 +85,7 @@ impl CompileError {
     pub fn signed_out() -> Self {
         Self::new(
             CompileErrorKind::SignedOut,
-            "Sign in to your Polemic account to compile with Polemic.",
+            "Sign in to your Scholarkit account to compile with Polemic.",
         )
     }
 }
@@ -342,7 +342,7 @@ fn error_for(status: u16, retry_after: Option<&str>, body: &ErrorBody) -> Compil
             PlanRequired,
             "Compiling with Polemic needs a paid plan on this server.",
         ),
-        (404, _) => CompileError::new(Disabled, "This Polemic server has no cloud compile."),
+        (404, _) => CompileError::new(Disabled, "This Scholarkit server has no cloud compile."),
         (409, "superseded") => CompileError::new(
             Superseded,
             "A newer compile from your account (another window or computer) replaced this one.",
@@ -367,7 +367,7 @@ fn error_for(status: u16, retry_after: Option<&str>, body: &ErrorBody) -> Compil
             "Compiling with Polemic is unavailable right now. Try again later.",
         ),
         _ if !body.message.is_empty() => CompileError::new(Failed, body.message.clone()),
-        _ => CompileError::new(Failed, format!("The Polemic server answered {status}.")),
+        _ => CompileError::new(Failed, format!("The Scholarkit server answered {status}.")),
     }
 }
 
@@ -1207,7 +1207,7 @@ mod tests {
         assert_eq!(probe("500 Internal Server Error", "{}"), Unknown);
     }
 
-    /// Against a running Polemic server with cloud compile (apps/api with
+    /// Against a running Scholarkit server with cloud compile (apps/api with
     /// BILLING=off, apps/compile) and a desktop token.
     ///
     /// POLEMIC_E2E_SERVER=http://localhost:4000 POLEMIC_E2E_TOKEN=… cargo test e2e_cloud -- --ignored

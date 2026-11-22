@@ -2793,7 +2793,7 @@
     "file": "src/components/HelpDialogs.tsx",
     "line": 98,
     "kind": "button",
-    "text": "github.com/dwarsbit/polemic"
+    "text": "github.com/dwarsbit/polemic-oss"
   },
   {
     "file": "src/components/HistoryPanel.tsx",

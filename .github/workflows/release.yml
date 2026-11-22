@@ -26,6 +26,7 @@ jobs:
       contents: write
     outputs:
       release-id: ${{ steps.release.outputs.id }}
+      notes: ${{ steps.notes.outputs.notes }}
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ github.ref_name }}
@@ -44,6 +45,37 @@ jobs:
 
       - uses: actions/checkout@v7
 
+      # Installed apps only take an update signed with the key whose public half is in
+      # tauri.conf.json. See packages/updates/README.md in Scholarkit.
+      - name: Check the updater key
+        env:
+          HAS_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY != '' }}
+        run: |
+          if grep -q UPDATER_PUBLIC_KEY_NOT_SET src-tauri/tauri.conf.json; then
+            echo "::error::src-tauri/tauri.conf.json has no updater public key yet (plugins.updater.pubkey)."
+            exit 1
+          fi
+          if [ "$HAS_KEY" != true ]; then
+            echo "::error::The TAURI_SIGNING_PRIVATE_KEY secret is missing, so the update files can't be signed."
+            exit 1
+          fi
+
+      # The release notes are the version's section of the changelog. The apps show them in
+      # What's new, from latest.json.
+      - name: Read the release notes
+        id: notes
+        run: |
+          awk -v v="${TAG#v}" '
+            $0 ~ "^## v?" v "( |$)" { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          {
+            echo "notes<<END_OF_NOTES"
+            cat notes.md
+            echo "END_OF_NOTES"
+          } >> "$GITHUB_OUTPUT"
+
       # A re-run finds the draft of its first run.
       - name: Create the draft GitHub Release
         id: release
@@ -51,12 +83,6 @@ jobs:
           id=$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
             --jq ".[] | select(.tag_name == \"$TAG\" and .draft) | .id" | head -n 1)
           if [ -z "$id" ]; then
-            # The release notes are the version's section of the changelog.
-            awk -v v="${TAG#v}" '
-              $0 ~ "^## v?" v "( |$)" { found = 1; next }
-              found && /^## / { exit }
-              found { print }
-            ' CHANGELOG.md > notes.md
             id=$(gh api "repos/$GITHUB_REPOSITORY/releases" \
               -f tag_name="$TAG" -f name="Polemic $TAG" \
               -F body=@notes.md -F draft=true --jq .id)
@@ -149,11 +175,18 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
+      # Signs the update files with the updater key and adds them, with latest.json, to the
+      # release. latest.json lists each platform's update and its signature; the apps get it
+      # from the Scholarkit server, which reads it here.
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           releaseId: ${{ needs.prepare.outputs.release-id }}
+          releaseBody: ${{ needs.prepare.outputs.notes }}
+          includeUpdaterJson: true
           args: ${{ matrix.args }}
 
   # The release stays a draft while the builds upload to it, so nobody

@@ -13,6 +13,7 @@ import {
 } from "@/lib/word-count";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 const WORDS_PER_MINUTE = 200;
 
@@ -207,46 +208,52 @@ export function PropertiesPanel() {
 
   return (
     <div className="flex h-full flex-col">
-      <SectionHeader label="Properties" />
+      <SectionHeader label={t("Properties")} />
       <div className="flex-1 overflow-y-auto p-1.5">
         {activeFile === null ? (
-          <p className="px-2 text-xs text-muted-foreground">No file open.</p>
+          <p className="px-2 text-xs text-muted-foreground">{t("No file open.")}</p>
         ) : (
           <>
             <p className="mt-2 px-2 pb-1 truncate text-xs text-muted-foreground">
               {activeFile}
             </p>
-            <StatRow label="Words" value={stats.words.toLocaleString()} />
-            <SubRow label="Text" value={stats.counts.text} />
-            <SubRow label="Headings" value={stats.counts.header} />
-            <SubRow label="Captions & footnotes" value={stats.counts.other} />
+            <StatRow label={t("Words")} value={stats.words.toLocaleString()} />
+            <SubRow label={t("Text")} value={stats.counts.text} />
+            <SubRow label={t("Headings")} value={stats.counts.header} />
+            <SubRow label={t("Captions & footnotes")} value={stats.counts.other} />
             <SubRow
-              label="Math (inline · display)"
+              label={t("Math (inline · display)")}
               value={`${stats.counts.inlineMath} · ${stats.counts.displayMath}`}
             />
-            <StatRow label="Characters" value={stats.characters.toLocaleString()} />
             <StatRow
-              label="Characters (no spaces)"
+              label={t("Characters")}
+              value={stats.characters.toLocaleString()}
+            />
+            <StatRow
+              label={t("Characters (no spaces)")}
               value={stats.charactersNoSpaces.toLocaleString()}
             />
-            <StatRow label="Lines" value={stats.lines.toLocaleString()} />
-            <StatRow label="Reading time" value={readingTime(stats.words)} />
+            <StatRow label={t("Lines")} value={stats.lines.toLocaleString()} />
+            <StatRow label={t("Reading time")} value={readingTime(stats.words)} />
             {doc !== null && doc.files > 0 && (
               <>
                 <p className="mt-4 px-2 pb-1 text-xs font-medium text-muted-foreground">
-                  Document
+                  {t("Document")}
                   {doc.files > 1 ? ` · ${doc.files} files` : ""}
                 </p>
-                <StatRow label="Words" value={totalWords(doc.total).toLocaleString()} />
                 <StatRow
-                  label="Reading time"
+                  label={t("Words")}
+                  value={totalWords(doc.total).toLocaleString()}
+                />
+                <StatRow
+                  label={t("Reading time")}
                   value={readingTime(totalWords(doc.total))}
                 />
                 {sectionRows.length > 0 && (
                   <div className="mt-1">
                     {totalWords(doc.untitled) > 0 && (
                       <SectionRow
-                        title="Before the first heading"
+                        title={t("Before the first heading")}
                         words={totalWords(doc.untitled)}
                         indent={0}
                         muted
@@ -266,9 +273,9 @@ export function PropertiesPanel() {
               </>
             )}
             <p className="mt-2 px-2 text-2xs text-muted-foreground">
-              Counted like texcount: words in the document body (text, headings,
-              captions, footnotes); commands, math, comments, and the bibliography are
-              excluded. Section counts include their subsections.
+              {t(
+                "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.",
+              )}
             </p>
           </>
         )}

@@ -19,11 +19,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
+import { ProjectBibDialog } from "@/components/ProjectBibDialog";
 import { ZoteroCloudDialog } from "@/components/ZoteroCloudDialog";
 import { parseBibEntries } from "@/lib/bib-entries";
+import { features } from "@/lib/target";
 import { zoteroLocalStatus, zoteroWebValidateKey } from "@/lib/zotero";
-import { sourceName, useSourcesStore, type SourceDef } from "@/store/sources";
+import {
+  projectBibPath,
+  sourceName,
+  useSourcesStore,
+  type SourceDef,
+} from "@/store/sources";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 /** A Zotero connection's state: pulsing while it initializes, gray
  *  while the source is disabled. */
@@ -56,33 +65,52 @@ function Dot({ state }: { state: ZoteroStatus }) {
 
 const KIND_ICONS = { bib: BookOpen, "zotero-app": Boxes, "zotero-cloud": Cloud };
 
+/** Where a bib source reads from, in words. */
+function bibWhere(path: string | null, projectNames: Record<string, string>): string {
+  if (path === null || path.length === 0) return t("No path set");
+  const inProject = projectBibPath(path);
+  if (inProject !== null) {
+    const name = projectNames[inProject.project];
+    if (name === undefined)
+      return t("This project was deleted or is no longer shared with you");
+    return inProject.file === null
+      ? t("Every .bib file in the project “{name}”", { name })
+      : t("In the project “{name}”", { name });
+  }
+  return path.endsWith(".bib") ? path : t("The folder {path}", { path });
+}
+
+/** A file of a bib source as the list shows it: in the browser, its
+ *  path inside the project. */
+function fileLabel(file: string): string {
+  const inProject = projectBibPath(file);
+  return inProject?.file ?? file;
+}
+
 function sourceSubtitle(
   source: SourceDef,
   entryCount: number | null,
   status: ZoteroStatus,
+  projectNames: Record<string, string>,
 ): string {
   if (source.kind === "bib") {
-    const where =
-      source.path === null || source.path.length === 0
-        ? "No path set"
-        : source.path.endsWith(".bib")
-          ? source.path
-          : `The folder ${source.path}`;
+    const where = bibWhere(source.path, projectNames);
     return entryCount === null ? where : `${where} · ${entryCount} entries`;
   }
   // A disabled source is not searched, so its connection is moot.
-  if (!source.enabled) return "Disabled";
+  if (!source.enabled) return t("Disabled");
   if (source.kind === "zotero-app") {
-    if (status === "checking") return "Checking…";
-    if (status === "ok") return "Connected";
-    return "Not detected. Enable “Allow other applications…” in Zotero's settings.";
+    if (status === "checking") return t("Checking…");
+    if (status === "ok") return t("Connected");
+    return t("Not detected. Enable “Allow other applications…” in Zotero's settings.");
   }
   const configured =
     (source.userId ?? "").length > 0 && (source.apiKey ?? "").length > 0;
-  if (!configured) return "Not connected";
-  if (status === "checking") return `Checking · User ${source.userId}`;
-  if (status === "ok") return `Connected · User ${source.userId}`;
-  return "Key rejected. Check the API key.";
+  if (!configured) return t("Not connected");
+  if (status === "checking")
+    return t("Checking · User {userId}", { userId: source.userId });
+  if (status === "ok") return t("Connected · User {userId}", { userId: source.userId });
+  return t("Key rejected. Check the API key.");
 }
 
 /** Probe a Zotero connection: app server reachability, or key
@@ -108,6 +136,7 @@ export function SourcesSettingsCard() {
   const sources = useSourcesStore((s) => s.sources);
   const sourceFiles = useSourcesStore((s) => s.sourceFiles);
   const bibTexts = useSourcesStore((s) => s.bibTexts);
+  const projectNames = useSourcesStore((s) => s.projectNames);
   const error = useSourcesStore((s) => s.error);
   const loading = useSourcesStore((s) => s.loading);
   const addSource = useSourcesStore((s) => s.addSource);
@@ -122,6 +151,7 @@ export function SourcesSettingsCard() {
     open: boolean;
     source: SourceDef | null;
   }>({ open: false, source: null });
+  const [projectDialog, setProjectDialog] = useState(false);
 
   /** Probe one Zotero connection; the dot pulses while it runs. */
   const probeSource = useCallback(async (source: SourceDef) => {
@@ -180,10 +210,11 @@ export function SourcesSettingsCard() {
 
   return (
     <div>
-      <p className="mb-1.5 font-medium">Sources</p>
+      <p className="mb-1.5 font-medium">{t("Sources")}</p>
       <p className="mb-2 text-xs text-muted-foreground">
-        Where "Add from Sources…" searches. Entries are copied into each project's
-        bibliography as you cite them.
+        {t(
+          'Where "Add from Sources…" searches. Entries are copied into each project\'s bibliography as you cite them.',
+        )}
       </p>
       {error !== null ? (
         <p className="py-2 text-xs text-destructive" title={error}>
@@ -218,10 +249,10 @@ export function SourcesSettingsCard() {
                   <div className="min-w-0 flex-1">
                     <p className="flex items-center gap-1.5 text-sm font-medium">
                       {isZotero && <Dot state={status} />}
-                      {sourceName(source)}
+                      {sourceName(source, projectNames)}
                     </p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {sourceSubtitle(source, entryCount, status)}
+                      {sourceSubtitle(source, entryCount, status, projectNames)}
                     </p>
                   </div>
                   {isZotero && (
@@ -231,8 +262,8 @@ export function SourcesSettingsCard() {
                       className="shrink-0"
                       title={
                         source.enabled
-                          ? "Recheck the connection"
-                          : "Enable the source to recheck the connection"
+                          ? t("Recheck the connection")
+                          : t("Enable the source to recheck the connection")
                       }
                       disabled={!source.enabled || status === "checking"}
                       onClick={() => void probeSource(source)}
@@ -250,7 +281,7 @@ export function SourcesSettingsCard() {
                       variant="ghost"
                       size="icon-sm"
                       className="shrink-0"
-                      title="Edit source"
+                      title={t("Edit source")}
                       onClick={() => setCloudDialog({ open: true, source })}
                     >
                       <Pencil className="size-3.5" />
@@ -260,7 +291,7 @@ export function SourcesSettingsCard() {
                     variant="ghost"
                     size="icon-sm"
                     className="shrink-0"
-                    title="Remove source"
+                    title={t("Remove source")}
                     onClick={() => void removeSource(source.id)}
                   >
                     <Trash2 className="size-3.5" />
@@ -268,7 +299,7 @@ export function SourcesSettingsCard() {
                   <Switch
                     checked={source.enabled}
                     onCheckedChange={(on) => void setSourceEnabled(source.id, on)}
-                    title="Include this source when adding references to a project"
+                    title={t("Include this source when adding references to a project")}
                   />
                 </div>
                 {source.kind === "bib" && files.length > 1 && (
@@ -284,7 +315,7 @@ export function SourcesSettingsCard() {
                           isExpanded && "rotate-90",
                         )}
                       />
-                      {files.length} files
+                      {tn(files.length, "{count} file", "{count} files")}
                     </button>
                     {isExpanded && (
                       <ul className="mt-1 space-y-0.5">
@@ -292,9 +323,9 @@ export function SourcesSettingsCard() {
                           <li
                             key={file}
                             className="truncate text-xs text-muted-foreground"
-                            title={file}
+                            title={fileLabel(file)}
                           >
-                            {file}
+                            {fileLabel(file)}
                           </li>
                         ))}
                       </ul>
@@ -303,7 +334,7 @@ export function SourcesSettingsCard() {
                 )}
                 {source.kind === "bib" && files.length === 0 && (
                   <p className="mt-0.5 pl-11 text-xs text-muted-foreground">
-                    No .bib files here (yet).
+                    {t("No .bib files here (yet).")}
                   </p>
                 )}
               </div>
@@ -316,39 +347,68 @@ export function SourcesSettingsCard() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
               <Plus />
-              Add source
+              {t("Add source")}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onClick={() => void addBibSource(false)}>
-              <BookOpen />
-              BibTeX file…
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => void addBibSource(true)}>
-              <FolderOpen />
-              BibTeX folder…
-            </DropdownMenuItem>
+          <DropdownMenuContent align="start" className="w-auto">
+            {features.localSources ? (
+              <>
+                <DropdownMenuItem onClick={() => void addBibSource(false)}>
+                  <BookOpen />
+                  {t("BibTeX file…")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => void addBibSource(true)}>
+                  <FolderOpen />
+                  {t("BibTeX folder…")}
+                </DropdownMenuItem>
+              </>
+            ) : (
+              <DropdownMenuItem
+                className="whitespace-nowrap"
+                onClick={() => setProjectDialog(true)}
+              >
+                <BookOpen />
+                {t("BibTeX file from a project…")}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              disabled={hasZoteroApp}
-              title={hasZoteroApp ? "The Zotero app source already exists" : undefined}
-              onClick={() => void addZoteroApp()}
-            >
-              <Boxes />
-              Zotero app
-            </DropdownMenuItem>
+            {features.localSources ? (
+              <DropdownMenuItem
+                disabled={hasZoteroApp}
+                title={
+                  hasZoteroApp ? t("The Zotero app source already exists") : undefined
+                }
+                onClick={() => void addZoteroApp()}
+              >
+                <Boxes />
+                {t("Zotero app")}
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem disabled>
+                <Boxes />
+                <span className="flex flex-col">
+                  {rich("Zotero app<0>In the desktop app only</0>", [
+                    (c) => <span className="text-2xs">{c}</span>,
+                  ])}
+                </span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => setCloudDialog({ open: true, source: null })}
             >
               <Cloud />
-              Zotero cloud…
+              {t("Zotero cloud…")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <p className="text-xs text-muted-foreground">
-          Referenced in place: nothing is copied into your projects.
+          {features.localSources
+            ? t("Referenced in place: nothing is copied into your projects.")
+            : t("Read from your projects each time, so changes show up here.")}
         </p>
       </div>
+
+      {projectDialog && <ProjectBibDialog open onOpenChange={setProjectDialog} />}
 
       {cloudDialog.open && (
         <ZoteroCloudDialog

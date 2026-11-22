@@ -124,6 +124,95 @@ Add a row whenever a new name comes up. Use one term per concept in every surfac
 - **Release notes** (`CHANGELOG.md`, GitHub releases) group changes under **Added**, **Changed**, **Fixed**, **Removed**, each item a sentence from the reader's side: "Comments now show in the PDF preview." Name the version and date in the heading.
 - **Emails** from the server (sign-in links, review invites) have a subject that says what the email is for ("Your Polemic sign-in link"), one short paragraph, one button, and a plain-text fallback link.
 
+## Translations
+
+The interface is written in English first; every other language translates it (see `packages/i18n`). A translation follows the voice above and the rules of its own section below. A draft stays out of release builds until a fluent reader has reviewed it.
+
+What stays English in every language: the names Scholarkit, Polemic, Binder and Cursive, the plan names Free, Student and Pro, LaTeX names (commands, environments, packages, `latexmk`), Git verbs where Git shows them (commit, push, pull), and anything the reader types or that is written into their files.
+
+### Dutch (Nederlands)
+
+- **Informal "je"**, never "u". "Je" in running text, "jij" or "jouw" only for emphasis ("Jij kunt het bewerken").
+- **Buttons and menu items are infinitives**: "Opslaan", "Project openen", "Link kopiëren". Titles and labels that are not actions are nouns: "Instellingen", "Leeslijst".
+- **Sentence case**, as in English. Only names and the first word get a capital.
+- **Compounds are one word** ("reviewlink", "literatuurlijst"). Use a hyphen with a name, an abbreviation or a number: "Scholarkit-account", "Zotero-app", "pdf-voorbeeld", "{plan}-abonnement".
+- **Abbreviations**: "pdf" in running text and lowercase ("de pdf", "Pdf exporteren"); DOI, ISBN, URL and API stay in capitals.
+- **Punctuation**: the English rules hold: no serial comma, no em dashes, curly quotes (“ ”), one-character ellipsis. Decimal comma ("5,7 m").
+- **Errors** say what happened and what to do, with "Probeer het opnieuw" rather than "Gelieve…".
+
+| English | Dutch | Note |
+| --- | --- | --- |
+| sign in, sign out | inloggen, uitloggen | "Log in om…" |
+| account | account | "je Scholarkit-account" |
+| plan | abonnement | "het Pro-abonnement" |
+| online services | onlinediensten | |
+| cloud compile | cloudcompilatie | "compileren" for the verb |
+| review link | reviewlink | |
+| comment | opmerking | "opmerkingen plaatsen" |
+| suggestion, Suggest mode | suggestie, de modus Voorstellen | |
+| snapshot | snapshot | |
+| project, file, folder | project, bestand, map | |
+| source (a work) | bron | |
+| references, bibliography | literatuurlijst | |
+| citation, cite | bronvermelding or citaat, citeren | "bronvermelding" for the formatted text |
+| entry (BibTeX) | entry | |
+| item, inbox | item, inbox | |
+| reading list | leeslijst | |
+| note, thought | notitie, gedachte | |
+| highlight | markering | |
+| assistant, provider | assistent, aanbieder | |
+| key (API) | sleutel | "API-sleutel" |
+| sync | synchroniseren | "gesynchroniseerd" |
+| trash | prullenmand | |
+| template | sjabloon | |
+| slide, speaker notes | dia, sprekersnotities | |
+| learner | lerende | |
+| Settings | Instellingen | |
+| owner, editor, commenter, viewer | eigenaar, bewerker, commentator, lezer | |
+
+### German (Deutsch)
+
+- **Informal "du"**, never "Sie". Lowercase "du", "dein" in running text.
+- **Buttons and menu items are infinitives**: "Speichern", "Projekt öffnen", "Link kopieren". Titles and labels that are not actions are nouns: "Einstellungen", "Leseliste".
+- **Sentence case**, as in English, with German nouns capitalized as always.
+- **Compounds** are one word for common nouns ("Literaturverzeichnis", "Ordnername"). Use a hyphen with a name, an abbreviation or an English word: "Scholarkit-Konto", "Zotero-App", "PDF-Vorschau", "Review-Link", "Cloud-Kompilierung".
+- **Abbreviations**: PDF, DOI, ISBN, URL and API stay in capitals. Keys are "Cmd/Strg", "Umschalt" and "Eingabe". No abbreviations ending in a full stop in short labels: "vor {minutes} min", not "vor {minutes} Min.".
+- **Gender**: a person's role uses the colon form when it names a person ("Eigentümer:in"). Prefer a neutral word where there is one ("Lernende").
+- **Punctuation**: no serial comma, no em dashes, German quotes („ “), one-character ellipsis. Decimal comma ("5,7 m").
+- **Errors** say what happened and what to do, with "Versuch es noch einmal" (a button: "Erneut versuchen") rather than "Bitte versuche…".
+
+| English | German | Note |
+| --- | --- | --- |
+| sign in, sign out | anmelden, abmelden | "Melde dich an, um…" |
+| account | Konto | "dein Scholarkit-Konto" |
+| plan | Tarif | "der Pro-Tarif" |
+| online services | Online-Dienste | |
+| cloud compile | Cloud-Kompilierung | "kompilieren" for the verb |
+| review link | Review-Link | |
+| comment | Kommentar | |
+| suggestion, Suggest mode | Vorschlag, der Modus Vorschlagen | |
+| snapshot | Snapshot | |
+| project, file, folder | Projekt, Datei, Ordner | |
+| source (a work) | Quelle | |
+| references, bibliography | Literatur, Literaturverzeichnis | |
+| citation, cite | Literaturangabe, zitieren | |
+| entry (BibTeX), item (Binder) | Eintrag | |
+| inbox | Eingang | |
+| reading list | Leseliste | |
+| note, thought | Notiz, Gedanke | |
+| highlight | Markierung | "hervorheben" for the verb |
+| assistant, provider | Assistent, Anbieter | |
+| key (API) | Schlüssel | "API-Schlüssel" |
+| sync | synchronisieren | |
+| trash | Papierkorb | |
+| template | Vorlage | |
+| slide, speaker notes | Folie, Sprechernotizen | |
+| learner | Lernende | |
+| package (LaTeX), float | Paket, Gleitobjekt | |
+| Settings | Einstellungen | |
+| owner, editor, commenter, viewer | Eigentümer:in, Bearbeiten, Kommentieren, Lesen | roles name what the person can do |
+| commit, push, pull, stage | Committen, Push, Pull, Stagen | Git verbs stay as Git shows them |
+
 ## Checklist
 
 1. US spelling, sentence case, no serial comma?

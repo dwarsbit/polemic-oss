@@ -16,6 +16,7 @@ import type { CiteStyle } from "@/lib/citation-preview";
 import { appendBibEntryToProject, projectBibKeys } from "@/lib/project-bib";
 import { lookupBibtex } from "@/lib/tauri";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 /**
  * "Import by DOI or arXiv ID": paste an identifier, fetch its BibTeX
@@ -53,7 +54,7 @@ export function ImportByIdDialog({
     try {
       const raw = await lookupBibtex(parsed.doi);
       const next = bibtexToDraft(raw, await projectBibKeys(), parsed);
-      if (next === null) setError("The registry's answer contained no entry.");
+      if (next === null) setError(t("The registry's answer contained no entry."));
       else setDraft(next);
     } catch (e) {
       setError(
@@ -61,7 +62,7 @@ export function ImportByIdDialog({
           ? e
           : e instanceof Error
             ? e.message
-            : "The lookup failed.",
+            : t("The lookup failed."),
       );
     } finally {
       setBusy(false);
@@ -75,7 +76,9 @@ export function ImportByIdDialog({
       draft.key,
     );
     if (result === null) return;
-    setMessage(`Added ${draft.key} to ${result.target}.`);
+    setMessage(
+      t("Added {key} to {target}.", { key: draft.key, target: result.target }),
+    );
     setDraft(null);
     setInput("");
   }
@@ -84,20 +87,22 @@ export function ImportByIdDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Import by DOI or arXiv ID</DialogTitle>
+          <DialogTitle>{t("Import by DOI or arXiv ID")}</DialogTitle>
           <DialogDescription className="text-xs">
-            Paste a DOI (10.1145/…), an arXiv ID (1706.03762), or a doi.org / arxiv.org
-            link.
+            {t(
+              "Paste a DOI (10.1145/…), an arXiv ID (1706.03762), or a doi.org / arxiv.org link.",
+            )}
           </DialogDescription>
         </DialogHeader>
         {!onlineLookup ? (
           <div className="space-y-2">
             <p className="text-xs text-muted-foreground">
-              Online lookup is off. Turning it on lets Polemic contact doi.org to fetch
-              the entry; only the identifier you paste is sent.
+              {t(
+                "Online lookup is off. Turning it on lets Polemic contact doi.org to fetch the entry; only the identifier you paste is sent.",
+              )}
             </p>
             <Button size="sm" onClick={() => void setOnlineLookup(true)}>
-              Enable online lookup
+              {t("Enable online lookup")}
             </Button>
           </div>
         ) : (
@@ -106,7 +111,7 @@ export function ImportByIdDialog({
               <Input
                 autoFocus
                 className="h-7 min-w-0 flex-1 rounded-md font-mono text-xs"
-                placeholder="10.1145/3292500.3330701 or arXiv:1706.03762"
+                placeholder={t("10.1145/3292500.3330701 or arXiv:1706.03762")}
                 value={input}
                 onChange={(e) => {
                   setInput(e.target.value);
@@ -123,12 +128,12 @@ export function ImportByIdDialog({
                 onClick={() => void fetchEntry()}
               >
                 {busy && <Loader2 className="size-3 animate-spin" />}
-                Fetch
+                {t("Fetch")}
               </Button>
             </div>
             {trimmed.length > 0 && parsed === null && (
               <p className="text-xs text-muted-foreground">
-                That does not look like a DOI or an arXiv ID.
+                {t("That does not look like a DOI or an arXiv ID.")}
               </p>
             )}
             {error !== null && <p className="text-xs text-destructive">{error}</p>}
@@ -157,11 +162,11 @@ export function ImportByIdDialog({
         )}
         <div className="flex justify-end gap-2">
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            {draft === null ? "Done" : "Cancel"}
+            {draft === null ? t("Done") : t("Cancel")}
           </Button>
           {draft !== null && (
             <Button size="sm" onClick={() => void add()}>
-              Add to project
+              {t("Add to project")}
             </Button>
           )}
         </div>

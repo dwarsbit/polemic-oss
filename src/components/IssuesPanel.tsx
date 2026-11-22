@@ -26,6 +26,7 @@ import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
 import { useCloudCompile } from "@/store/settings";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import { t, tn } from "@scholarkit/i18n";
 
 /** Bottom-dock tools, selected by the bottom icons of the left rail. */
 export type IssuesTool = "issues" | "log" | "search";
@@ -103,7 +104,7 @@ function IssueActions({
           size="xs"
           onClick={() => void compileWithEngine(name)}
         >
-          Compile with {ENGINE_NAMES[name]}
+          {t("Compile with {engine}", { engine: ENGINE_NAMES[name] })}
         </Button>,
       );
     }
@@ -116,7 +117,7 @@ function IssueActions({
         size="xs"
         onClick={() => void openUrl(ctanPageUrl(action.name))}
       >
-        Look up {action.name} on CTAN
+        {t("Look up {name} on CTAN", { name: action.name })}
         <ExternalLink className="size-3" />
       </Button>,
     );
@@ -129,7 +130,7 @@ function IssueActions({
         className="px-1 text-muted-foreground hover:text-foreground hover:underline"
         onClick={() => void openUrl(`${LATEX_ERRORS_URL}#${topic}`)}
       >
-        More about this kind of error →
+        {t("More about this kind of error →")}
       </button>,
     );
   }
@@ -184,14 +185,14 @@ function IssueDetails({
           })}
           {row.entries.length > LISTED && (
             <li className="w-full text-muted-foreground">
-              and {row.entries.length - LISTED} more
+              {tn(row.entries.length - LISTED, "and {count} more", "and {count} more")}
             </li>
           )}
         </ul>
       )}
       {head.explanation && sameMessage && (
         <p className="text-muted-foreground">
-          TeX's message: <span className="font-mono">{head.issue.message}</span>
+          {t("TeX's message:")} <span className="font-mono">{head.issue.message}</span>
         </p>
       )}
     </div>
@@ -261,11 +262,11 @@ export function IssuesPanel({
     setFixNote(null);
     const outcome = await fixIssue(issue);
     if (outcome === "declined") {
-      setFixNote("No built-in fix for this error. Try Ask AI.");
+      setFixNote(t("No built-in fix for this error. Try Ask AI."));
     } else if (outcome === "no-file") {
-      setFixNote("This issue does not point at an openable file.");
+      setFixNote(t("This issue does not point at an openable file."));
     } else if (outcome === "error") {
-      setFixNote("The fix could not be applied.");
+      setFixNote(t("The fix could not be applied."));
     }
   }
 
@@ -315,7 +316,7 @@ export function IssuesPanel({
           <button
             type="button"
             className="mt-0.5 shrink-0 rounded-sm text-muted-foreground hover:text-foreground"
-            title={open ? "Hide details" : "Show details"}
+            title={open ? t("Hide details") : t("Show details")}
             aria-expanded={open}
             onClick={(e) => {
               e.stopPropagation();
@@ -331,7 +332,7 @@ export function IssuesPanel({
             {row.title}
             {row.repeats !== null && (
               <span className="ml-1.5 text-2xs text-muted-foreground">
-                {row.repeats} times
+                {tn(row.repeats, "{count} time", "{count} times")}
               </span>
             )}
           </span>
@@ -347,21 +348,21 @@ export function IssuesPanel({
               }}
             >
               <Wrench className="size-3" />
-              Fix
+              {t("Fix")}
             </Button>
           )}
           <Button
             variant="ghost"
             size="sm"
             className={cn(action, quiet)}
-            title="Ask the assistant for a fix"
+            title={t("Ask the assistant for a fix")}
             onClick={(e) => {
               e.stopPropagation();
               void onAiFix(issue);
             }}
           >
             <Sparkles className="size-3" />
-            Ask AI
+            {t("Ask AI")}
           </Button>
           {where && (
             <span className="shrink-0 font-mono text-2xs leading-4.5 text-muted-foreground">
@@ -377,13 +378,13 @@ export function IssuesPanel({
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm">
       <SectionHeader
-        label={tool === "issues" ? "Issues" : "Compile log"}
+        label={tool === "issues" ? t("Issues") : t("Compile log")}
         actions={
           <Button
             variant="ghost"
             size="icon"
             className="size-6 text-muted-foreground"
-            title="Hide panel"
+            title={t("Hide panel")}
             onClick={onToggle}
           >
             <ChevronDown className="size-3.5" />
@@ -415,8 +416,8 @@ export function IssuesPanel({
           issues.length === 0 ? (
             <p className="px-1.5 py-1 text-xs text-muted-foreground">
               {status === "error"
-                ? "The compile failed without a readable error. See the compile log."
-                : "No issues."}
+                ? t("The compile failed without a readable error. See the compile log.")
+                : t("No issues.")}
             </p>
           ) : (
             <ul className="space-y-0.5">
@@ -435,10 +436,11 @@ export function IssuesPanel({
                         isOpen(FOLLOW_ON) && "rotate-90",
                       )}
                     />
-                    {list.followOnCount === 1
-                      ? "1 more error"
-                      : `${list.followOnCount} more errors`}
-                    , most likely caused by the first
+                    {tn(
+                      list.followOnCount,
+                      "{count} more error, most likely caused by the first",
+                      "{count} more errors, most likely caused by the first",
+                    )}
                   </button>
                   {isOpen(FOLLOW_ON) && (
                     <ul className="ml-3 space-y-0.5 border-l pl-1">
@@ -453,7 +455,7 @@ export function IssuesPanel({
           )
         ) : log === null ? (
           <p className="px-1.5 py-1 text-xs text-muted-foreground">
-            Nothing compiled yet.
+            {t("Nothing compiled yet.")}
           </p>
         ) : (
           <pre className="px-1.5 py-1 font-mono text-2xs leading-5 whitespace-pre-wrap text-muted-foreground">

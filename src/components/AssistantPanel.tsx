@@ -31,10 +31,19 @@ import { useAssistantStore, type ChatItem } from "@/store/assistant";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore, type AssistantMode } from "@/store/settings";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 const MODES: { value: AssistantMode; label: string; hint: string }[] = [
-  { value: "syntax", label: "Syntax", hint: "Fixes LaTeX, leaves your text alone" },
-  { value: "prose", label: "Prose", hint: "Polishes your text, keeps what it says" },
+  {
+    value: "syntax",
+    label: t("Syntax"),
+    hint: t("Fixes LaTeX, leaves your text alone"),
+  },
+  {
+    value: "prose",
+    label: t("Prose"),
+    hint: t("Polishes your text, keeps what it says"),
+  },
 ];
 
 /** The composer's mode picker: what the assistant helps with. */
@@ -47,7 +56,7 @@ function ModeMenu({ mode }: { mode: AssistantMode }) {
           variant="ghost"
           size="xs"
           className="gap-1 px-1.5 text-2xs font-medium text-muted-foreground"
-          title="What the assistant helps with"
+          title={t("What the assistant helps with")}
         >
           {current.label}
           <ChevronDown className="size-3 opacity-60" />
@@ -138,13 +147,17 @@ function ChangeCard({ item }: { item: Extract<ChatItem, { kind: "change" }> }) {
           {change.path}
         </span>
         {change.creates && (
-          <span className="shrink-0 text-2xs text-muted-foreground">New file</span>
+          <span className="shrink-0 text-2xs text-muted-foreground">
+            {t("New file")}
+          </span>
         )}
         {status === "applied" && (
-          <span className="shrink-0 text-2xs text-success">Applied</span>
+          <span className="shrink-0 text-2xs text-success">{t("Applied")}</span>
         )}
         {status === "discarded" && (
-          <span className="shrink-0 text-2xs text-muted-foreground">Discarded</span>
+          <span className="shrink-0 text-2xs text-muted-foreground">
+            {t("Discarded")}
+          </span>
         )}
       </div>
       {change.explanation !== "" && (
@@ -163,10 +176,10 @@ function ChangeCard({ item }: { item: Extract<ChatItem, { kind: "change" }> }) {
       {status === "pending" && (
         <div className="flex justify-end gap-1.5 px-2 pb-2">
           <Button variant="outline" size="sm" onClick={() => discardChange(item.id)}>
-            Discard
+            {t("Discard")}
           </Button>
           <Button size="sm" onClick={() => void applyChange(item.id)}>
-            Apply
+            {t("Apply")}
           </Button>
         </div>
       )}
@@ -287,7 +300,7 @@ export function AssistantPanel() {
   return (
     <div className="flex h-full flex-col">
       <SectionHeader
-        label="Assistant"
+        label={t("Assistant")}
         actions={
           <>
             <DropdownMenu>
@@ -296,7 +309,7 @@ export function AssistantPanel() {
                   variant="ghost"
                   size="icon"
                   className="size-6 text-muted-foreground"
-                  title="More"
+                  title={t("More")}
                 >
                   <MoreHorizontal className="size-3.5" />
                 </Button>
@@ -306,7 +319,7 @@ export function AssistantPanel() {
                   disabled={items.length === 0}
                   onSelect={() => useAssistantStore.getState().clear()}
                 >
-                  New conversation
+                  {t("New conversation")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuCheckboxItem
@@ -320,12 +333,12 @@ export function AssistantPanel() {
                     }
                   }}
                 >
-                  Allow compiling
+                  {t("Allow compiling")}
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuItem
                   onSelect={() => useSettingsStore.getState().openSettings("ai")}
                 >
-                  Assistant settings…
+                  {t("Assistant settings…")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -338,10 +351,14 @@ export function AssistantPanel() {
             <Sparkles className="size-5 text-muted-foreground" />
             <p className="text-xs text-muted-foreground">
               {!configured
-                ? "Set up an AI provider to use the assistant."
+                ? t("Set up an AI provider to use the assistant.")
                 : mode === "prose"
-                  ? "Ask for clearer, tighter or more correct wording. The assistant proposes changes you review, and never changes what your text says."
-                  : "Ask about errors, tables, floats, math or packages. The assistant reads your project and proposes changes you review."}
+                  ? t(
+                      "Ask for clearer, tighter or more correct wording. The assistant proposes changes you review, and never changes what your text says.",
+                    )
+                  : t(
+                      "Ask about errors, tables, floats, math or packages. The assistant reads your project and proposes changes you review.",
+                    )}
             </p>
             {!configured && (
               <Button
@@ -349,7 +366,7 @@ export function AssistantPanel() {
                 size="sm"
                 onClick={() => useSettingsStore.getState().openSettings("ai")}
               >
-                Open AI settings
+                {t("Open AI settings")}
               </Button>
             )}
           </div>
@@ -360,8 +377,9 @@ export function AssistantPanel() {
         {compileRequest !== null && (
           <div className="space-y-2 rounded-lg border p-2.5">
             <p className="text-xs">
-              Allow the assistant to compile this project? It saves your open files
-              first. You can turn this off in the panel menu.
+              {t(
+                "Allow the assistant to compile this project? It saves your open files first. You can turn this off in the panel menu.",
+              )}
             </p>
             <div className="flex justify-end gap-1.5">
               <Button
@@ -369,13 +387,13 @@ export function AssistantPanel() {
                 size="sm"
                 onClick={() => useAssistantStore.getState().answerCompileRequest(false)}
               >
-                Don't allow
+                {t("Don't allow")}
               </Button>
               <Button
                 size="sm"
                 onClick={() => useAssistantStore.getState().answerCompileRequest(true)}
               >
-                Allow compiling
+                {t("Allow compiling")}
               </Button>
             </div>
           </div>
@@ -383,7 +401,7 @@ export function AssistantPanel() {
         {running && compileRequest === null && (
           <p className="flex items-center gap-1.5 text-2xs text-muted-foreground">
             <Loader2 className="size-3 animate-spin" />
-            Working…
+            {t("Working…")}
           </p>
         )}
       </div>
@@ -405,7 +423,7 @@ export function AssistantPanel() {
                   <button
                     type="button"
                     className="rounded p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-                    title="Remove"
+                    title={t("Remove")}
                     onClick={chip.remove}
                   >
                     <X className="size-3" />
@@ -419,13 +437,13 @@ export function AssistantPanel() {
             value={draft}
             rows={1}
             disabled={!configured}
-            aria-label="Ask the assistant"
+            aria-label={t("Ask the assistant")}
             placeholder={
               !configured
-                ? "Set up a provider to ask"
+                ? t("Set up a provider to ask")
                 : mode === "prose"
-                  ? "Can you make this paragraph clearer?"
-                  : "How do I make this table fit the page?"
+                  ? t("Can you make this paragraph clearer?")
+                  : t("How do I make this table fit the page?")
             }
             className="block max-h-40 w-full resize-none bg-transparent px-3 pt-2.5 pb-1 text-xs leading-5 outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
             onChange={(e) => setDraft(e.target.value)}
@@ -444,19 +462,22 @@ export function AssistantPanel() {
               className="min-w-0 truncate rounded-md px-1.5 py-0.5 text-2xs text-muted-foreground hover:bg-muted hover:text-foreground"
               title={
                 configured
-                  ? `${ai?.model} on ${provider?.name}. Change in settings`
-                  : "Open assistant settings"
+                  ? t("{model} on {name}. Change in settings", {
+                      model: ai?.model,
+                      name: provider?.name,
+                    })
+                  : t("Open assistant settings")
               }
               onClick={() => useSettingsStore.getState().openSettings("ai")}
             >
-              {configured ? ai?.model : "Set up a provider…"}
+              {configured ? ai?.model : t("Set up a provider…")}
             </button>
             {running ? (
               <Button
                 variant="outline"
                 size="icon-xs"
                 className="shrink-0 rounded-full"
-                title="Stop"
+                title={t("Stop")}
                 onClick={() => useAssistantStore.getState().stop()}
               >
                 <Square className="size-3" />
@@ -465,7 +486,7 @@ export function AssistantPanel() {
               <Button
                 size="icon-xs"
                 className="shrink-0 rounded-full"
-                title="Send (Enter)"
+                title={t("Send (Enter)")}
                 disabled={!configured || draft.trim() === ""}
                 onClick={send}
               >

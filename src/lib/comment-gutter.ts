@@ -6,6 +6,7 @@ import { openCommentDialog } from "@/lib/editor-comments";
 import { notesIn } from "@/lib/suggestion-notes";
 import { useCommentsStore } from "@/store/comments";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 /** Force a recompute (the comments live outside the editor state). */
 export const refreshComments = StateEffect.define<null>();
@@ -30,7 +31,7 @@ class CommentMarker extends GutterMarker {
     const { note } = this.comment;
     if (note) {
       dom.classList.add("suggestion-note");
-      dom.title = `Suggestion note: ${note.text}`;
+      dom.title = t("Suggestion note: {text}", { text: note.text });
     } else {
       dom.style.background = commentCategory(this.comment.category).color;
       dom.title = commentCategory(this.comment.category).label;

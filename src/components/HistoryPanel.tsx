@@ -5,18 +5,19 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { gitLog, type GitCommit } from "@/lib/tauri";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 const LIMIT = 200;
 
 function timeAgo(millis: number): string {
   const seconds = Math.max(1, Math.round((Date.now() - millis) / 1000));
-  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 60) return t("{seconds}s ago", { seconds });
   const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `${minutes} min ago`;
+  if (minutes < 60) return t("{minutes} min ago", { minutes });
   const hours = Math.round(minutes / 60);
-  if (hours < 24) return `${hours} h ago`;
+  if (hours < 24) return t("{hours} h ago", { hours });
   const days = Math.round(hours / 24);
-  if (days < 30) return `${days} d ago`;
+  if (days < 30) return t("{days} d ago", { days });
   return new Date(millis).toLocaleDateString();
 }
 
@@ -53,14 +54,14 @@ export function HistoryPanel() {
   return (
     <div className="flex h-full flex-col">
       <SectionHeader
-        label="History"
+        label={t("History")}
 
         actions={
           <Button
             variant="ghost"
             size="icon"
             className="size-6"
-            title="Refresh history"
+            title={t("Refresh history")}
             onClick={() =>
               void queryClient.invalidateQueries({ queryKey: ["git-log"] })
             }
@@ -72,7 +73,7 @@ export function HistoryPanel() {
       <div className="flex-1 overflow-y-auto p-1.5">
         {error && <p className="px-2 text-xs text-destructive">{errorText(error)}</p>}
         {!error && (log ?? []).length === 0 && (
-          <p className="px-2 text-xs text-muted-foreground">No commits yet.</p>
+          <p className="px-2 text-xs text-muted-foreground">{t("No commits yet.")}</p>
         )}
         <ul className="space-y-0.5">
           {(log ?? []).map((commit) => (

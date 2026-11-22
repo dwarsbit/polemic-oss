@@ -24,13 +24,14 @@ import {
 import { features } from "@/lib/target";
 import { useLinkStore, type LinkStatus } from "@/store/link";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 export type ShareStep = "sharing" | "syncing" | "publishing";
 
 export const STEP_LABELS: Record<ShareStep, string> = {
-  sharing: "Sharing…",
-  syncing: "Syncing…",
-  publishing: "Publishing…",
+  sharing: t("Sharing…"),
+  syncing: t("Syncing…"),
+  publishing: t("Publishing…"),
 };
 
 /** Why the project isn't in sync, in words; null while it is. */
@@ -43,7 +44,7 @@ export function syncProblem(status: LinkStatus | null): string | null {
     case "offline":
       return "You're offline. Your changes sync when you're back online.";
     case "signedOut":
-      return "Sign in to your Polemic account to keep this project in sync.";
+      return "Sign in to your Scholarkit account to keep this project in sync.";
     case "full":
     case "failed":
       return status.message;
@@ -226,7 +227,9 @@ export function useShare() {
         if (synced?.kind !== "synced") {
           throw {
             kind: synced?.kind === "signedOut" ? "signedOut" : "failed",
-            message: `Your latest changes haven't synced yet, so they can't be published. ${syncProblem(synced) ?? "Try again in a moment."}`,
+            message: `${t("Your latest changes haven't synced yet, so they can't be published.")} ${
+              syncProblem(synced) ?? t("Try again in a moment.")
+            }`,
           } satisfies ShareError;
         }
       }

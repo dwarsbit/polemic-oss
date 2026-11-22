@@ -5,6 +5,7 @@ import { startAssetDrag, wasDragged } from "@/lib/editor-drag";
 import { showNativeContextMenu, type NativeMenuEntry } from "@/lib/native-menu";
 import { cn } from "@/lib/utils";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 export type FileStatus = "added" | "changed" | "ignored";
 
@@ -56,19 +57,19 @@ export function FileTree({
     event.stopPropagation();
     const dir = entry.isDir ? entry.path : parentDirOf(entry.path);
     const items: NativeMenuEntry[] = [
-      { id: "new-file", text: "New File", action: () => onNewFile(dir) },
+      { id: "new-file", text: t("New File"), action: () => onNewFile(dir) },
     ];
     if (entry.isDir) {
       items.push({
         id: "new-folder",
-        text: "New Folder",
+        text: t("New Folder"),
         action: () => onNewFolder(dir),
       });
     }
     items.push(
       "separator",
-      { id: "rename", text: "Rename", action: () => onRename(entry) },
-      { id: "delete", text: "Delete", action: () => onDelete(entry) },
+      { id: "rename", text: t("Rename"), action: () => onRename(entry) },
+      { id: "delete", text: t("Delete"), action: () => onDelete(entry) },
     );
     void showNativeContextMenu(items);
   }
@@ -87,10 +88,10 @@ export function FileTree({
                 <Folder className="size-3.5 shrink-0 text-muted-foreground" />
                 <span className="truncate">{entry.name}</span>
                 <span className="ml-auto hidden items-center gap-0.5 group-hover:flex">
-                  <ActionButton title="Rename" onClick={() => onRename(entry)}>
+                  <ActionButton title={t("Rename")} onClick={() => onRename(entry)}>
                     <Pencil className="size-3" />
                   </ActionButton>
-                  <ActionButton title="Delete" onClick={() => onDelete(entry)}>
+                  <ActionButton title={t("Delete")} onClick={() => onDelete(entry)}>
                     <Trash2 className="size-3" />
                   </ActionButton>
                 </span>
@@ -148,16 +149,16 @@ export function FileTree({
               <span className="hidden items-center gap-0.5 group-hover:flex">
                 {entry.path.endsWith(".tex") && mainFile !== entry.path && (
                   <ActionButton
-                    title="Set as main file"
+                    title={t("Set as main file")}
                     onClick={() => onSetMain(entry)}
                   >
                     <Star className="size-3" />
                   </ActionButton>
                 )}
-                <ActionButton title="Rename" onClick={() => onRename(entry)}>
+                <ActionButton title={t("Rename")} onClick={() => onRename(entry)}>
                   <Pencil className="size-3" />
                 </ActionButton>
-                <ActionButton title="Delete" onClick={() => onDelete(entry)}>
+                <ActionButton title={t("Delete")} onClick={() => onDelete(entry)}>
                   <Trash2 className="size-3" />
                 </ActionButton>
               </span>

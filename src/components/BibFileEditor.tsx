@@ -32,6 +32,7 @@ import { useProjectStore } from "@/store/project";
 import { useUiStore } from "@/store/ui";
 import { cn } from "cn";
 import { formatShortcut } from "@/lib/platform";
+import { t, tn } from "@scholarkit/i18n";
 
 interface DialogState {
   kind: "edit" | "new";
@@ -156,14 +157,14 @@ export function BibFileEditor() {
 
   async function saveNow() {
     const saved = await useProjectStore.getState().saveActiveFile();
-    flash(saved ? "Saved." : "Nothing to save.");
+    flash(saved ? "Saved." : t("Nothing to save."));
   }
 
   function saveEntry(draft: EntryDraft) {
     if (dialog?.kind !== "edit") return;
     const edits = planEntryEdits(useEditorStore.getState().content, dialog.key, draft);
     if (edits === null || !apply(edits)) return;
-    flash(`Saved ${draft.key}.`);
+    flash(t("Saved {key}.", { key: draft.key }));
   }
 
   function appendEntry(draft: EntryDraft) {
@@ -180,7 +181,7 @@ export function BibFileEditor() {
     ) {
       return;
     }
-    flash(`Added ${draft.key}.`);
+    flash(t("Added {key}.", { key: draft.key }));
   }
 
   function deleteEntry(key: string) {
@@ -192,7 +193,7 @@ export function BibFileEditor() {
     const cleaned = joined.replace(/\n{3,}/g, "\n\n");
     if (!apply([{ from: 0, to: text.length, insert: cleaned }])) return;
     setPendingDelete(null);
-    flash(`Deleted ${key}.`);
+    flash(t("Deleted {key}.", { key }));
   }
 
   function jumpToEntry(entry: BibEntry) {
@@ -229,7 +230,7 @@ export function BibFileEditor() {
         <button
           type="button"
           className="min-w-0 flex-1 text-left"
-          title="Show in the raw text"
+          title={t("Show in the raw text")}
           onClick={() => jumpToEntry(entry)}
         >
           <p className="flex items-baseline gap-2">
@@ -249,25 +250,25 @@ export function BibFileEditor() {
             <Badge
               variant="outline"
               className="h-4.5 border-transparent bg-warning/10 px-1.5 text-2xs text-warning"
-              title={`Missing fields: ${missing.join(", ")}`}
+              title={t("Missing fields: {join}", { join: missing.join(", ") })}
             >
-              incomplete
+              {t("incomplete")}
             </Badge>
           )}
           {duplicateKeys.has(entry.key) && (
             <Badge
               variant="outline"
               className="h-4.5 border-transparent bg-destructive/10 px-1.5 text-2xs text-destructive"
-              title="Another entry in this file uses the same key"
+              title={t("Another entry in this file uses the same key")}
             >
-              duplicate key
+              {t("duplicate key")}
             </Badge>
           )}
           <Button
             variant="ghost"
             size="icon-sm"
             className="size-5 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-            title="Edit entry"
+            title={t("Edit entry")}
             onClick={() => setDialog({ kind: "edit", key: entry.key })}
           >
             <Pencil className="size-3" />
@@ -277,17 +278,17 @@ export function BibFileEditor() {
               variant="ghost"
               size="sm"
               className="h-5 px-1.5 text-2xs text-destructive"
-              title="Delete this entry"
+              title={t("Delete this entry")}
               onClick={() => deleteEntry(entry.key)}
             >
-              Delete?
+              {t("Delete?")}
             </Button>
           ) : (
             <Button
               variant="ghost"
               size="icon-sm"
               className="size-5 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-              title="Delete entry"
+              title={t("Delete entry")}
               onClick={() => setPendingDelete(entry.key)}
             >
               <Trash2 className="size-3" />
@@ -305,39 +306,41 @@ export function BibFileEditor() {
           <Button
             variant="outline"
             size="sm"
-            title="Add a reference"
+            title={t("Add a reference")}
             onClick={() => setDialog({ kind: "new", key: "" })}
           >
             <Plus />
-            New entry
+            {t("New entry")}
           </Button>
         )}
         <div className="min-w-0 flex-1" />
         {mode === "visual" && (
           <span
             className="shrink-0 text-2xs tabular-nums text-muted-foreground"
-            title="The state of this file's references"
+            title={t("The state of this file's references")}
           >
-            {parsed.entries.length === 1
-              ? "1 entry"
-              : `${parsed.entries.length} entries`}
+            {tn(parsed.entries.length, "{count} entry", "{count} entries")}
             {incompleteCount > 0 && (
               <>
                 {" · "}
-                <span className="text-warning">{incompleteCount} incomplete</span>
+                <span className="text-warning">
+                  {t("{incompleteCount} incomplete", { incompleteCount })}
+                </span>
               </>
             )}
             {duplicateKeys.size > 0 && (
               <>
                 {" · "}
-                <span className="text-destructive">{duplicateKeys.size} duplicate</span>
+                <span className="text-destructive">
+                  {tn(duplicateKeys.size, "{count} duplicate", "{count} duplicates")}
+                </span>
               </>
             )}
           </span>
         )}
         {dirty && (
           <span className="shrink-0 text-2xs text-muted-foreground">
-            Unsaved changes
+            {t("Unsaved changes")}
           </span>
         )}
         <Button
@@ -345,10 +348,12 @@ export function BibFileEditor() {
           size="sm"
           className="shrink-0"
           disabled={!dirty}
-          title={`Save (${formatShortcut("Mod+S")})`}
+          title={t("Save ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+S"),
+          })}
           onClick={() => void saveNow()}
         >
-          Save
+          {t("Save")}
         </Button>
       </div>
 
@@ -359,7 +364,7 @@ export function BibFileEditor() {
               <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
               <input
                 className="h-7 w-full rounded-md border bg-transparent pl-6 pr-1 text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                placeholder="Search author, title, key, any field"
+                placeholder={t("Search author, title, key, any field")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -368,11 +373,14 @@ export function BibFileEditor() {
               />
             </div>
             <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value)}>
-              <SelectTrigger className="h-7 w-36 shrink-0 text-xs" title="Entry type">
+              <SelectTrigger
+                className="h-7 w-36 shrink-0 text-xs"
+                title={t("Entry type")}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All types</SelectItem>
+                <SelectItem value="all">{t("All types")}</SelectItem>
                 {typesPresent.map((type) => (
                   <SelectItem key={type} value={type}>
                     {typeLabel(type)}
@@ -388,27 +396,29 @@ export function BibFileEditor() {
                 }
               }}
             >
-              <SelectTrigger className="h-7 w-28 shrink-0 text-xs" title="Sort">
+              <SelectTrigger className="h-7 w-28 shrink-0 text-xs" title={t("Sort")}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="type">By type</SelectItem>
-                <SelectItem value="key">By key</SelectItem>
-                <SelectItem value="title">By title</SelectItem>
+                <SelectItem value="type">{t("By type")}</SelectItem>
+                <SelectItem value="key">{t("By key")}</SelectItem>
+                <SelectItem value="title">{t("By title")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-2 pb-3">
             {parsed.entries.length === 0 ? (
               <div className="px-2 py-8 text-center">
-                <p className="text-sm text-muted-foreground">No references yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("No references yet.")}
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Add the first one with the New entry button.
+                  {t("Add the first one with the New entry button.")}
                 </p>
               </div>
             ) : rows.length === 0 ? (
               <p className="px-2 py-2 text-xs text-muted-foreground">
-                No entries match your search.
+                {t("No entries match your search.")}
               </p>
             ) : sortMode === "type" ? (
               groups.map(([type, typeEntries]) => {
@@ -419,7 +429,7 @@ export function BibFileEditor() {
                     <div className="flex items-center rounded hover:bg-accent">
                       <button
                         type="button"
-                        title={isCollapsed ? "Expand" : "Collapse"}
+                        title={isCollapsed ? t("Expand") : t("Collapse")}
                         className="flex size-5 shrink-0 items-center justify-center"
                         onClick={() => toggle(key)}
                       >
@@ -468,7 +478,7 @@ export function BibFileEditor() {
           onOpenChange={(open) => {
             if (!open) setDialog(null);
           }}
-          title={dialog.kind === "new" ? "New entry" : `Edit ${dialog.key}`}
+          title={dialog.kind === "new" ? t("New entry") : `Edit ${dialog.key}`}
           initial={
             dialog.kind === "edit" && dialogEntry !== null
               ? {

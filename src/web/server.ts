@@ -1,3 +1,4 @@
+import { t } from "@scholarkit/i18n";
 /**
  * The browser build's way to polemic-server: the same origin, signed in
  * with the services app's session cookie. Request and answer shapes
@@ -42,9 +43,10 @@ export function goSignIn(): Promise<never> {
   return new Promise<never>(() => {});
 }
 
-const UNREACHABLE = "Could not reach Polemic. Check your connection and try again.";
-const UNREADABLE =
-  "Polemic sent an answer this page can't read. Reload the page to try again.";
+const UNREACHABLE = t("Could not reach Polemic. Check your connection and try again.");
+const UNREADABLE = t(
+  "Polemic sent an answer this page can't read. Reload the page to try again.",
+);
 
 /** A request to the API: JSON in (`json`) and out, or raw bytes out (`bytes`). */
 export async function request<T>(
@@ -94,7 +96,7 @@ async function errorOf(response: Response): Promise<ServerError> {
     typeof body.error === "string" ? body.error : "",
     typeof body.message === "string" && body.message !== ""
       ? body.message
-      : `Polemic answered ${response.status}.`,
+      : t("Polemic answered {status}.", { status: response.status }),
     body,
     Number.isFinite(retry) && retry > 0 ? retry : null,
   );

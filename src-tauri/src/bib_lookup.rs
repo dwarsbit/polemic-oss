@@ -60,7 +60,7 @@ pub async fn lookup_bibtex(app: tauri::AppHandle, doi: String) -> Result<String,
     check_doi(&doi)?;
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(15))
-        .user_agent("Polemic (https://github.com/dwarsbit/polemic)")
+        .user_agent("Polemic (https://github.com/dwarsbit/polemic-oss)")
         .build()
         .map_err(|e| e.to_string())?;
     let response = client

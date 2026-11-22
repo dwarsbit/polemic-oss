@@ -251,7 +251,7 @@ describe("ShareDialog", () => {
   it("asks a signed-out user to sign in", async () => {
     server.status = { ...server.status, signedIn: false };
     await render();
-    expect(text()).toContain("Sharing needs a free Polemic account.");
+    expect(text()).toContain("Sharing needs a free Scholarkit account.");
     expect(button("Share project")).toBeUndefined();
     await click("Sign in");
     expect(useSettingsStore.getState().settingsSection).toBe("account");

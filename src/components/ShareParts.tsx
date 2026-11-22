@@ -16,11 +16,12 @@ import { features } from "@/lib/target";
 import { useLinkStore } from "@/store/link";
 import { useSettingsStore } from "@/store/settings";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 export const ROLE_LABELS: Record<InviteRole | "viewer", string> = {
-  editor: "Can edit",
-  commenter: "Can comment",
-  viewer: "Can view",
+  editor: t("Can edit"),
+  commenter: t("Can comment"),
+  viewer: t("Can view"),
 };
 
 const link = "underline underline-offset-2 hover:text-foreground";
@@ -86,7 +87,7 @@ export function InviteForm({ share }: { share: Share }) {
           type="email"
           className="h-7 min-w-0 flex-1 text-xs"
           placeholder="name@university.edu"
-          aria-label="Email address to invite"
+          aria-label={t("Email address to invite")}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -94,7 +95,7 @@ export function InviteForm({ share }: { share: Share }) {
           }}
         />
         <Select value={role} onValueChange={(v) => setRole(v as InviteRole)}>
-          <SelectTrigger className="h-7 text-xs" aria-label="What they can do">
+          <SelectTrigger className="h-7 text-xs" aria-label={t("What they can do")}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -104,7 +105,7 @@ export function InviteForm({ share }: { share: Share }) {
         </Select>
         <Button type="submit" size="sm" disabled={busy || !looksLikeEmail(email)}>
           {busy && <Loader2 className="size-3 animate-spin" />}
-          Invite
+          {t("Invite")}
         </Button>
       </form>
       {sentTo && (
@@ -113,7 +114,7 @@ export function InviteForm({ share }: { share: Share }) {
           role="status"
         >
           <Check className="size-3 text-success" />
-          Invite sent to {sentTo}
+          {t("Invite sent to {sentTo}", { sentTo })}
         </p>
       )}
     </div>
@@ -140,14 +141,16 @@ export function PublishedLine({
       ) : (
         latest && (
           <>
-            Last published {formatShareDate(latest.createdAt)}
-            {latest.pdf === null ? ", without a PDF: compile first. " : ". "}
+            {t("Last published {formatShareDate}", {
+              formatShareDate: formatShareDate(latest.createdAt),
+            })}
+            {latest.pdf === null ? t(", without a PDF: compile first.") : "."}{" "}
             <button
               type="button"
               className={cn(link, "text-foreground")}
               onClick={() => void share.publish()}
             >
-              Publish again
+              {t("Publish again")}
             </button>
           </>
         )
@@ -172,7 +175,7 @@ export function ShareProblem({ share }: { share: Share }) {
               className={link}
               onClick={() => void openUrl(accountPage)}
             >
-              See plans
+              {t("See plans")}
             </button>
           </>
         )}
@@ -189,13 +192,13 @@ export function SyncNotice({ share }: { share: Share }) {
   return (
     <p className="rounded-md bg-warning/10 px-3 py-2 text-xs" role="status">
       {status.kind === "offline"
-        ? "You're offline. Your changes sync when you're back online."
+        ? t("You're offline. Your changes sync when you're back online.")
         : status.kind === "signedOut"
-          ? "Sign in to keep this project in sync."
+          ? t("Sign in to keep this project in sync.")
           : status.message}{" "}
       {status.kind === "signedOut" ? (
         <button type="button" className={link} onClick={() => openSettings("account")}>
-          Sign in
+          {t("Sign in")}
         </button>
       ) : (
         <button
@@ -203,7 +206,7 @@ export function SyncNotice({ share }: { share: Share }) {
           className={link}
           onClick={() => void useLinkStore.getState().syncNow()}
         >
-          Try again
+          {t("Try again")}
         </button>
       )}
     </p>
@@ -216,13 +219,14 @@ export function ShareStart({ share }: { share: Share }) {
   return (
     <div className="space-y-3">
       <p className="text-xs text-muted-foreground">
-        Work on this project with co-authors, send reviewers a link and open it in your
-        browser.
-        {share.signedOut && " Sharing needs a free Polemic account."}
+        {t(
+          "Work on this project with co-authors, send reviewers a link and open it in your browser.",
+        )}
+        {share.signedOut && ` ${t("Sharing needs a free Scholarkit account.")}`}
       </p>
       {share.signedOut ? (
         <Button size="sm" onClick={() => openSettings("account")}>
-          Sign in
+          {t("Sign in")}
         </Button>
       ) : (
         <Button
@@ -231,7 +235,7 @@ export function ShareStart({ share }: { share: Share }) {
           onClick={() => void share.share()}
         >
           {share.step === "sharing" && <Loader2 className="size-3 animate-spin" />}
-          Share project
+          {t("Share project")}
         </Button>
       )}
     </div>
@@ -262,7 +266,7 @@ export function Confirm({
           {action}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          Cancel
+          {t("Cancel")}
         </Button>
       </div>
     </div>
@@ -280,16 +284,18 @@ export function LeaveConfirm({
   const owner = share.info?.owner?.name;
   return (
     <Confirm
-      action="Leave project"
+      action={t("Leave project")}
       busy={share.busy === "leave"}
       onConfirm={() => void share.leave()}
       onCancel={onCancel}
     >
-      Leave {owner ? `${owner}’s` : "this"} project?{" "}
+      {owner ? t("Leave {owner}’s project?", { owner }) : t("Leave this project?")}{" "}
       {features.localFiles
-        ? "Your copy stays on this computer and no longer gets changes."
-        : "You no longer see it in your projects."}{" "}
-      Only {owner ?? "the owner"} can invite you again.
+        ? t("Your copy stays on this computer and no longer gets changes.")
+        : t("You no longer see it in your projects.")}{" "}
+      {owner
+        ? t("Only {owner} can invite you again.", { owner })
+        : t("Only the owner can invite you again.")}
     </Confirm>
   );
 }
@@ -297,6 +303,6 @@ export function LeaveConfirm({
 /** What someone invited can do, in a sentence. */
 export function invitedLine(share: Share): string {
   return share.info?.writable
-    ? "You can edit this project, and your changes reach everyone working on it."
-    : "You can read this project and comment on it.";
+    ? t("You can edit this project, and your changes reach everyone working on it.")
+    : t("You can read this project and comment on it.");
 }

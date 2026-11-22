@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MATH_SYMBOL_CATEGORIES } from "@/lib/math-symbols";
 import { insertAtCursor } from "@/lib/editor-insert";
 import { SectionHeader } from "@/components/SectionHeader";
+import { t } from "@scholarkit/i18n";
 
 export function SymbolsPanel({
   collapsed = false,
@@ -17,7 +18,7 @@ export function SymbolsPanel({
 
   return (
     <div className="flex h-full flex-col">
-      <SectionHeader label="Symbols" collapsed={collapsed} onToggle={onToggle} />
+      <SectionHeader label={t("Symbols")} collapsed={collapsed} onToggle={onToggle} />
       {collapsed === false && (
         <>
           <div className="px-3 py-2">

@@ -40,6 +40,8 @@ import { useUiStore, type EditorFace } from "@/store/ui";
 import { hasTrafficLights } from "@/lib/platform";
 import { HELP_URL, ISSUES_URL } from "@/lib/links";
 import { features, isWeb } from "@/lib/target";
+import { DOWNLOAD_URL, updater } from "@/lib/updates";
+import { UpdateCard } from "@scholarkit/updates/components/UpdateCard";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useCommentsStore } from "@/store/comments";
 import { useProjectStore } from "@/store/project";
@@ -48,6 +50,7 @@ import { usePreviewStore } from "@/store/preview";
 import { applySettingsSideEffects, useSettingsStore } from "@/store/settings";
 import { useDialogsStore } from "@/store/dialogs";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 function openExternal(url: string): Promise<void> {
   return import("@tauri-apps/plugin-opener").then(({ openUrl }) => openUrl(url));
@@ -191,12 +194,15 @@ function App() {
           } catch (e) {
             // Never trap the user in the window, never drop edits silently.
             const quit = await ask(
-              `Some changes could not be saved:\n\n${e}\n\nClose anyway and lose them?`,
+              t(
+                "Some changes could not be saved:\n\n{error}\n\nClose anyway and lose them?",
+                { error: String(e) },
+              ),
               {
-                title: "Unsaved changes",
+                title: t("Unsaved changes"),
                 kind: "warning",
-                okLabel: "Close without saving",
-                cancelLabel: "Keep open",
+                okLabel: t("Close without saving"),
+                cancelLabel: t("Keep open"),
               },
             ).catch(() => false);
             if (!quit) return;
@@ -410,6 +416,13 @@ function App() {
           ["menu://shortcuts", () => dialogs().setShortcutsOpen(true)],
           ["menu://report-issue", () => void openExternal(ISSUES_URL)],
           ["menu://about", () => dialogs().setAboutOpen(true)],
+          [
+            "menu://check-updates",
+            () => {
+              useSettingsStore.getState().openSettings("updates");
+              void updater?.check({ manual: true });
+            },
+          ],
           // Dev builds only: the Develop menu never ships in release.
           ["menu://component-gallery", () => dialogs().setGalleryOpen(true)],
         ];
@@ -479,6 +492,14 @@ function App() {
       <SettingsDialog open={settingsDialogOpen} onOpenChange={setSettingsDialogOpen} />
       <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       <AboutDialog open={aboutOpen} onOpenChange={setAboutOpen} />
+      {updater && (
+        <UpdateCard
+          updater={updater}
+          app="Polemic"
+          downloadUrl={DOWNLOAD_URL}
+          openUrl={(url) => void openExternal(url)}
+        />
+      )}
       <TableDialog open={tableDialogOpen} onOpenChange={setTableDialogOpen} />
       <TableGridDialog />
       <CsvImportDialog />

@@ -1,5 +1,5 @@
-//! The Polemic account: signing in to a Polemic server
-//! (app.polemicapp.com, or a self-hosted install) from the editor.
+//! The Scholarkit account: signing in to a Scholarkit server
+//! (app.scholarkit.app, or a self-hosted install) from the editor.
 //!
 //! Sign-in follows RFC 8252: the editor listens on a random loopback
 //! port, opens the server's /desktop/authorize page in the browser
@@ -25,7 +25,7 @@ use sha2::{Digest, Sha256};
 
 use crate::secrets::{OsStore, Store};
 
-pub const DEFAULT_SERVER: &str = "https://app.polemicapp.com";
+pub const DEFAULT_SERVER: &str = "https://app.scholarkit.app";
 
 /// How long the editor waits for the browser: long enough to create
 /// an account and confirm the email address on the way.

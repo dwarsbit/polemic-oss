@@ -5,6 +5,7 @@ import {
   WidgetType,
   type DecorationSet,
 } from "@codemirror/view";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Git's conflict markers in the Code view: each hunk is tinted (mine
@@ -154,12 +155,15 @@ class ConflictWidget extends WidgetType {
     bar.className = "cm-conflict-bar";
     const label = document.createElement("span");
     label.className = "cm-conflict-bar-label";
-    label.textContent = `Conflict: mine (${this.oursLabel}) against theirs (${this.theirsLabel})`;
+    label.textContent = t(
+      "Conflict: mine ({oursLabel}) against theirs ({theirsLabel})",
+      { oursLabel: this.oursLabel, theirsLabel: this.theirsLabel },
+    );
     bar.append(label);
     const choices: [ConflictChoice, string, string][] = [
-      ["ours", "Keep mine", "Keep the lines above the ======="],
-      ["theirs", "Keep theirs", "Keep the lines below the ======="],
-      ["both", "Keep both", "Keep mine, then theirs"],
+      ["ours", t("Keep mine"), t("Keep the lines above the =======")],
+      ["theirs", t("Keep theirs"), t("Keep the lines below the =======")],
+      ["both", t("Keep both"), t("Keep mine, then theirs")],
     ];
     for (const [choice, text, title] of choices) {
       const button = document.createElement("button");

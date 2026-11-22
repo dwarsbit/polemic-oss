@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { t } from "@scholarkit/i18n";
 
 /** GET /api/usage, the parts shown here. */
 interface Usage {
@@ -54,13 +55,18 @@ export function UsageSummary() {
   return (
     <p className="mt-4 text-xs text-muted-foreground">
       <span className={cn(full && "text-warning")}>
-        {full ? "Your storage is full" : "Storage"}: {formatStorage(storage.usedBytes)}{" "}
-        of {formatStorage(storage.limitBytes)}.
+        {full ? t("Your storage is full") : t("Storage")}
+        {t(": {formatStorage} of {formatStorage2}.", {
+          formatStorage: formatStorage(storage.usedBytes),
+          formatStorage2: formatStorage(storage.limitBytes),
+        })}
       </span>{" "}
       <span className={cn(compileUsedUp && "text-warning")}>
         {compileUsedUp
-          ? "Cloud compile is used up for today."
-          : `Cloud compile today: ${formatCompileUsed(compile.usedPercent)}.`}
+          ? t("Cloud compile is used up for today.")
+          : t("Cloud compile today: {formatCompileUsed}.", {
+              formatCompileUsed: formatCompileUsed(compile.usedPercent),
+            })}
       </span>{" "}
       <a
         href="/account"
@@ -68,7 +74,7 @@ export function UsageSummary() {
         rel="noreferrer"
         className="underline underline-offset-2 hover:text-foreground"
       >
-        See your plan
+        {t("See your plan")}
       </a>
     </p>
   );

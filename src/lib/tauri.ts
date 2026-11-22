@@ -1,6 +1,7 @@
 import { Channel, invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type { FolderEntry } from "@/lib/project-doc";
 import type { PublishedSnapshot } from "@/lib/share";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Commands that change a project's files. A linked project syncs after
@@ -135,7 +136,7 @@ export interface Settings {
    *  "latex" (read as "syntax") and "both" (read as "prose"). */
   assistantMode: string | null;
   grammar: GrammarSettings;
-  /** The Polemic server for the account; null means app.polemicapp.com. */
+  /** The Scholarkit server for the account; null means app.scholarkit.app. */
   accountServer: string | null;
   /** The name on suggestions (track changes); null until set. */
   authorName: string | null;
@@ -147,11 +148,11 @@ export interface Settings {
   compileProvider: CompileProvider | null;
 }
 
-/** On this computer, or on the Polemic account's server. */
+/** On this computer, or on the Scholarkit account's server. */
 export type CompileProvider = "local" | "polemic";
 
 /** Grammar checking: built-in Harper (English), LanguageTool on the
- *  Polemic account's server, or the user's own LanguageTool. */
+ *  Scholarkit account's server, or the user's own LanguageTool. */
 export interface GrammarSettings {
   /** null means on. */
   enabled: boolean | null;
@@ -328,11 +329,11 @@ export interface TemplateRequirement {
 
 /** Languages with ready wordlists (bundled or downloadable on demand). */
 export const DOWNLOADABLE_LANGUAGES = [
-  { id: "de", name: "German" },
-  { id: "fr", name: "French" },
-  { id: "es", name: "Spanish" },
-  { id: "it", name: "Italian" },
-  { id: "nl", name: "Dutch" },
+  { id: "de", name: t("German") },
+  { id: "fr", name: t("French") },
+  { id: "es", name: t("Spanish") },
+  { id: "it", name: t("Italian") },
+  { id: "nl", name: t("Dutch") },
 ] as const;
 
 export interface FileEntry {
@@ -627,6 +628,12 @@ export function setProjectMenuEnabled(enabled: boolean): Promise<void> {
 export function setMenuChecked(id: string, checked: boolean): Promise<void> {
   if (!isTauri()) return Promise.resolve();
   return invoke<void>("set_menu_checked", { id, checked });
+}
+
+/** Rename desktop menus and items by id (see menu-labels.ts). */
+export function setMenuLabels(labels: Record<string, string>): Promise<void> {
+  if (!isTauri()) return Promise.resolve();
+  return invoke<void>("set_menu_labels", { labels });
 }
 
 export function setPanelLayout(layout: Record<string, number>): Promise<void> {
@@ -1058,7 +1065,7 @@ export function projectNameFromRemote(url: string): string {
   return last.replace(/\.git$/, "");
 }
 
-// --- Polemic account ---------------------------------------------------------
+// --- Scholarkit account ---------------------------------------------------------
 
 /** The signed-in user, as the server's GET /api/me returns it. */
 export interface AccountUser {
@@ -1102,7 +1109,7 @@ export function accountStatus(): Promise<AccountStatus> {
   return invoke<AccountStatus>("account_status");
 }
 
-/** Changes the server (empty: app.polemicapp.com); signs out of the old one. */
+/** Changes the server (empty: app.scholarkit.app); signs out of the old one. */
 export function accountSetServer(server: string): Promise<AccountStatus> {
   return invoke<AccountStatus>("account_set_server", { server });
 }

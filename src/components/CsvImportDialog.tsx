@@ -39,6 +39,7 @@ import { importAssets, readProjectFile } from "@/lib/tauri";
 import { useDialogsStore } from "@/store/dialogs";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
 
 const DATA_FILE = /\.(csv|tsv|txt|dat)$/i;
 const PREVIEW_ROWS = 8;
@@ -119,8 +120,8 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
     setError(null);
     const picked = await openFileDialog({
       multiple: false,
-      title: "Import data (copied into the project)",
-      filters: [{ name: "Data", extensions: ["csv", "tsv", "txt", "dat"] }],
+      title: t("Import data (copied into the project)"),
+      filters: [{ name: t("Data"), extensions: ["csv", "tsv", "txt", "dat"] }],
     });
     if (typeof picked !== "string") return;
     try {
@@ -173,7 +174,7 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
     <Dialog open onOpenChange={(open) => !open && close()}>
       <DialogContent className="flex max-h-[85vh] max-w-2xl flex-col">
         <DialogHeader>
-          <DialogTitle>Table or plot from CSV</DialogTitle>
+          <DialogTitle>{t("Table or plot from CSV")}</DialogTitle>
         </DialogHeader>
         <div className="min-h-0 flex-1 space-y-3 overflow-y-auto text-sm">
           <div className="flex items-center gap-2">
@@ -185,7 +186,7 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
               }}
             >
               <SelectTrigger className="min-w-0 flex-1">
-                <SelectValue placeholder="Choose a data file in the project" />
+                <SelectValue placeholder={t("Choose a data file in the project")} />
               </SelectTrigger>
               <SelectContent>
                 {dataFiles.map((file) => (
@@ -198,7 +199,7 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
             {features.localFiles && (
               <Button variant="outline" size="sm" onClick={() => void importFile()}>
                 <FileUp />
-                Import file…
+                {t("Import file…")}
               </Button>
             )}
           </div>
@@ -208,10 +209,10 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
               <div className="flex flex-wrap items-center gap-4 text-xs">
                 <label className="flex items-center gap-2">
                   <Switch checked={header} onCheckedChange={setHeaderChoice} />
-                  First row is a header
+                  {t("First row is a header")}
                 </label>
                 <label className="flex items-center gap-2">
-                  Separator
+                  {t("Separator")}
                   <Select
                     value={delimiter}
                     onValueChange={(v) => setDelimiter(v as Delimiter | "auto")}
@@ -221,16 +222,20 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="auto">
-                        Auto ({data.delimiter === "\t" ? "tab" : data.delimiter})
+                        {t("Auto ({delimiter})", {
+                          delimiter:
+                            data.delimiter === "\t" ? t("tab") : data.delimiter,
+                        })}
                       </SelectItem>
-                      <SelectItem value=",">Comma</SelectItem>
-                      <SelectItem value=";">Semicolon</SelectItem>
-                      <SelectItem value={"\t"}>Tab</SelectItem>
+                      <SelectItem value=",">{t("Comma")}</SelectItem>
+                      <SelectItem value=";">{t("Semicolon")}</SelectItem>
+                      <SelectItem value={"\t"}>{t("Tab")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </label>
                 <span className="text-muted-foreground">
-                  {bodyRows} rows × {names.length} columns
+                  {tn(bodyRows, "{count} row", "{count} rows")} ×{" "}
+                  {tn(names.length, "{count} column", "{count} columns")}
                 </span>
               </div>
               <div className="overflow-x-auto rounded-md border">
@@ -258,7 +263,12 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
                 </table>
                 {data.rows.length > PREVIEW_ROWS && (
                   <p className="border-t px-2 py-1 text-xs text-muted-foreground">
-                    … {data.rows.length - PREVIEW_ROWS} more rows
+                    …{" "}
+                    {tn(
+                      data.rows.length - PREVIEW_ROWS,
+                      "{count} more row",
+                      "{count} more rows",
+                    )}
                   </p>
                 )}
               </div>
@@ -272,20 +282,20 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
                     disabled={m === "plot" && !canPlot}
                     title={
                       m === "plot" && !canPlot
-                        ? "A plot needs at least two numeric columns"
+                        ? t("A plot needs at least two numeric columns")
                         : undefined
                     }
                     onClick={() => setMode(m)}
                   >
-                    {m === "table" ? "Table (booktabs)" : "Plot (pgfplots)"}
+                    {m === "table" ? t("Table (booktabs)") : t("Plot (pgfplots)")}
                   </Button>
                 ))}
               </div>
               {mode === "table" ? (
                 <p className="text-xs text-muted-foreground">
-                  The values are copied into the document; numbers align right.
+                  {t("The values are copied into the document; numbers align right.")}
                   {bodyRows > 40 &&
-                    " A table this long may not fit on one page; consider the longtable package."}
+                    ` ${t("A table this long may not fit on one page; consider the longtable package.")}`}
                 </p>
               ) : (
                 <div className="space-y-2 text-xs">
@@ -309,7 +319,7 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
                       </Select>
                     </label>
                     <label className="flex items-center gap-2">
-                      Style
+                      {t("Style")}
                       <Select
                         value={kind}
                         onValueChange={(v) => setKind(v as PlotKind)}
@@ -318,9 +328,9 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="line">Lines</SelectItem>
-                          <SelectItem value="scatter">Points</SelectItem>
-                          <SelectItem value="bar">Bars</SelectItem>
+                          <SelectItem value="line">{t("Lines")}</SelectItem>
+                          <SelectItem value="scatter">{t("Points")}</SelectItem>
+                          <SelectItem value="bar">{t("Bars")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </label>
@@ -348,24 +358,26 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
                   </div>
                   <div className="flex gap-2">
                     <Input
-                      placeholder="x axis label"
+                      placeholder={t("x axis label")}
                       value={xlabel ?? (xCol !== null ? names[xCol] : "")}
                       onChange={(e) => setXlabel(e.target.value)}
                     />
                     <Input
-                      placeholder="y axis label"
+                      placeholder={t("y axis label")}
                       value={ylabel ?? (yCols.length === 1 ? names[yCols[0]] : "")}
                       onChange={(e) => setYlabel(e.target.value)}
                     />
                   </div>
                   <p className="text-muted-foreground">
-                    The plot reads {path} when compiling, so later changes to the file
-                    show up in the PDF.
+                    {t(
+                      "The plot reads {path} when compiling, so later changes to the file show up in the PDF.",
+                      { path },
+                    )}
                   </p>
                 </div>
               )}
               <Input
-                placeholder="Caption (optional)"
+                placeholder={t("Caption (optional)")}
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
               />
@@ -374,10 +386,10 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={close}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button disabled={!ready} onClick={insert}>
-            Insert {mode === "table" ? "table" : "plot"}
+            {t("Insert")} {mode === "table" ? "table" : "plot"}
           </Button>
         </DialogFooter>
       </DialogContent>

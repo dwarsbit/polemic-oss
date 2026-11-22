@@ -10,6 +10,7 @@ import {
   type OptionEntry,
 } from "@/lib/graphics-options";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 const WIDTH_PRESETS = ["0.5\\textwidth", "0.75\\textwidth", "\\textwidth"];
 const ANGLE_PRESETS = ["90", "180", "270"];
@@ -128,11 +129,11 @@ export function GraphicsOptionsCard({
           className="min-w-0 flex-1 self-center truncate text-2xs text-muted-foreground"
           title={path}
         >
-          {path || "(no file)"}
+          {path || t("(no file)")}
         </p>
         <button
           type="button"
-          title="Close"
+          title={t("Close")}
           className="shrink-0 rounded p-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           onClick={onClose}
         >
@@ -141,7 +142,9 @@ export function GraphicsOptionsCard({
       </div>
 
       <div className="flex items-center gap-1.5 pt-1">
-        <span className="w-10 shrink-0 text-2xs text-muted-foreground">Width</span>
+        <span className="w-10 shrink-0 text-2xs text-muted-foreground">
+          {t("Width")}
+        </span>
         <OptionInput
           className="flex-1"
           value={width}
@@ -154,14 +157,18 @@ export function GraphicsOptionsCard({
         />
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="w-10 shrink-0 text-2xs text-muted-foreground">Scale</span>
+        <span className="w-10 shrink-0 text-2xs text-muted-foreground">
+          {t("Scale")}
+        </span>
         <OptionInput
           className="w-16"
           value={scale}
           placeholder="1.5"
           onChange={(value) => onChange(setOptionValue(entries, "scale", value))}
         />
-        <span className="ml-1 w-10 shrink-0 text-2xs text-muted-foreground">Angle</span>
+        <span className="ml-1 w-10 shrink-0 text-2xs text-muted-foreground">
+          {t("Angle")}
+        </span>
         <OptionInput
           className="w-12"
           value={angle}
@@ -174,7 +181,9 @@ export function GraphicsOptionsCard({
         />
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="w-10 shrink-0 text-2xs text-muted-foreground">Trim</span>
+        <span className="w-10 shrink-0 text-2xs text-muted-foreground">
+          {t("Trim")}
+        </span>
         <div className="flex gap-1">
           {[0, 1, 2, 3].map((index) => (
             <OptionInput
@@ -191,7 +200,7 @@ export function GraphicsOptionsCard({
             checked={clip}
             onCheckedChange={(v) => onChange(setOptionFlag(entries, "clip", v))}
           />
-          Clip
+          {t("Clip")}
         </label>
       </div>
       <div className="flex items-center gap-1.5">
@@ -202,11 +211,11 @@ export function GraphicsOptionsCard({
               onChange(setOptionFlag(entries, "keepaspectratio", v))
             }
           />
-          Keep aspect ratio
+          {t("Keep aspect ratio")}
         </label>
         {isPdf && (
           <span className="ml-auto flex shrink-0 items-center gap-1 text-2xs text-muted-foreground">
-            Page
+            {t("Page")}
             <OptionInput
               className="w-10"
               value={page}

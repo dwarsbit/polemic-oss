@@ -15,6 +15,7 @@ import {
 import { kindLabel, snapshotTime } from "@/lib/online-snapshots";
 import { shareHistory, shareInfo, type HistorySnapshot } from "@/lib/tauri";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 /**
  * The shared project's snapshots on the server: one an hour while
@@ -69,7 +70,7 @@ export function OnlineSnapshotsPanel({ label }: { label: string }) {
             variant="ghost"
             size="icon"
             className="size-6"
-            title="Refresh"
+            title={t("Refresh")}
             onClick={() => void history.refetch()}
           >
             <RefreshCw className="size-3.5" />
@@ -80,9 +81,9 @@ export function OnlineSnapshotsPanel({ label }: { label: string }) {
         {history.isError ? (
           <p className="px-2 text-xs text-destructive">{errorText(history.error)}</p>
         ) : history.isPending ? (
-          <p className="px-2 text-xs text-muted-foreground">Loading…</p>
+          <p className="px-2 text-xs text-muted-foreground">{t("Loading…")}</p>
         ) : snapshots.length === 0 ? (
-          <p className="px-2 text-xs text-muted-foreground">No snapshots yet.</p>
+          <p className="px-2 text-xs text-muted-foreground">{t("No snapshots yet.")}</p>
         ) : (
           <ul>
             {snapshots.map((snap) => {
@@ -107,7 +108,7 @@ export function OnlineSnapshotsPanel({ label }: { label: string }) {
                       variant="ghost"
                       size="icon"
                       className="size-5"
-                      title="View changes against the current project"
+                      title={t("View changes against the current project")}
                       onClick={() => setDiffTarget(snap)}
                     >
                       <FileDiff className="size-3" />
@@ -117,7 +118,7 @@ export function OnlineSnapshotsPanel({ label }: { label: string }) {
                         variant="ghost"
                         size="icon"
                         className="size-5"
-                        title="Restore this snapshot"
+                        title={t("Restore this snapshot")}
                         onClick={() => {
                           setDialogError(null);
                           setRestoreTarget(snap);
@@ -133,8 +134,9 @@ export function OnlineSnapshotsPanel({ label }: { label: string }) {
           </ul>
         )}
         <p className="mt-2 px-2 text-2xs text-muted-foreground">
-          Kept once an hour while the project changes: all of the last two days, then
-          one a day for 30 days. They don't count toward your storage.
+          {t(
+            "Kept once an hour while the project changes: all of the last two days, then one a day for 30 days. They don't count toward your storage.",
+          )}
         </p>
       </div>
 
@@ -146,25 +148,29 @@ export function OnlineSnapshotsPanel({ label }: { label: string }) {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Restore snapshot</DialogTitle>
+            <DialogTitle>{t("Restore snapshot")}</DialogTitle>
           </DialogHeader>
           <p className="text-sm">
-            Restore the project to the snapshot from{" "}
-            {restoreTarget ? new Date(restoreTarget.createdAt).toLocaleString() : ""}?
-            Everyone working on it gets the change, and comments stay as they are. The
-            project as it is now is kept as a snapshot first, so you can undo this.
+            {t(
+              "Restore the project to the snapshot from {date}? Everyone working on it gets the change, and comments stay as they are. The project as it is now is kept as a snapshot first, so you can undo this.",
+              {
+                date: restoreTarget
+                  ? new Date(restoreTarget.createdAt).toLocaleString()
+                  : "",
+              },
+            )}
           </p>
           {dialogError && <p className="text-xs text-destructive">{dialogError}</p>}
           <DialogFooter>
             <Button variant="outline" onClick={() => setRestoreTarget(null)}>
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               variant="destructive"
               disabled={restoring}
               onClick={() => void confirmRestore()}
             >
-              Restore
+              {t("Restore")}
             </Button>
           </DialogFooter>
         </DialogContent>

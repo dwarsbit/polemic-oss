@@ -12,6 +12,8 @@ import {
 import { desktopProjectUrl, DOWNLOAD_URL } from "@/lib/links";
 import { useDialogsStore } from "@/store/dialogs";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 /** The id in a browser project's path, `/projects/<id>`. */
 function projectIdIn(path: string): string | null {
@@ -33,21 +35,22 @@ export function OpenInDesktopDialog() {
     <Dialog open={open && id !== null} onOpenChange={setOpen}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Open in the desktop app</DialogTitle>
+          <DialogTitle>{t("Open in the desktop app")}</DialogTitle>
           <DialogDescription>
-            The desktop app keeps this project in a folder on your computer, in sync
-            with what you write here. There you can also compile with your own TeX
-            distribution, work offline and use Git.
+            {t(
+              "The desktop app keeps this project in a folder on your computer, in sync with what you write here. There you can also compile with your own TeX distribution, work offline and use Git.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <p className="text-xs text-muted-foreground">
-          Nothing happens? Install Polemic and sign in with this account, then choose{" "}
-          <span className="font-medium text-foreground">Open from your account…</span>{" "}
-          on its start screen.
+          {rich(
+            "Nothing happens? Install Polemic and sign in with this account, then choose <0>Open from your account…</0> on its start screen.",
+            [(c) => <span className="font-medium text-foreground">{c}</span>],
+          )}
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={() => void openUrl(DOWNLOAD_URL)}>
-            Download Polemic
+            {t("Download Polemic")}
           </Button>
           <Button
             onClick={() => {
@@ -56,7 +59,7 @@ export function OpenInDesktopDialog() {
             }}
           >
             <MonitorDown />
-            Open the desktop app
+            {t("Open the desktop app")}
           </Button>
         </DialogFooter>
       </DialogContent>

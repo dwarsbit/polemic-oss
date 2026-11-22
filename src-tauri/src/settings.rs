@@ -138,8 +138,8 @@ pub struct Settings {
     pub assistant_mode: Option<String>,
     pub grammar: GrammarSettings,
     pub user_words: Vec<String>,
-    /// The Polemic server of the account; None means
-    /// app.polemicapp.com. The token itself is in the credential store.
+    /// The Scholarkit server of the account; None means
+    /// app.scholarkit.app. The token itself is in the credential store.
     pub account_server: Option<String>,
     /// The name on suggestions (track changes); later comments too.
     pub author_name: Option<String>,

@@ -30,6 +30,7 @@ import { useEditorStore } from "@/store/editor";
 import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
 import { compilesInCloud, useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 export type ChangeStatus = "pending" | "applied" | "discarded";
 
@@ -179,7 +180,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
       if (!aiConfigured(ai) || ai === null) {
         push({
           kind: "error",
-          text: "No AI provider is set up. Add one in Settings → Assistant.",
+          text: t("No AI provider is set up. Add one in Settings → Assistant."),
         });
         return;
       }
@@ -265,16 +266,18 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
         if (outcome === "limit") {
           push({
             kind: "error",
-            text: `Stopped after ${MAX_STEPS} steps. Ask again to continue.`,
+            text: t("Stopped after {MAX_STEPS} steps. Ask again to continue.", {
+              MAX_STEPS,
+            }),
           });
         } else if (outcome === "cancelled") {
-          push({ kind: "step", text: "Stopped" });
+          push({ kind: "step", text: t("Stopped") });
           history.length = base;
         }
       } catch (e) {
         const message = errorText(e);
         if (cancelled || message === "cancelled") {
-          push({ kind: "step", text: "Stopped" });
+          push({ kind: "step", text: t("Stopped") });
         } else {
           push({ kind: "error", text: message });
         }
@@ -308,14 +311,16 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
       try {
         const current = await currentText(change.path);
         if (change.creates) {
-          if (current !== null) return fail(`${change.path} exists now. Ask again.`);
+          if (current !== null)
+            return fail(t("{path} exists now. Ask again.", { path: change.path }));
           await writeProjectFile(project.path, change.path, change.after);
           await useProjectStore.getState().refreshFiles();
         } else {
-          if (current === null) return fail(`${change.path} is gone. Ask again.`);
+          if (current === null)
+            return fail(t("{path} is gone. Ask again.", { path: change.path }));
           const planned = planReplacements(current, change.replacements);
           if ("error" in planned) {
-            return fail("The file has changed since this was proposed. Ask again.");
+            return fail(t("The file has changed since this was proposed. Ask again."));
           }
           if (change.path === useProjectStore.getState().activeFile) {
             applyFixEdits(planned.edits);

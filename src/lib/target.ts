@@ -25,6 +25,8 @@ export const features = {
   /** The built-in grammar checker, and with it the choice of checker:
    *  the browser checks with the server's. */
   grammarChoice: !isWeb,
-  /** Reference sources outside the project: .bib files and Zotero. */
-  referenceSources: !isWeb,
+  /** Reference sources on this computer: .bib files and folders on
+   *  disk, and the Zotero app. The browser takes .bib files from your
+   *  projects and Zotero cloud instead. */
+  localSources: !isWeb,
 } as const;

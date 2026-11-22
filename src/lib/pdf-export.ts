@@ -4,6 +4,7 @@ import { exportPdf } from "@/lib/tauri";
 import { isWeb } from "@/lib/target";
 import { useProjectStore } from "@/store/project";
 import { usePreviewStore } from "@/store/preview";
+import { t } from "@scholarkit/i18n";
 
 /** Ask where to save the built PDF and copy it there. In the browser,
  *  download the PDF the preview shows. */
@@ -30,7 +31,7 @@ export async function exportPdfAs(): Promise<void> {
 function downloadPreviewPdf(name: string) {
   const bytes = usePreviewStore.getState().pdfBytes;
   if (!bytes) {
-    usePreviewStore.getState().setNotice("Compile the project first.");
+    usePreviewStore.getState().setNotice(t("Compile the project first."));
     return;
   }
   const url = URL.createObjectURL(

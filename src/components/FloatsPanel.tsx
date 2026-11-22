@@ -12,6 +12,7 @@ import { readProjectFile } from "@/lib/tauri";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 interface FloatRow extends FloatInfo {
   file: string;
@@ -20,10 +21,10 @@ interface FloatRow extends FloatInfo {
 }
 
 const GROUPS: { kind: FloatKind; label: string }[] = [
-  { kind: "figure", label: "Figures" },
-  { kind: "table", label: "Tables" },
-  { kind: "listing", label: "Listings" },
-  { kind: "algorithm", label: "Algorithms" },
+  { kind: "figure", label: t("Figures") },
+  { kind: "table", label: t("Tables") },
+  { kind: "listing", label: t("Listings") },
+  { kind: "algorithm", label: t("Algorithms") },
 ];
 
 /**
@@ -136,13 +137,13 @@ export function FloatsPanel() {
 
   return (
     <div className="flex h-full flex-col">
-      <SectionHeader label="Figures & tables" />
+      <SectionHeader label={t("Figures & tables")} />
       <div className="flex shrink-0 items-center gap-1.5 p-2">
         <div className="relative min-w-0 flex-1">
           <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-7 rounded-md pl-6 text-xs"
-            placeholder="Search"
+            placeholder={t("Search")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -152,7 +153,7 @@ export function FloatsPanel() {
         </div>
         <button
           type="button"
-          title="Show only floats without a caption or label"
+          title={t("Show only floats without a caption or label")}
           aria-pressed={issuesOnly}
           className={cn(
             "h-7 shrink-0 rounded-md border px-2 text-2xs tabular-nums transition-colors hover:bg-accent",
@@ -160,7 +161,7 @@ export function FloatsPanel() {
           )}
           onClick={() => setIssuesOnly((on) => !on)}
         >
-          Issues {issueCount}
+          {t("Issues {issueCount}", { issueCount })}
         </button>
       </div>
       <div className="flex-1 overflow-y-auto p-1.5">
@@ -168,12 +169,12 @@ export function FloatsPanel() {
           floats.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
             {activeFile
-              ? "No figures or tables in this document yet."
-              : "No file open."}
+              ? t("No figures or tables in this document yet.")
+              : t("No file open.")}
           </p>
         ) : visible.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
-            No floats match your filters.
+            {t("No floats match your filters.")}
           </p>
         ) : (
           GROUPS.map(({ kind, label }) => {
@@ -185,7 +186,7 @@ export function FloatsPanel() {
                 <div className="flex items-center rounded hover:bg-accent">
                   <button
                     type="button"
-                    title={isCollapsed ? "Expand" : "Collapse"}
+                    title={isCollapsed ? t("Expand") : t("Collapse")}
                     className="flex size-5 shrink-0 items-center justify-center"
                     onClick={() => toggle(kind)}
                   >
@@ -218,7 +219,11 @@ export function FloatsPanel() {
                         key={`${float.file}:${float.line}`}
                         type="button"
                         className="flex w-full items-start gap-2 rounded py-1 pr-1 pl-6 text-left hover:bg-accent"
-                        title={`${float.env} in ${float.file}:${float.line}`}
+                        title={t("{env} in {file}:{line}", {
+                          env: float.env,
+                          file: float.file,
+                          line: float.line,
+                        })}
                         onClick={() => goTo(float.file, float.line)}
                       >
                         {kind === "figure" && (
@@ -237,7 +242,7 @@ export function FloatsPanel() {
                               <span className="truncate text-xs">{float.caption}</span>
                             ) : (
                               <span className="truncate text-xs text-warning italic">
-                                No caption
+                                {t("No caption")}
                               </span>
                             )}
                           </span>
@@ -247,7 +252,9 @@ export function FloatsPanel() {
                                 {float.label}
                               </span>
                             ) : (
-                              <span className="shrink-0 text-warning">No label</span>
+                              <span className="shrink-0 text-warning">
+                                {t("No label")}
+                              </span>
                             )}
                             <span className="ml-auto min-w-0 truncate">
                               {float.file}:{float.line}

@@ -18,6 +18,7 @@ import {
 import { parseFrequencyList, SpellState } from "@/lib/spell";
 import type { GrammarError, GrammarIssue } from "@/lib/tauri";
 import { loadSettings, updateSettings } from "@/web/settings";
+import { t } from "@scholarkit/i18n";
 
 type Args = Record<string, unknown>;
 
@@ -72,12 +73,15 @@ async function load(lang: string): Promise<SpellState> {
   if (lang === "en") {
     const response = await fetch(wordsUrl);
     if (!response.ok)
-      throw "Could not load the dictionary. Reload the page to try again.";
+      throw t("Could not load the dictionary. Reload the page to try again.");
     return SpellState.fromLines(await response.text(), userWords());
   }
   const content = await storedList(lang);
   if (content === null)
-    throw `The dictionary for “${lang}” isn't downloaded yet. Download it in Settings.`;
+    throw t(
+      "The dictionary for “{lang}” isn't downloaded yet. Download it in Settings.",
+      { lang },
+    );
   return new SpellState(parseFrequencyList(content), userWords());
 }
 
@@ -140,7 +144,7 @@ async function requestCheck(
   } catch {
     throw {
       kind: "unavailable",
-      message: "Could not reach Polemic.",
+      message: t("Could not reach Polemic."),
       retryAfter: null,
     } satisfies GrammarError;
   }
@@ -158,7 +162,9 @@ async function requestCheck(
   } catch {
     throw {
       kind: "failed",
-      message: "LanguageTool gave an answer Polemic can't read. Try again in a moment.",
+      message: t(
+        "LanguageTool gave an answer Polemic can't read. Try again in a moment.",
+      ),
       retryAfter: null,
     } satisfies GrammarError;
   }
@@ -190,7 +196,7 @@ export function checkDoi(doi: string): void {
     doi.length <= 200 &&
     /^[!-~]+$/.test(doi) &&
     !/[?#\\"<>]/.test(doi);
-  if (!valid) throw "That isn't a valid DOI.";
+  if (!valid) throw t("That isn't a valid DOI.");
 }
 
 /** Percent-encodes what a URL path can't hold, as bib_lookup.rs does. */
@@ -203,7 +209,7 @@ export function encodeDoi(doi: string): string {
 
 async function lookupBibtex(doi: string): Promise<string> {
   if (!loadSettings().onlineLookup) {
-    throw "Online lookup is off. Turn it on to look up DOIs and arXiv IDs.";
+    throw t("Online lookup is off. Turn it on to look up DOIs and arXiv IDs.");
   }
   checkDoi(doi);
   let response: Response;
@@ -214,14 +220,17 @@ async function lookupBibtex(doi: string): Promise<string> {
       signal: AbortSignal.timeout(15_000),
     });
   } catch {
-    throw "Could not reach doi.org. Check your internet connection.";
+    throw t("Could not reach doi.org. Check your internet connection.");
   }
   if (response.status === 404)
-    throw "No record was found for that identifier. Check it for typos.";
-  if (!response.ok) throw `The lookup failed: doi.org answered ${response.status}.`;
+    throw t("No record was found for that identifier. Check it for typos.");
+  if (!response.ok)
+    throw t("The lookup failed: doi.org answered {status}.", {
+      status: response.status,
+    });
   const body = await response.text();
   if (!body.trimStart().startsWith("@")) {
-    throw "The registry has no BibTeX for that identifier. Add the entry by hand.";
+    throw t("The registry has no BibTeX for that identifier. Add the entry by hand.");
   }
   return body;
 }
@@ -238,7 +247,7 @@ export const writingCommands: Record<string, (args: Args) => unknown> = {
     const word = String(args.word ?? "")
       .trim()
       .toLowerCase();
-    if (!word) throw "There is no word to add.";
+    if (!word) throw t("There is no word to add.");
     const words = userWords();
     if (!words.includes(word)) saveUserWords([...words, word]);
     (await speller()).add(word);

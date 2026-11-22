@@ -7,11 +7,12 @@
  */
 
 import type { GrammarError, GrammarIssue } from "@/lib/tauri";
+import { t } from "@scholarkit/i18n";
 
 /** The blank line joining blocks into one request. */
 export const SEPARATOR = "\n\n";
 
-/** The Polemic server's limit per check (GRAMMAR_MAX_CHARS). */
+/** The Scholarkit server's limit per check (GRAMMAR_MAX_CHARS). */
 export const POLEMIC_MAX_CHARS = 100_000;
 
 /** How long to wait when a 429 carries no usable Retry-After. */
@@ -99,12 +100,12 @@ const grammarError = (
 export function rateLimited(seconds: number): GrammarError {
   return grammarError(
     "rateLimited",
-    `Too many grammar checks. Checking again in ${seconds} s.`,
+    t("Too many grammar checks. Checking again in {seconds} s.", { seconds }),
     seconds,
   );
 }
 
-/** The error for a non-2xx answer of a Polemic server, as grammar.rs
+/** The error for a non-2xx answer of a Scholarkit server, as grammar.rs
  *  maps them; LanguageTool's own 4xx text passes through. */
 export function errorFor(
   status: number,
@@ -112,19 +113,22 @@ export function errorFor(
   body: string,
 ): GrammarError {
   if (status === 401) {
-    return grammarError("signedOut", "Sign in again to check grammar with Polemic.");
+    return grammarError("signedOut", t("Sign in again to check grammar with Polemic."));
   }
   if (status === 402) {
     return grammarError(
       "planRequired",
-      "Grammar checking with Polemic needs a paid plan on this server.",
+      t("Grammar checking with Polemic needs a paid plan on this server."),
     );
   }
   if (status === 404) {
-    return grammarError("unavailable", "This Polemic server has no grammar checking.");
+    return grammarError(
+      "unavailable",
+      t("This Scholarkit server has no grammar checking."),
+    );
   }
   if (status === 413)
-    return grammarError("tooLong", "A paragraph is too long to check.");
+    return grammarError("tooLong", t("A paragraph is too long to check."));
   if (status === 429) {
     const seconds = /^\s*\d+\s*$/.test(retryAfter ?? "")
       ? Number(retryAfter)
@@ -134,7 +138,7 @@ export function errorFor(
   if (status >= 500) {
     return grammarError(
       "unavailable",
-      "Polemic grammar checking is unavailable right now.",
+      t("Polemic grammar checking is unavailable right now."),
     );
   }
   const text = body.trim();

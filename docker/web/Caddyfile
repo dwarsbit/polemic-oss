@@ -7,6 +7,10 @@
 	root * /srv
 	encode zstd gzip
 
+	# Scripts only from the app's own files: the page shares its origin with the signed-in
+	# account, so text from a project must never run as script here.
+	header Content-Security-Policy "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+
 	# Vite puts a content hash in these file names.
 	handle /projects/assets/* {
 		header Cache-Control "public, max-age=31536000, immutable"

@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/dwarsbit/polemic/actions/workflows/ci.yml"><img src="https://github.com/dwarsbit/polemic/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/dwarsbit/polemic/releases"><img src="https://img.shields.io/github/v/tag/dwarsbit/polemic?label=version&sort=semver&color=623E64" alt="Latest version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/dwarsbit/polemic?color=623E64" alt="License"></a>
+  <a href="https://github.com/dwarsbit/polemic-oss/actions/workflows/ci.yml"><img src="https://github.com/dwarsbit/polemic-oss/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/dwarsbit/polemic-oss/releases"><img src="https://img.shields.io/github/v/tag/dwarsbit/polemic-oss?label=version&sort=semver&color=623E64" alt="Latest version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/dwarsbit/polemic-oss?color=623E64" alt="License"></a>
   <a href="https://polemicapp.com/download"><img src="https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux-623E64" alt="Platforms: macOS, Windows and Linux"></a>
 </p>
 
@@ -79,24 +79,26 @@ switched off. See the [security page](https://polemicapp.com/docs/reference/secu
 
 ## Compared with Overleaf and TeXstudio
 
-|                                | Polemic              | Overleaf | TeXstudio |
-| ------------------------------ | -------------------- | -------- | --------- |
-| Runs on                        | Desktop              | Browser  | Desktop   |
-| Works offline                  | Yes                  | No       | Yes       |
-| Files on your own machine      | Yes                  | No       | Yes       |
-| Open source                    | Yes                  | Yes      | Yes       |
-| Visual editor                  | Yes                  | Yes      | No        |
-| Live PDF preview               | Yes                  | Yes      | Yes       |
-| SyncTeX                        | Yes                  | Yes      | Yes       |
-| Compile without installing TeX | Yes, with an account | Yes      | No        |
-| Comments                       | Yes                  | Yes      | No        |
-| Review links                   | Yes, with an account | Yes      | No        |
-| Edit together in real time     | No                   | Yes      | No        |
+|                                | Polemic                         | Overleaf | TeXstudio |
+| ------------------------------ | ------------------------------- | -------- | --------- |
+| Runs on                        | Desktop and browser             | Browser  | Desktop   |
+| Works offline                  | Yes                             | No       | Yes       |
+| Files on your own machine      | Yes                             | No       | Yes       |
+| Open source                    | Yes                             | Yes      | Yes       |
+| Visual editor                  | Yes                             | Yes      | No        |
+| Live PDF preview               | Yes                             | Yes      | Yes       |
+| SyncTeX                        | Yes                             | Yes      | Yes       |
+| Compile without installing TeX | Yes, with an account            | Yes      | No        |
+| Comments                       | Yes                             | Yes      | No        |
+| Review links                   | Yes, with an account            | Yes      | No        |
+| Edit together in real time     | In the browser, with an account | Yes      | No        |
 
-- **Compared with Overleaf**: Overleaf runs in the browser, and co-authors
-  can edit together in real time. Polemic runs on your desktop and works
-  offline. Reviewers comment from a link, and their comments come back to
-  your editor.
+- **Compared with Overleaf**: Overleaf runs in the browser. Polemic runs on
+  your desktop and works offline, and with a free account also in your
+  browser, where co-authors edit together in real time. In the desktop app,
+  your changes go out when you save and theirs arrive within seconds.
+  Reviewers comment from a link, and their comments come back to your
+  editor.
 - **Compared with TeXstudio**: both are desktop editors that compile with
   your own TeX distribution. Polemic adds a visual editor, comments, Zotero
   and review links.
@@ -156,6 +158,8 @@ pnpm tauri build
   Windows builds
 - [Content style](CONTENT.md): the rules for all public text, from the
   Polemic design system. Change them there first.
+- [Interface languages](packages/i18n/README.md): every message goes
+  through `t()`; `pnpm i18n` updates the catalogs in `src/locales`
 
 ## License
 

@@ -29,6 +29,7 @@ import { useDialogsStore } from "@/store/dialogs";
 import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 /** Saves the open project as a zip, with every file. */
 async function downloadProject() {
@@ -56,60 +57,60 @@ export function WebAppMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" title="Menu" aria-label="Menu">
+        <Button variant="ghost" size="icon-sm" title={t("Menu")} aria-label={t("Menu")}>
           <Menu />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-60">
         <DropdownMenuItem onSelect={() => dialogs().setPaletteOpen(true)}>
           <Command />
-          Command palette
+          {t("Command palette")}
           <DropdownMenuShortcut>{formatShortcut("Mod+P")}</DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => useSettingsStore.getState().setSettingsDialogOpen(true)}
         >
           <Settings />
-          Settings…
+          {t("Settings…")}
         </DropdownMenuItem>
         {projectOpen && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => dialogs().setShareOpen(true)}>
               <Share2 />
-              Share…
+              {t("Share…")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => dialogs().setOpenInDesktopOpen(true)}>
               <MonitorDown />
-              Open in the desktop app…
+              {t("Open in the desktop app…")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => void exportPdfAs()}>
               <Download />
-              Download PDF
+              {t("Download PDF")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => void downloadProject()}>
               <FileArchive />
-              Download project
+              {t("Download project")}
             </DropdownMenuItem>
           </>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void openUrl(HELP_URL)}>
           <LifeBuoy />
-          Polemic help
+          {t("Polemic help")}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => dialogs().setShortcutsOpen(true)}>
           <Keyboard />
-          Keyboard shortcuts
+          {t("Keyboard shortcuts")}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => void openUrl(ISSUES_URL)}>
           <MessageSquareWarning />
-          Report an issue…
+          {t("Report an issue…")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => dialogs().setAboutOpen(true)}>
           <Info />
-          About Polemic
+          {t("About Polemic")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

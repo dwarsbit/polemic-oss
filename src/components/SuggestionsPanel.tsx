@@ -24,6 +24,7 @@ import { flushPendingSerialize } from "@/lib/visual/pending-serialize";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
 
 interface Row {
   file: string;
@@ -35,10 +36,10 @@ interface Row {
 }
 
 const KIND_LABEL: Record<Change["kind"], string> = {
-  added: "Added",
-  deleted: "Deleted",
-  replaced: "Replaced",
-  highlight: "Highlighted",
+  added: t("Added"),
+  deleted: t("Deleted"),
+  replaced: t("Replaced"),
+  highlight: t("Highlighted"),
 };
 
 /** One line of plain-ish text for a row. */
@@ -54,8 +55,6 @@ function snippetOf(text: string, change: Change): string {
 
 const lineAt = (text: string, offset: number) =>
   text.slice(0, offset).split("\n").length;
-
-const pluralize = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 /**
  * Every suggestion in the project, grouped by file: author, kind and a
@@ -192,10 +191,26 @@ export function SuggestionsPanel() {
     const count = shown.filter((row) => targets.includes(row.file)).length;
     if (targets.length > 1) {
       const ok = await ask(
-        `${how === "accept" ? "Accept" : "Reject"} ${pluralize(count, "suggestion")} in ` +
-          `${targets.length} files?` +
-          (closed.length > 0 ? " Files that are not open are saved right away." : ""),
-        { title: how === "accept" ? "Accept all" : "Reject all", kind: "warning" },
+        (how === "accept"
+          ? tn(
+              count,
+              "Accept {count} suggestion in {files} files?",
+              "Accept {count} suggestions in {files} files?",
+              { files: targets.length },
+            )
+          : tn(
+              count,
+              "Reject {count} suggestion in {files} files?",
+              "Reject {count} suggestions in {files} files?",
+              { files: targets.length },
+            )) +
+          (closed.length > 0
+            ? ` ${t("Files that are not open are saved right away.")}`
+            : ""),
+        {
+          title: how === "accept" ? t("Accept all") : t("Reject all"),
+          kind: "warning",
+        },
       ).catch(() => false);
       if (!ok) return;
     }
@@ -221,7 +236,9 @@ export function SuggestionsPanel() {
     }
     if (done > 1) {
       flash(
-        `${how === "accept" ? "Accepted" : "Rejected"} in ${pluralize(done, "file")}.`,
+        how === "accept"
+          ? tn(done, "Accepted in {count} file.", "Accepted in {count} files.")
+          : tn(done, "Rejected in {count} file.", "Rejected in {count} files."),
       );
     }
   }
@@ -232,7 +249,7 @@ export function SuggestionsPanel() {
     const text = await currentText(file);
     if (text === null) return;
     if (await write(file, text, removeSetup(text), "input.removeChangesSetup")) {
-      flash("Track changes setup removed.");
+      flash(t("Track changes setup removed."));
     }
   }
 
@@ -253,7 +270,7 @@ export function SuggestionsPanel() {
       <Button
         variant="ghost"
         size="icon-xs"
-        title={`Accept ${what}`}
+        title={t("Accept {what}", { what })}
         onClick={() => onResolve("accept")}
       >
         <Check className="text-success" />
@@ -261,7 +278,7 @@ export function SuggestionsPanel() {
       <Button
         variant="ghost"
         size="icon-xs"
-        title={`Reject ${what}`}
+        title={t("Reject {what}", { what })}
         onClick={() => onResolve("reject")}
       >
         <X className="text-destructive" />
@@ -272,20 +289,23 @@ export function SuggestionsPanel() {
   if (rows.length === 0) {
     return (
       <div className="flex h-full flex-col">
-        <SectionHeader label="Suggestions" />
+        <SectionHeader label={t("Suggestions")} />
         <div className="flex flex-1 flex-col items-center justify-center gap-2 p-4 text-center">
           <FileDiff className="size-5 text-muted-foreground" />
           <p className="text-xs text-muted-foreground">
-            {texts === null ? "Looking for suggestions…" : "No suggestions."}
+            {texts === null ? t("Looking for suggestions…") : t("No suggestions.")}
           </p>
           {setupEdits !== null && (
             <Button
               variant="outline"
               size="xs"
-              title={`Remove \\usepackage{changes} and the author definitions from ${setupEdits}`}
+              title={t(
+                "Remove \\usepackage{changes} and the author definitions from {setupEdits}",
+                { setupEdits },
+              )}
               onClick={() => void removeTrackChangesSetup(setupEdits)}
             >
-              Remove track changes setup
+              {t("Remove track changes setup")}
             </Button>
           )}
           {message && <p className="text-xs text-muted-foreground">{message}</p>}
@@ -298,7 +318,7 @@ export function SuggestionsPanel() {
     <div className="h-full overflow-y-auto">
       <div className="sticky top-0 z-10 bg-card">
         <SectionHeader
-          label="Suggestions"
+          label={t("Suggestions")}
           count={rows.length}
           actions={resolveButtons(
             (how) =>
@@ -307,8 +327,10 @@ export function SuggestionsPanel() {
                 how,
               ),
             authorFilter === undefined
-              ? "all suggestions"
-              : `all of ${styles.get(authorFilter)?.name ?? "this author"}'s suggestions`,
+              ? t("all suggestions")
+              : t("all of {name}'s suggestions", {
+                  name: styles.get(authorFilter)?.name ?? t("this author"),
+                }),
           )}
         />
       </div>
@@ -324,7 +346,7 @@ export function SuggestionsPanel() {
             )}
             onClick={() => setAuthorFilter(undefined)}
           >
-            All
+            {t("All")}
           </button>
           {authorIds.map((id) => {
             const style = styles.get(id);
@@ -359,7 +381,7 @@ export function SuggestionsPanel() {
               </p>
               {resolveButtons(
                 (how) => void resolveFiles([file], how),
-                `all in ${file}`,
+                t("all in {file}", { file }),
               )}
             </div>
             <div className="flex flex-col gap-1.5">
@@ -379,7 +401,7 @@ export function SuggestionsPanel() {
                       <button
                         type="button"
                         className="min-w-0 flex-1 text-left"
-                        title={`Jump to line ${row.line}`}
+                        title={t("Jump to line {line}", { line: row.line })}
                         onClick={() => void jumpTo(row)}
                       >
                         <span className="line-clamp-3 break-words text-foreground">
@@ -395,13 +417,13 @@ export function SuggestionsPanel() {
                     <div className="mt-0.5 flex items-center pl-3.5 text-2xs text-muted-foreground">
                       <span className="min-w-0 flex-1 truncate">
                         {style?.name ?? row.change.author} ·{" "}
-                        {KIND_LABEL[row.change.kind]}
-                        {" · "}line {row.line}
+                        {KIND_LABEL[row.change.kind]} ·{" "}
+                        {t("line {line}", { line: row.line })}
                       </span>
                       <span className="flex opacity-0 group-focus-within:opacity-100 group-hover:opacity-100">
                         {resolveButtons(
                           (how) => void resolveRow(row, how),
-                          "this suggestion",
+                          t("this suggestion"),
                         )}
                       </span>
                     </div>

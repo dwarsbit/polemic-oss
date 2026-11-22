@@ -36,6 +36,7 @@ import { readProjectFile } from "@/lib/tauri";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 interface FileOutline {
   file: string;
@@ -120,7 +121,10 @@ async function moveSectionToFile(
     )
   ) {
     return {
-      text: `“${entry.title}” includes ${targetFile}, so it cannot move into it.`,
+      text: t("“{title}” includes {targetFile}, so it cannot move into it.", {
+        title: entry.title,
+        targetFile,
+      }),
       moved: false,
     };
   }
@@ -133,7 +137,12 @@ async function moveSectionToFile(
     targetText,
     plan.targetEdits,
   );
-  return moved ? { text: `Moved “${entry.title}” to ${targetFile}.`, moved } : null;
+  return moved
+    ? {
+        text: t("Moved “{title}” to {targetFile}.", { title: entry.title, targetFile }),
+        moved,
+      }
+    : null;
 }
 
 /** Nest the flat parsed entries by their section level. */
@@ -436,7 +445,7 @@ export function OutlinePanel() {
     // Success updates the status line through the step listener below.
     if (!done) {
       setMoveStatus({
-        text: `Cannot ${direction}: one of the files changed since.`,
+        text: t("Cannot {direction}: one of the files changed since.", { direction }),
         action: null,
       });
     }
@@ -451,8 +460,8 @@ export function OutlinePanel() {
         setEditTick((tick) => tick + 1);
         setMoveStatus(
           direction === "undo"
-            ? { text: "Move undone.", action: "redo" }
-            : { text: "Move redone.", action: "undo" },
+            ? { text: t("Move undone."), action: "redo" }
+            : { text: t("Move redone."), action: "undo" },
         );
       }),
     [],
@@ -509,11 +518,11 @@ export function OutlinePanel() {
   function showStructureMenu(file: string, entry: OutlineEntry) {
     const actions = structureActions(file, entry);
     const items: NativeMenuEntry[] = [
-      { id: "up", text: "Move Up", action: actions.up },
-      { id: "down", text: "Move Down", action: actions.down },
+      { id: "up", text: t("Move Up"), action: actions.up },
+      { id: "down", text: t("Move Down"), action: actions.down },
       "separator",
-      { id: "promote", text: "Promote", action: actions.promote },
-      { id: "demote", text: "Demote", action: actions.demote },
+      { id: "promote", text: t("Promote"), action: actions.promote },
+      { id: "demote", text: t("Demote"), action: actions.demote },
     ];
     void showNativeContextMenu(items);
   }
@@ -570,7 +579,10 @@ export function OutlinePanel() {
             type="button"
             className="min-w-0 flex-1 truncate py-1.5 text-left text-xs"
             data-outline-key={key}
-            title={`${node.entry.title}\nDrag to move (also into another file) · Alt+↑/↓ move · Alt+←/→ promote/demote`}
+            title={t(
+              "{title}\nDrag to move (also into another file) · Alt+↑/↓ move · Alt+←/→ promote/demote",
+              { title: node.entry.title },
+            )}
             onClick={() => {
               if (Date.now() - dragEndedAt.current < 300) return;
               goTo(file, node.entry.line);
@@ -604,7 +616,7 @@ export function OutlinePanel() {
 
   return (
     <div ref={rootRef} className="flex h-full flex-col">
-      <SectionHeader label="Outline" />
+      <SectionHeader label={t("Outline")} />
       {moveStatus !== null && (
         <div className="m-2 mb-1 flex items-start gap-2 rounded-md bg-muted px-2 py-1.5 text-xs text-muted-foreground">
           <span className="min-w-0 flex-1">{moveStatus.text}</span>
@@ -616,12 +628,12 @@ export function OutlinePanel() {
                 if (moveStatus.action !== null) void stepMove(moveStatus.action);
               }}
             >
-              {moveStatus.action === "undo" ? "Undo" : "Redo"}
+              {moveStatus.action === "undo" ? t("Undo") : t("Redo")}
             </button>
           )}
           <button
             type="button"
-            title="Dismiss"
+            title={t("Dismiss")}
             className="flex size-4 shrink-0 items-center justify-center hover:text-foreground"
             onClick={() => setMoveStatus(null)}
           >
@@ -633,7 +645,9 @@ export function OutlinePanel() {
         {docOutline === null && order !== null ? null : docOutline === null ||
           docOutline.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
-            {activeFile ? "No sections yet. Add one with \\section." : "No file open."}
+            {activeFile
+              ? t("No sections yet. Add one with \\section.")
+              : t("No file open.")}
           </p>
         ) : (
           docOutline.map((group) => {
@@ -658,7 +672,7 @@ export function OutlinePanel() {
                   )}
                   <button
                     type="button"
-                    title={`Open ${group.file}`}
+                    title={t("Open {file}", { file: group.file })}
                     className="min-w-0 flex-1 truncate py-1.5 pl-2 text-left text-xs font-medium text-muted-foreground hover:text-foreground"
                     onClick={() => goTo(group.file, 1)}
                     onDoubleClick={() => {
@@ -683,7 +697,7 @@ function Caret({ expanded, onClick }: { expanded: boolean; onClick: () => void }
   return (
     <button
       type="button"
-      title={expanded ? "Collapse" : "Expand"}
+      title={expanded ? t("Collapse") : t("Expand")}
       className="flex size-5 shrink-0 items-center justify-center"
       onClick={onClick}
     >

@@ -10,8 +10,13 @@ import {
   setVisualNote,
   type VisualChange,
 } from "@/lib/visual/track-changes";
+import { t } from "@scholarkit/i18n";
 
-const KIND_LABEL = { added: "Added", deleted: "Deleted", replaced: "Replaced" };
+const KIND_LABEL = {
+  added: t("Added"),
+  deleted: t("Deleted"),
+  replaced: t("Replaced"),
+};
 
 interface Hovered {
   change: VisualChange;
@@ -106,7 +111,7 @@ export function VisualChangeCard({
       <div className="flex items-center gap-1.5">
         <span className="size-2 rounded-full" style={{ background: style?.color }} />
         <span className="font-medium">
-          {style?.name ?? change.author ?? "Unknown author"}
+          {style?.name ?? change.author ?? t("Unknown author")}
         </span>
         <span className="text-muted-foreground">{KIND_LABEL[change.kind]}</span>
       </div>
@@ -117,7 +122,7 @@ export function VisualChangeCard({
         <Button
           variant="outline"
           size="xs"
-          title="A note on this suggestion, shown in the Comments panel"
+          title={t("A note on this suggestion, shown in the Comments panel")}
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => {
             const file = useProjectStore.getState().activeFile;
@@ -133,7 +138,7 @@ export function VisualChangeCard({
             });
           }}
         >
-          {change.note === null ? "Note" : "Edit note"}
+          {change.note === null ? t("Note") : t("Edit note")}
         </Button>
         <Button
           variant="outline"
@@ -141,7 +146,7 @@ export function VisualChangeCard({
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => resolve("accept")}
         >
-          Accept
+          {t("Accept")}
         </Button>
         <Button
           variant="outline"
@@ -149,7 +154,7 @@ export function VisualChangeCard({
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => resolve("reject")}
         >
-          Reject
+          {t("Reject")}
         </Button>
       </div>
     </div>

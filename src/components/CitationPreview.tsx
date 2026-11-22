@@ -13,6 +13,7 @@ import {
   type CiteStyle,
   type PreviewEntry,
 } from "@/lib/citation-preview";
+import { t } from "@scholarkit/i18n";
 
 /**
  * How an entry renders under a biblatex style: the in-text citation
@@ -37,9 +38,9 @@ export function CitationPreview({
   return (
     <div className="space-y-1.5 rounded-md border p-2">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium">Citation preview</span>
+        <span className="text-xs font-medium">{t("Citation preview")}</span>
         <Select value={style} onValueChange={(value) => setStyle(value as CiteStyle)}>
-          <SelectTrigger className="h-6 w-32 text-2xs" title="biblatex style">
+          <SelectTrigger className="h-6 w-32 text-2xs" title={t("biblatex style")}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -63,7 +64,7 @@ export function CitationPreview({
       </ul>
       <p className="border-t pt-1.5 text-xs leading-relaxed">
         {bibliography.length === 0 ? (
-          <span className="text-muted-foreground">Nothing to show yet.</span>
+          <span className="text-muted-foreground">{t("Nothing to show yet.")}</span>
         ) : (
           bibliography.map((segment, i) =>
             segment.italic ? (
@@ -75,7 +76,7 @@ export function CitationPreview({
         )}
       </p>
       <p className="text-2xs text-muted-foreground">
-        {note ?? "An approximation of biblatex's default options."}
+        {note ?? t("An approximation of biblatex's default options.")}
       </p>
     </div>
   );

@@ -4,7 +4,7 @@
 //! The device flow needs no redirect and no client secret: the host
 //! shows the user a short code to type on its own page while the
 //! editor polls for the token. Tokens go from the host straight into
-//! the OS credential store; no Polemic server is involved.
+//! the OS credential store; no Scholarkit server is involved.
 
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;

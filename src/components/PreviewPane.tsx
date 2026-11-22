@@ -22,6 +22,7 @@ import { useEditorStore } from "@/store/editor";
 import { placeInWords, showIssue, useFirstError } from "@/lib/show-issue";
 import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -58,7 +59,7 @@ export function PreviewPane() {
   const causePlace = causeIssue ? placeInWords(causeIssue) : null;
   const showCause = causeIssue && (
     <Button variant="outline" size="sm" onClick={() => showIssue(causeIssue)}>
-      Show the error
+      {t("Show the error")}
     </Button>
   );
   const notice = usePreviewStore((s) => s.notice);
@@ -130,7 +131,7 @@ export function PreviewPane() {
       if (!cancelled) {
         usePreviewStore.setState({
           status: "error",
-          error: "The PDF could not be shown. Compile again to make a new one.",
+          error: t("The PDF could not be shown. Compile again to make a new one."),
         });
       }
     });
@@ -198,7 +199,7 @@ export function PreviewPane() {
   return (
     <div className="flex h-full w-full flex-col">
       <div className="@container flex h-9 shrink-0 items-center gap-2 border-b px-3 text-muted-foreground">
-        <span className="text-xs font-medium text-foreground">Preview</span>
+        <span className="text-xs font-medium text-foreground">{t("Preview")}</span>
         {pageCount > 0 && (
           <span className="text-2xs whitespace-nowrap tabular-nums">
             {currentPage} / {pageCount}
@@ -206,12 +207,14 @@ export function PreviewPane() {
         )}
         <div className="ml-auto flex shrink-0 items-center gap-0.5">
           <span className="mr-1 hidden text-2xs whitespace-nowrap @sm:inline">
-            {modKey}click: source
+            {t("{modKey}click: source", { modKey })}
           </span>
           <button
             type="button"
             className="rounded-md p-1 hover:bg-accent hover:text-foreground"
-            title={`Export PDF… (${formatShortcut("Mod+E")})`}
+            title={t("Export PDF… ({formatShortcut})", {
+              formatShortcut: formatShortcut("Mod+E"),
+            })}
             onClick={() => void handleExport()}
           >
             <Download className="size-3.5" />
@@ -220,7 +223,7 @@ export function PreviewPane() {
             <button
               type="button"
               className="rounded-md p-1 hover:bg-accent hover:text-foreground"
-              title="Open in default viewer"
+              title={t("Open in default viewer")}
               onClick={() => void handleOpenPdf()}
             >
               <ExternalLink className="size-3.5" />
@@ -229,7 +232,7 @@ export function PreviewPane() {
           <button
             type="button"
             className="rounded-md p-1 hover:bg-accent hover:text-foreground"
-            title="Zoom out"
+            title={t("Zoom out")}
             onClick={zoomOut}
           >
             <ZoomOut className="size-3.5" />
@@ -240,7 +243,7 @@ export function PreviewPane() {
           <button
             type="button"
             className="rounded-md p-1 hover:bg-accent hover:text-foreground"
-            title="Zoom in"
+            title={t("Zoom in")}
             onClick={zoomIn}
           >
             <ZoomIn className="size-3.5" />
@@ -260,7 +263,7 @@ export function PreviewPane() {
             <button
               type="button"
               className="rounded p-0.5 hover:bg-accent"
-              title="Dismiss"
+              title={t("Dismiss")}
               onClick={() => usePreviewStore.getState().setNotice(null)}
             >
               <X className="size-3.5" />
@@ -275,8 +278,20 @@ export function PreviewPane() {
               <p className="max-h-24 overflow-auto whitespace-pre-wrap">
                 {error ??
                   (cause
-                    ? `The compile failed: ${cause.title}${causePlace ? ` (${causePlace})` : ""}. This is the previous PDF.`
-                    : "The last compile failed. This is the previous PDF; the errors are in Issues.")}
+                    ? causePlace
+                      ? t(
+                          "The compile failed: {cause} ({place}). This is the previous PDF.",
+                          {
+                            cause: cause.title,
+                            place: causePlace,
+                          },
+                        )
+                      : t("The compile failed: {cause}. This is the previous PDF.", {
+                          cause: cause.title,
+                        })
+                    : t(
+                        "The last compile failed. This is the previous PDF; the errors are in Issues.",
+                      ))}
               </p>
               {error ? <CompileErrorActions kind={errorKind} /> : showCause}
             </div>
@@ -287,7 +302,7 @@ export function PreviewPane() {
         ) : status === "error" && error ? (
           <div className="flex h-full flex-col items-center gap-2 p-6">
             <AlertTriangle className="size-8 text-destructive" />
-            <p className="text-sm font-medium">The compile failed</p>
+            <p className="text-sm font-medium">{t("The compile failed")}</p>
             <pre className="max-h-full w-full overflow-auto rounded bg-card p-3 font-mono text-xs whitespace-pre-wrap">
               {error}
             </pre>
@@ -296,7 +311,7 @@ export function PreviewPane() {
         ) : status === "error" && cause ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center">
             <AlertTriangle className="size-8 text-destructive" />
-            <p className="text-sm font-medium">The compile failed</p>
+            <p className="text-sm font-medium">{t("The compile failed")}</p>
             <p className="max-w-80 text-sm">{cause.title}</p>
             {causePlace && (
               <p className="font-mono text-xs text-muted-foreground">{causePlace}</p>
@@ -306,7 +321,7 @@ export function PreviewPane() {
         ) : status === "error" ? (
           <div className="flex h-full items-center justify-center">
             <p className="max-w-64 text-center text-sm text-muted-foreground">
-              The errors are listed in Issues, below the editor.
+              {t("The errors are listed in Issues, below the editor.")}
             </p>
           </div>
         ) : (
@@ -314,8 +329,10 @@ export function PreviewPane() {
             <div className="flex max-w-64 flex-col items-center gap-2 text-muted-foreground">
               <FileText className="size-8" />
               <p className="text-center text-sm">
-                Compile to see the PDF here. {formatShortcut("Mod+S")} saves and
-                compiles.
+                {t(
+                  "Compile to see the PDF here. {formatShortcut} saves and compiles.",
+                  { formatShortcut: formatShortcut("Mod+S") },
+                )}
               </p>
             </div>
           </div>

@@ -19,6 +19,7 @@ import { useProjectStore } from "@/store/project";
 import { useSearchStore, type SearchScope } from "@/store/search";
 import { cn } from "cn";
 import { formatShortcut } from "@/lib/platform";
+import { t, tn } from "@scholarkit/i18n";
 
 interface Hit {
   file: string;
@@ -28,10 +29,6 @@ interface Hit {
   text: string;
   /** Match ranges within `text`. */
   matches: [number, number][];
-}
-
-function pluralize(count: number, word: string): string {
-  return `${count} ${word}${count === 1 ? "" : "es"}`;
 }
 
 /** Project-relative paths of all .tex files in the tree, depth first. */
@@ -174,10 +171,13 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
     if (target === undefined) {
       const total = hits.reduce((sum, hit) => sum + hit.matches.length, 0);
       const ok = await ask(
-        `Replace ${pluralize(total, "match")} in ${targetFiles.length} ` +
-          `file${targetFiles.length === 1 ? "" : "s"} with “${replacement}”? ` +
-          "Files that are not open are saved right away.",
-        { title: "Replace all", kind: "warning" },
+        `${tn(total, "Replace {count} match", "Replace {count} matches")} ${tn(
+          targetFiles.length,
+          "in {count} file with “{replacement}”?",
+          "in {count} files with “{replacement}”?",
+          { replacement },
+        )} ${t("Files that are not open are saved right away.")}`,
+        { title: t("Replace all"), kind: "warning" },
       );
       if (!ok) return;
     }
@@ -209,7 +209,7 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
       setDiskTick((tick) => tick + 1);
     }
     if (target === undefined) {
-      setMessage(`Replaced ${pluralize(replaced, "match")}.`);
+      setMessage(tn(replaced, "Replaced {count} match.", "Replaced {count} matches."));
       window.setTimeout(() => setMessage(null), 4000);
     }
   }
@@ -236,7 +236,7 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
         <Input
           autoFocus
           className="h-7 min-w-0 flex-1 rounded-md border-none bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
-          placeholder="Search in project"
+          placeholder={t("Search in project")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
@@ -246,15 +246,18 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
         {shownHits !== null && (
           <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
             {shownHits.length === 1
-              ? "1 match"
-              : `${shownHits.length} matches in ${fileCount} files`}
+              ? t("1 match")
+              : t("{count} matches in {fileCount} files", {
+                  count: shownHits.length,
+                  fileCount,
+                })}
           </span>
         )}
         <Button
           variant="ghost"
           size="icon"
           className={cn("size-6 shrink-0", !replaceOpen && "text-muted-foreground")}
-          title="Replace"
+          title={t("Replace")}
           aria-pressed={replaceOpen}
           onClick={toggleReplace}
         >
@@ -264,7 +267,7 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
           variant="ghost"
           size="icon"
           className={cn("size-6 shrink-0", !caseSensitive && "text-muted-foreground")}
-          title="Match case"
+          title={t("Match case")}
           onClick={toggleCase}
         >
           <CaseSensitive className="size-3.5" />
@@ -273,7 +276,7 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
           variant="ghost"
           size="icon"
           className={cn("size-6 shrink-0", !includeDeleted && "text-muted-foreground")}
-          title="Include text that suggestions delete"
+          title={t("Include text that suggestions delete")}
           aria-pressed={includeDeleted}
           onClick={toggleIncludeDeleted}
         >
@@ -286,10 +289,10 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
               type="button"
               title={
                 s === "all"
-                  ? "All matches"
+                  ? t("All matches")
                   : s === "math"
-                    ? "Matches in math mode"
-                    : "Matches outside math"
+                    ? t("Matches in math mode")
+                    : t("Matches outside math")
               }
               className={cn(
                 "rounded px-1.5 py-0.5 text-2xs capitalize transition-colors",
@@ -307,7 +310,7 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
           variant="ghost"
           size="icon"
           className="size-6 shrink-0"
-          title="Hide panel"
+          title={t("Hide panel")}
           onClick={onToggle}
         >
           <ChevronDown className="size-3.5" />
@@ -318,7 +321,7 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
           <Replace className="size-3.5 shrink-0 text-muted-foreground" />
           <Input
             className="h-7 min-w-0 flex-1 rounded-md border-none bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
-            placeholder="Replace with"
+            placeholder={t("Replace with")}
             value={replacement}
             onChange={(e) => setReplacement(e.target.value)}
             onKeyDown={(e) => {
@@ -333,20 +336,22 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
             size="sm"
             className="h-6 shrink-0 px-2 text-xs"
             disabled={shownHits === null || shownHits.length === 0}
-            title={`Replace all (${formatShortcut("Mod+Enter")})`}
+            title={t("Replace all ({formatShortcut})", {
+              formatShortcut: formatShortcut("Mod+Enter"),
+            })}
             onClick={() => void replace()}
           >
-            Replace all
+            {t("Replace all")}
           </Button>
         </div>
       )}
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         {shownHits === null ? (
           <p className="px-1 py-1 text-xs text-muted-foreground">
-            Type to search across all .tex files in the project.
+            {t("Type to search across all .tex files in the project.")}
           </p>
         ) : shownHits.length === 0 ? (
-          <p className="px-1 py-1 text-xs text-muted-foreground">No matches.</p>
+          <p className="px-1 py-1 text-xs text-muted-foreground">{t("No matches.")}</p>
         ) : (
           <ul className="space-y-0.5">
             {shownHits.map((hit, index) => (
@@ -380,10 +385,10 @@ export function SearchPanel({ onToggle }: { onToggle: () => void }) {
                     <button
                       type="button"
                       className="absolute right-1 top-0.5 hidden rounded border bg-card px-1.5 text-2xs text-muted-foreground hover:text-foreground group-hover:block"
-                      title="Replace the matches on this line"
+                      title={t("Replace the matches on this line")}
                       onClick={() => void replace({ file: hit.file, line: hit.line })}
                     >
-                      Replace
+                      {t("Replace")}
                     </button>
                   )}
                 </div>

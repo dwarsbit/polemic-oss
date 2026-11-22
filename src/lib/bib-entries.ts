@@ -6,6 +6,7 @@
  */
 
 import type { FileEntry } from "./tauri";
+import { t } from "@scholarkit/i18n";
 
 export interface BibField {
   name: string;
@@ -466,37 +467,37 @@ export function entryTitle(entry: Pick<BibEntry, "fields">): string {
 /** Friendly names for the common BibTeX types; unknown types fall
  *  back to the raw name. */
 export const TYPE_LABELS: Record<string, string> = {
-  article: "Journal article",
-  inproceedings: "Conference paper",
-  conference: "Conference paper",
-  incollection: "Book chapter",
-  book: "Book",
-  inbook: "Book section",
-  mvbook: "Multi-volume book",
-  bookinbook: "Book in book",
-  suppbook: "Book supplement",
-  booklet: "Booklet",
-  collection: "Collection",
-  mvcollection: "Multi-volume collection",
-  suppcollection: "Collection supplement",
-  thesis: "Thesis",
-  report: "Report",
-  periodical: "Periodical",
-  mvproceedings: "Multi-volume proceedings",
-  reference: "Reference work",
-  mvreference: "Multi-volume reference work",
-  inreference: "Reference entry",
-  software: "Software",
-  phdthesis: "PhD thesis",
-  mastersthesis: "Master's thesis",
-  techreport: "Technical report",
-  unpublished: "Unpublished",
-  proceedings: "Proceedings",
-  manual: "Manual",
-  online: "Online source",
-  dataset: "Dataset",
-  patent: "Patent",
-  misc: "Miscellaneous",
+  article: t("Journal article"),
+  inproceedings: t("Conference paper"),
+  conference: t("Conference paper"),
+  incollection: t("Book chapter"),
+  book: t("Book"),
+  inbook: t("Book section"),
+  mvbook: t("Multi-volume book"),
+  bookinbook: t("Book in book"),
+  suppbook: t("Book supplement"),
+  booklet: t("Booklet"),
+  collection: t("Collection"),
+  mvcollection: t("Multi-volume collection"),
+  suppcollection: t("Collection supplement"),
+  thesis: t("Thesis"),
+  report: t("Report"),
+  periodical: t("Periodical"),
+  mvproceedings: t("Multi-volume proceedings"),
+  reference: t("Reference work"),
+  mvreference: t("Multi-volume reference work"),
+  inreference: t("Reference entry"),
+  software: t("Software"),
+  phdthesis: t("PhD thesis"),
+  mastersthesis: t("Master's thesis"),
+  techreport: t("Technical report"),
+  unpublished: t("Unpublished"),
+  proceedings: t("Proceedings"),
+  manual: t("Manual"),
+  online: t("Online source"),
+  dataset: t("Dataset"),
+  patent: t("Patent"),
+  misc: t("Miscellaneous"),
 };
 
 /** The entry type's friendly label (raw name when unknown). */

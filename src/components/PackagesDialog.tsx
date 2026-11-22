@@ -25,6 +25,7 @@ import { texPackageInfo, type TexPackageInfo } from "@/lib/tauri";
 import { useEditorStore } from "@/store/editor";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /**
  * The package manager: the document's packages at the top (add and
@@ -139,7 +140,7 @@ export function PackagesDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[540px] max-h-[90vh] w-full max-w-3xl flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl">
         <DialogHeader className="px-6 pt-5 pb-3">
-          <DialogTitle>Packages</DialogTitle>
+          <DialogTitle>{t("Packages")}</DialogTitle>
         </DialogHeader>
         <div className="flex min-h-0 flex-1 gap-0">
           <div className="flex min-h-0 min-w-0 flex-1 flex-col border-r">
@@ -148,7 +149,7 @@ export function PackagesDialog({
               <Input
                 autoFocus
                 className="h-7 border-none bg-transparent px-0 text-xs shadow-none focus-visible:ring-0"
-                placeholder="Search CTAN…"
+                placeholder={t("Search CTAN…")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -161,7 +162,7 @@ export function PackagesDialog({
               {docPackages.length > 0 && (
                 <>
                   <p className="px-1 pb-1 text-2xs font-medium tracking-wide text-muted-foreground uppercase">
-                    In this document
+                    {t("In this document")}
                   </p>
                   <ul className="mb-3">
                     {docPackages.map((name) => {
@@ -191,7 +192,7 @@ export function PackagesDialog({
                             </button>
                             <button
                               type="button"
-                              title={`Remove ${name} from the document`}
+                              title={t("Remove {name} from the document", { name })}
                               className="shrink-0 rounded p-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-destructive"
                               onClick={() => removeUsepackage(name)}
                             >
@@ -216,7 +217,7 @@ export function PackagesDialog({
               )}
               {shownResults === null ? (
                 <p className="px-2 py-1 text-xs text-muted-foreground">
-                  Type to search the CTAN catalog for packages and descriptions.
+                  {t("Type to search the CTAN catalog for packages and descriptions.")}
                 </p>
               ) : (
                 <ul>
@@ -246,7 +247,7 @@ export function PackagesDialog({
           <div className="w-64 shrink-0 overflow-y-auto p-3 text-sm">
             {selected === null ? (
               <p className="text-xs text-muted-foreground">
-                Select a package to see what it does.
+                {t("Select a package to see what it does.")}
               </p>
             ) : (
               <div className="space-y-2">
@@ -265,16 +266,16 @@ export function PackagesDialog({
                   )}
                 <p className="flex items-center gap-1.5 text-xs">
                   {selectedInfo === undefined ? (
-                    "Checking your TeX distribution…"
+                    t("Checking your TeX distribution…")
                   ) : selectedInfo.installed ? (
                     <>
                       <Check className="size-3.5 text-success" />
-                      Installed in your TeX distribution
+                      {t("Installed in your TeX distribution")}
                     </>
                   ) : (
                     <>
                       <CircleAlert className="size-3.5 text-warning" />
-                      Not found in your TeX distribution
+                      {t("Not found in your TeX distribution")}
                     </>
                   )}
                 </p>
@@ -283,10 +284,10 @@ export function PackagesDialog({
                     variant="outline"
                     size="sm"
                     onClick={() => void openUrl(ctanPageUrl(selected))}
-                    title="Open the CTAN page with the documentation"
+                    title={t("Open the CTAN page with the documentation")}
                   >
                     <ExternalLink />
-                    Docs
+                    {t("Docs")}
                   </Button>
                   <Button
                     size="sm"
@@ -294,12 +295,12 @@ export function PackagesDialog({
                     disabled={docPackages.includes(selected)}
                     title={
                       docPackages.includes(selected)
-                        ? "Already in this document"
-                        : "Add \\usepackage to the document"
+                        ? t("Already in this document")
+                        : t("Add \\usepackage to the document")
                     }
                   >
                     <Plus />
-                    {docPackages.includes(selected) ? "Added" : "Add"}
+                    {docPackages.includes(selected) ? t("Added") : t("Add")}
                   </Button>
                 </div>
               </div>

@@ -11,7 +11,7 @@
 //! so builds from source sign in out of the box. A fork can use its
 //! own OAuth App (device flow enabled) by setting
 //! POLEMIC_GITHUB_CLIENT_ID at build time or at run time. No client
-//! secret exists or is needed, and no Polemic server is involved: the
+//! secret exists or is needed, and no Scholarkit server is involved: the
 //! editor talks to github.com directly.
 
 use std::sync::atomic::AtomicBool;

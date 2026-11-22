@@ -10,6 +10,7 @@
 
 import type { ZoteroItemData } from "./zotero-convert";
 import { zoteroLocalFetch } from "./tauri";
+import { t } from "@scholarkit/i18n";
 
 const WEB_BASE = "https://api.zotero.org";
 
@@ -34,7 +35,9 @@ async function fetchJson(url: string, init?: RequestInit): Promise<unknown> {
     });
     if (!response.ok) {
       throw new Error(
-        `Zotero answered ${response.status}. Check that Zotero is up to date.`,
+        t("Zotero answered {status}. Check that Zotero is up to date.", {
+          status: response.status,
+        }),
       );
     }
     return await response.json();

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { usePresenceStore, type Peer } from "@/store/presence";
 import { useProjectStore } from "@/store/project";
 import { initialsOf } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 /** How many people show before "+N". */
 const SHOWN = 4;
@@ -31,7 +32,10 @@ export function PresenceAvatars() {
   const more = people.length - shown.length;
 
   return (
-    <div className="flex items-center -space-x-1.5" aria-label="Also in this project">
+    <div
+      className="flex items-center -space-x-1.5"
+      aria-label={t("Also in this project")}
+    >
       {shown.map((person) => {
         const where = person.file ? `, in ${person.file}` : "";
         const canOpen = person.file !== null && person.file !== activeFile;

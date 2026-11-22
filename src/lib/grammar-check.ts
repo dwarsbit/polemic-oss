@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { extractProse, sourceRange, type ProseBlock } from "@/lib/prose";
 import { checkGrammar, type GrammarError, type GrammarIssue } from "@/lib/tauri";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Grammar and style hints over a document's prose (see lib/prose and
@@ -166,7 +167,9 @@ export async function runGrammarCheck(view: EditorView): Promise<void> {
       .map((issue) =>
         Decoration.mark({
           class: "cm-grammar",
-          attributes: { title: `${issue.message} (right-click for fixes)` },
+          attributes: {
+            title: t("{message} (right-click for fixes)", { message: issue.message }),
+          },
           issue,
         }).range(issue.from, issue.to),
       ),

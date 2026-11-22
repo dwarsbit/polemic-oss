@@ -19,6 +19,7 @@ import { readProjectFile, writeProjectFile, type FileEntry } from "@/lib/tauri";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
 
 interface LabelRowData {
   name: string;
@@ -223,15 +224,15 @@ export function LabelsPanel() {
       return;
     }
     if (newName.length === 0) {
-      setRenameError("Enter a name.");
+      setRenameError(t("Enter a name."));
       return;
     }
     if (!isValidLabelName(newName)) {
-      setRenameError("Not a valid label name.");
+      setRenameError(t("Not a valid label name."));
       return;
     }
     if (labelNames.has(newName)) {
-      setRenameError(`A label "${newName}" already exists.`);
+      setRenameError(t('A label "{newName}" already exists.', { newName }));
       return;
     }
     if (scanned === null) return;
@@ -269,8 +270,11 @@ export function LabelsPanel() {
     setRename(null);
     setRenameError(null);
     setMessage(
-      `Renamed in ${plan.size} file${plan.size === 1 ? "" : "s"}, ` +
-        `${occurrences} occurrence${occurrences === 1 ? "" : "s"}.`,
+      `${tn(plan.size, "Renamed in {count} file,", "Renamed in {count} files,")} ${tn(
+        occurrences,
+        "{count} occurrence.",
+        "{count} occurrences.",
+      )}`,
     );
     diskCache.current.files = [];
     setScanTick((tick) => tick + 1);
@@ -300,7 +304,7 @@ export function LabelsPanel() {
                 autoFocus
                 className="h-6 min-w-0 flex-1 rounded-md px-1 text-xs"
                 value={rename.draft}
-                title="Enter to rename everywhere, Esc to cancel"
+                title={t("Enter to rename everywhere, Esc to cancel")}
                 onFocus={(e) => e.currentTarget.select()}
                 onChange={(e) => setRename({ name: row.name, draft: e.target.value })}
                 onBlur={() => {
@@ -323,7 +327,7 @@ export function LabelsPanel() {
                 variant="ghost"
                 size="icon-sm"
                 className="ml-1 size-5 shrink-0"
-                title="Cancel"
+                title={t("Cancel")}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   setRename(null);
@@ -345,12 +349,12 @@ export function LabelsPanel() {
               </button>
               {row.refs === 0 ? (
                 <span className="mr-1 shrink-0 rounded-full border border-warning/50 px-1.5 py-0 text-2xs leading-4 text-warning">
-                  Unused
+                  {t("Unused")}
                 </span>
               ) : (
                 <span
                   className="mr-1.5 shrink-0 text-2xs tabular-nums text-muted-foreground"
-                  title={`${row.refs} reference${row.refs === 1 ? "" : "s"}`}
+                  title={tn(row.refs, "{count} reference", "{count} references")}
                 >
                   {row.refs}
                 </span>
@@ -361,7 +365,7 @@ export function LabelsPanel() {
               <button
                 type="button"
                 className="ml-1 flex size-5 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-                title={`Rename ${row.name} (F2)`}
+                title={t("Rename {name} (F2)", { name: row.name })}
                 onClick={() => startRename(row.name)}
               >
                 <Pencil className="size-3" />
@@ -378,13 +382,13 @@ export function LabelsPanel() {
 
   return (
     <div className="flex h-full flex-col">
-      <SectionHeader label="Labels" />
+      <SectionHeader label={t("Labels")} />
       <div className="flex shrink-0 items-center gap-1.5 p-2">
         <div className="relative min-w-0 flex-1">
           <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-7 rounded-md pl-6 text-xs"
-            placeholder="Search labels"
+            placeholder={t("Search labels")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -397,8 +401,8 @@ export function LabelsPanel() {
         {scanned === null ? null : rows.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
             {query.trim().length > 0
-              ? "No labels match your search."
-              : "No labels yet. Add one with \\label."}
+              ? t("No labels match your search.")
+              : t("No labels yet. Add one with \\label.")}
           </p>
         ) : (
           groups.map(([group, groupRows]) => {
@@ -410,7 +414,7 @@ export function LabelsPanel() {
                   {groupRows.length > 1 ? (
                     <button
                       type="button"
-                      title={isCollapsed ? "Expand" : "Collapse"}
+                      title={isCollapsed ? t("Expand") : t("Collapse")}
                       className="flex size-5 shrink-0 items-center justify-center"
                       onClick={() => toggle(key)}
                     >
@@ -442,7 +446,7 @@ export function LabelsPanel() {
             <div className="flex items-center rounded hover:bg-accent">
               <button
                 type="button"
-                title={collapsed.has("undefined") ? "Expand" : "Collapse"}
+                title={collapsed.has("undefined") ? t("Expand") : t("Collapse")}
                 className="flex size-5 shrink-0 items-center justify-center"
                 onClick={() => toggle("undefined")}
               >
@@ -454,7 +458,7 @@ export function LabelsPanel() {
                 />
               </button>
               <span className="min-w-0 flex-1 truncate py-1.5 text-xs font-medium text-warning">
-                Undefined references
+                {t("Undefined references")}
               </span>
               <span className="mr-1 shrink-0 text-2xs tabular-nums text-muted-foreground">
                 {undefinedRefs.length}
@@ -469,7 +473,11 @@ export function LabelsPanel() {
                   <button
                     type="button"
                     className="min-w-0 flex-1 truncate py-1.5 text-left text-xs"
-                    title={`${ref.count} reference${ref.count === 1 ? "" : "s"} without a label`}
+                    title={tn(
+                      ref.count,
+                      "{count} reference without a label",
+                      "{count} references without a label",
+                    )}
                     onClick={() => goTo(ref.file, ref.line)}
                   >
                     {ref.name}

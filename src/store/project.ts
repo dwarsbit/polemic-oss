@@ -27,6 +27,7 @@ import { useSettingsStore } from "@/store/settings";
 import { isWeb } from "@/lib/target";
 import { mergeText, type FolderChange } from "@/lib/link-sync";
 import { useLinkStore } from "@/store/link";
+import { t } from "@scholarkit/i18n";
 
 interface ProjectState {
   project: api.ProjectInfo | null;
@@ -184,13 +185,16 @@ function withoutWritten(
 
 /** Ask before a save replaces a version someone else wrote. */
 async function confirmOverwrite(path: string): Promise<boolean> {
-  const message = `${path} was changed outside Polemic since it was opened. Overwrite those changes with your version?`;
+  const message = t(
+    "{path} was changed outside Polemic since it was opened. Overwrite those changes with your version?",
+    { path },
+  );
   try {
     return await ask(message, {
-      title: "File changed on disk",
+      title: t("File changed on disk"),
       kind: "warning",
-      okLabel: "Overwrite",
-      cancelLabel: "Cancel",
+      okLabel: t("Overwrite"),
+      cancelLabel: t("Cancel"),
     });
   } catch {
     // Browser dev: no native dialog.
@@ -275,12 +279,18 @@ export const useProjectStore = create<ProjectState>((set, get) => {
       await get().flushBuffers();
       return true;
     } catch (e) {
-      return ask(`Some changes could not be saved:\n\n${e}\n\n${question}`, {
-        title: "Unsaved changes",
-        kind: "warning",
-        okLabel,
-        cancelLabel: "Keep project open",
-      }).catch(() => false);
+      return ask(
+        t("Some changes could not be saved:\n\n{error}\n\n{question}", {
+          error: String(e),
+          question,
+        }),
+        {
+          title: t("Unsaved changes"),
+          kind: "warning",
+          okLabel,
+          cancelLabel: t("Keep project open"),
+        },
+      ).catch(() => false);
     }
   }
 
@@ -402,8 +412,8 @@ export const useProjectStore = create<ProjectState>((set, get) => {
       if (
         get().project &&
         !(await saveBeforeLeaving(
-          "Open the other project anyway and lose them?",
-          "Open without saving",
+          t("Open the other project anyway and lose them?"),
+          t("Open without saving"),
         ))
       ) {
         return;
@@ -506,8 +516,8 @@ export const useProjectStore = create<ProjectState>((set, get) => {
     leaveProject: async () => {
       if (
         !(await saveBeforeLeaving(
-          "Close the project anyway and lose them?",
-          "Close without saving",
+          t("Close the project anyway and lose them?"),
+          t("Close without saving"),
         ))
       ) {
         return false;

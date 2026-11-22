@@ -1,5 +1,6 @@
 import { ensurePackages } from "@/lib/editor-figure";
 import { insertAtCursor } from "@/lib/editor-insert";
+import { t } from "@scholarkit/i18n";
 
 export interface TikzSnippet {
   id: string;
@@ -14,15 +15,15 @@ export interface TikzSnippet {
 export const TIKZ_SNIPPETS: TikzSnippet[] = [
   {
     id: "scaffold",
-    title: "Insert TikZ picture",
-    keywords: "tikz scaffold empty basic",
+    title: t("Insert TikZ picture"),
+    keywords: t("tikz scaffold empty basic"),
     packages: ["tikz"],
     template: "\\begin{tikzpicture}\n  \n\\end{tikzpicture}",
   },
   {
     id: "axes",
-    title: "Insert TikZ: axes with grid",
-    keywords: "tikz axes coordinate grid plot math",
+    title: t("Insert TikZ: axes with grid"),
+    keywords: t("tikz axes coordinate grid plot math"),
     packages: ["tikz"],
     template: [
       "\\begin{tikzpicture}",
@@ -36,8 +37,8 @@ export const TIKZ_SNIPPETS: TikzSnippet[] = [
   },
   {
     id: "plot",
-    title: "Insert TikZ: pgfplots function plot",
-    keywords: "tikz pgfplots function graph plot math",
+    title: t("Insert TikZ: pgfplots function plot"),
+    keywords: t("tikz pgfplots function graph plot math"),
     packages: ["pgfplots"],
     template: [
       "\\begin{tikzpicture}",
@@ -53,8 +54,8 @@ export const TIKZ_SNIPPETS: TikzSnippet[] = [
   },
   {
     id: "tree",
-    title: "Insert TikZ: tree",
-    keywords: "tikz tree nodes hierarchy diagram",
+    title: t("Insert TikZ: tree"),
+    keywords: t("tikz tree nodes hierarchy diagram"),
     packages: ["tikz"],
     template: [
       "\\begin{tikzpicture}[",
@@ -71,8 +72,8 @@ export const TIKZ_SNIPPETS: TikzSnippet[] = [
   },
   {
     id: "flowchart",
-    title: "Insert TikZ: flowchart",
-    keywords: "tikz flowchart diagram boxes arrows process",
+    title: t("Insert TikZ: flowchart"),
+    keywords: t("tikz flowchart diagram boxes arrows process"),
     packages: ["tikz"],
     template: [
       "\\begin{tikzpicture}[",

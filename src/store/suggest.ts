@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { suggestionAuthor, useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 interface SuggestState {
   /** Suggest mode: edits become suggestions. For this editing session
@@ -20,7 +21,7 @@ export const useSuggestStore = create<SuggestState>((set, get) => ({
   message: null,
   setEnabled: (enabled) => {
     if (enabled && suggestionAuthor(useSettingsStore.getState()) === null) {
-      get().flash("Add your name in Settings to suggest changes.");
+      get().flash(t("Add your name in Settings to suggest changes."));
       useSettingsStore.getState().openSettings("general");
       return;
     }

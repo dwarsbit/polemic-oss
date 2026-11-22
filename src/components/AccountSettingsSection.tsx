@@ -24,8 +24,9 @@ import {
 } from "@/lib/tauri";
 import { useAccountStore } from "@/store/account";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
 
-export const DEFAULT_ACCOUNT_SERVER = "https://app.polemicapp.com";
+export const DEFAULT_ACCOUNT_SERVER = "https://app.scholarkit.app";
 export const PRIVACY_POLICY_URL = "https://polemicapp.com/privacy";
 
 const link = "underline underline-offset-2 hover:text-foreground";
@@ -46,17 +47,22 @@ function PlanSummary({
     <div className="border-t px-4 py-3">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-sm font-medium">{plan} plan</p>
+          <p className="text-sm font-medium">{t("{plan} plan", { plan })}</p>
           {links && (
             <p className="text-xs text-muted-foreground">
               {links.limit === null
-                ? "Unlimited review links"
-                : `${links.count} of ${links.limit} active review ${links.limit === 1 ? "link" : "links"}`}
+                ? t("Unlimited review links")
+                : tn(
+                    links.limit,
+                    "{active} of {count} active review link",
+                    "{active} of {count} active review links",
+                    { active: links.count },
+                  )}
             </p>
           )}
         </div>
         <Button variant="link" size="sm" className="px-0" onClick={onChangePlan}>
-          Change plan
+          {t("Change plan")}
         </Button>
       </div>
       {usage && (
@@ -67,7 +73,7 @@ function PlanSummary({
 }
 
 /**
- * The Polemic account: who is signed in, their plan and usage, and
+ * The Scholarkit account: who is signed in, their plan and usage, and
  * sign-in through the browser. The server sits behind "Use custom
  * server". The token stays in the Rust side and the OS credential
  * store; this page only sees the user.
@@ -162,22 +168,24 @@ export function AccountSettingsSection() {
   let body;
   if (busy === "loading") {
     body = (
-      <p className="px-4 py-4 text-sm text-muted-foreground">Checking your account…</p>
+      <p className="px-4 py-4 text-sm text-muted-foreground">
+        {t("Checking your account…")}
+      </p>
     );
   } else if (waiting) {
     body = (
       <div className="flex items-center gap-3 px-4 py-3">
         <Avatar />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium">Waiting for the browser…</p>
+          <p className="text-sm font-medium">{t("Waiting for the browser…")}</p>
           <p className="text-xs text-muted-foreground">
             {busy === "signing-up"
-              ? "Create your account there and choose Allow. Then come back here."
-              : "Sign in there and choose Allow. Then come back here."}
+              ? t("Create your account there and choose Allow. Then come back here.")
+              : t("Sign in there and choose Allow. Then come back here.")}
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => void accountCancelSignIn()}>
-          Cancel
+          {t("Cancel")}
         </Button>
       </div>
     );
@@ -194,7 +202,7 @@ export function AccountSettingsSection() {
                 <p className="truncate text-xs text-muted-foreground">{user.email}</p>
               </>
             ) : (
-              <p className="text-sm font-medium">Signed in</p>
+              <p className="text-sm font-medium">{t("Signed in")}</p>
             )}
             {status.problem && (
               <p className="text-xs text-muted-foreground">{status.problem}</p>
@@ -206,14 +214,15 @@ export function AccountSettingsSection() {
             disabled={busy !== null}
             onClick={openAccountPage}
           >
-            Manage account <ExternalLink data-icon="inline-end" className="size-3.5" />
+            {t("Manage account")}{" "}
+            <ExternalLink data-icon="inline-end" className="size-3.5" />
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="More account actions"
+                aria-label={t("More account actions")}
                 disabled={busy !== null}
               >
                 <MoreHorizontal />
@@ -221,7 +230,7 @@ export function AccountSettingsSection() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onSelect={() => void signOut()}>
-                <LogOut /> Sign out
+                <LogOut /> {t("Sign out")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -240,10 +249,10 @@ export function AccountSettingsSection() {
       <div className="flex items-center gap-3 px-4 py-3">
         <Avatar />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium">Not signed in</p>
+          <p className="text-sm font-medium">{t("Not signed in")}</p>
           <p className="text-xs text-muted-foreground">
             {status?.problem ??
-              "Sign in for review links, grammar checking and cloud compile."}
+              t("Sign in for review links, grammar checking and cloud compile.")}
           </p>
         </div>
         <Button
@@ -252,14 +261,14 @@ export function AccountSettingsSection() {
           disabled={busy !== null || serverChanged}
           onClick={() => void signIn(true)}
         >
-          Create account
+          {t("Create account")}
         </Button>
         <Button
           size="sm"
           disabled={busy !== null || serverChanged}
           onClick={() => void signIn(false)}
         >
-          Sign in
+          {t("Sign in")}
         </Button>
       </div>
     );
@@ -267,14 +276,15 @@ export function AccountSettingsSection() {
 
   return (
     <div className="space-y-3">
-      <section className={card} aria-live="polite" aria-label="Polemic account">
+      <section className={card} aria-live="polite" aria-label={t("Scholarkit account")}>
         {body}
       </section>
 
       {status?.signedIn && busy === null && (
         <p className="px-1 text-xs text-muted-foreground">
-          On your account page you can change your plan, see your signed-in devices,
-          download your data or delete your account.
+          {t(
+            "On your account page you can change your plan, see your signed-in devices, download your data or delete your account.",
+          )}
           {status.server === DEFAULT_ACCOUNT_SERVER && (
             <>
               {" "}
@@ -283,7 +293,7 @@ export function AccountSettingsSection() {
                 className={link}
                 onClick={() => void openUrl(PRIVACY_POLICY_URL)}
               >
-                Privacy policy
+                {t("Privacy policy")}
               </button>
             </>
           )}
@@ -293,7 +303,7 @@ export function AccountSettingsSection() {
       {editingServer ? (
         <section className={cn(card, "px-4 py-3")}>
           <label className="text-sm font-medium" htmlFor="account-server">
-            Server
+            {t("Server")}
           </label>
           <div className="mt-2 flex gap-2">
             <Input
@@ -317,7 +327,7 @@ export function AccountSettingsSection() {
               disabled={!serverChanged || busy !== null}
               onClick={() => void saveServer()}
             >
-              Save
+              {t("Save")}
             </Button>
             <Button
               variant="ghost"
@@ -328,18 +338,19 @@ export function AccountSettingsSection() {
                 setEditingServer(false);
               }}
             >
-              Cancel
+              {t("Cancel")}
             </Button>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            Your organization&rsquo;s own Polemic server. Leave it empty for
-            Polemic&rsquo;s online services. Changing it signs you out.
+            {t(
+              "Your organization’s own Scholarkit server. Leave it empty for Scholarkit’s online services. Changing it signs you out.",
+            )}
           </p>
         </section>
       ) : (
         status !== null && (
           <p className="px-1 text-xs text-muted-foreground">
-            {customServer && <>Server: {status.server} · </>}
+            {customServer && <>{t("Server: {server} ·", { server: status.server })} </>}
             <button
               type="button"
               className={link}
@@ -350,7 +361,7 @@ export function AccountSettingsSection() {
                 setEditingServer(true);
               }}
             >
-              {customServer ? "Change server" : "Use custom server"}
+              {customServer ? t("Change server") : t("Use custom server")}
             </button>
           </p>
         )

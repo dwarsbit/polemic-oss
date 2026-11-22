@@ -19,6 +19,7 @@ const webAliases = [
   { find: /^@tauri-apps\/api\/app$/, replacement: src("web/app.ts") },
   { find: /^@tauri-apps\/plugin-dialog$/, replacement: src("web/dialog.ts") },
   { find: /^@tauri-apps\/plugin-opener$/, replacement: src("web/opener.ts") },
+  { find: /^@scholarkit\/updates\/tauri$/, replacement: src("web/updates.ts") },
 ];
 
 // https://vite.dev/config/

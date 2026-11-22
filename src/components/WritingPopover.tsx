@@ -3,6 +3,7 @@ import type { PlacedIssue } from "@/lib/grammar-check";
 import { addSpellcheckWord, spellcheckSuggestions } from "@/lib/tauri";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
 /** A spelling or grammar issue under the pointer, in document positions. */
 export type WritingIssue =
@@ -84,9 +85,11 @@ function SpellingItems({
   return (
     <>
       {suggestions === null ? (
-        <p className="px-2 py-1 text-muted-foreground">Looking for corrections…</p>
+        <p className="px-2 py-1 text-muted-foreground">
+          {t("Looking for corrections…")}
+        </p>
       ) : suggestions.length === 0 ? (
-        <p className="px-2 py-1 text-muted-foreground">No corrections found</p>
+        <p className="px-2 py-1 text-muted-foreground">{t("No corrections found")}</p>
       ) : (
         suggestions.map((suggestion) => (
           <button
@@ -105,14 +108,14 @@ function SpellingItems({
         className={itemClass}
         onClick={() => onAccept(() => addSpellcheckWord(word))}
       >
-        Add “{word}” to dictionary
+        {t("Add “{word}” to dictionary", { word })}
       </button>
       <button
         type="button"
         className={itemClass}
         onClick={() => onAccept(() => useProjectStore.getState().ignoreWord(word))}
       >
-        Ignore in this project
+        {t("Ignore in this project")}
       </button>
     </>
   );
@@ -146,8 +149,9 @@ function GrammarItems({
         ))}
       {!issue.replaceable && issue.replacements.length > 0 && (
         <p className="px-2 py-1 text-muted-foreground">
-          Suggested: {issue.replacements.slice(0, 3).join(", ")} (markup inside, edit by
-          hand)
+          {t("Suggested: {join} (markup inside, edit by hand)", {
+            join: issue.replacements.slice(0, 3).join(", "),
+          })}
         </p>
       )}
       <div className="my-1 h-px bg-border" />
@@ -163,7 +167,7 @@ function GrammarItems({
           })
         }
       >
-        Turn off this rule
+        {t("Turn off this rule")}
       </button>
     </>
   );

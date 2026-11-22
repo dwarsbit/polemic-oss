@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 export function TabsBar() {
   const openFiles = useProjectStore((s) => s.openFiles);
@@ -214,7 +215,7 @@ export function TabsBar() {
                       "-mr-1 rounded p-0.5 hover:bg-muted hover:opacity-100 group-hover:opacity-100",
                       active ? "opacity-70" : "opacity-0",
                     )}
-                    title="Close tab"
+                    title={t("Close tab")}
                     onClick={() => requestClose(file)}
                   >
                     <X className="size-3" />
@@ -242,14 +243,16 @@ export function TabsBar() {
       >
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Save changes to {pendingClose?.split("/").pop()}?</DialogTitle>
+            <DialogTitle>
+              {t("Save changes to {pop}?", { pop: pendingClose?.split("/").pop() })}
+            </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Your changes will be lost if you don't save them.
+            {t("Your changes will be lost if you don't save them.")}
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPendingClose(null)}>
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -260,7 +263,7 @@ export function TabsBar() {
                   void useProjectStore.getState().closeFile(file, { discard: true });
               }}
             >
-              Don&apos;t save
+              {t("Don't save")}
             </Button>
             <Button
               disabled={!pendingDirty}
@@ -270,7 +273,7 @@ export function TabsBar() {
                 if (file) void useProjectStore.getState().closeFile(file);
               }}
             >
-              Save
+              {t("Save")}
             </Button>
           </DialogFooter>
         </DialogContent>

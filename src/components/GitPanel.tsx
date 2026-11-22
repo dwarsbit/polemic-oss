@@ -39,8 +39,9 @@ import {
 import { useCommentsStore } from "@/store/comments";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
 
-const MERGE_MESSAGE = "Merge remote changes";
+const MERGE_MESSAGE = t("Merge remote changes");
 
 function codeLabel(code: string): string {
   switch (code) {
@@ -195,7 +196,7 @@ export function GitPanel() {
   return (
     <div className="flex h-full flex-col">
       <SectionHeader
-        label="Git"
+        label={t("Git")}
         actions={
           <div className="flex items-center gap-0.5">
             {status?.branch && (
@@ -214,7 +215,7 @@ export function GitPanel() {
               variant="ghost"
               size="icon"
               className="size-6"
-              title="Refresh git status"
+              title={t("Refresh git status")}
               onClick={() => void refresh()}
             >
               <RefreshCcw className="size-3.5" />
@@ -224,22 +225,22 @@ export function GitPanel() {
       />
       <div className="flex-1 overflow-y-auto p-1.5">
         {status === undefined && (
-          <p className="px-2 text-xs text-muted-foreground">Loading…</p>
+          <p className="px-2 text-xs text-muted-foreground">{t("Loading…")}</p>
         )}
         {status !== undefined && !status.available && (
           <p className="px-2 text-xs text-muted-foreground">
-            Git is not installed. Snapshots are used instead.
+            {t("Git is not installed. Snapshots are used instead.")}
           </p>
         )}
         {status !== undefined && status.available && !status.isRepo && (
           <div className="space-y-1.5 px-2 text-xs text-muted-foreground">
-            <p>This project is not under version control yet.</p>
+            <p>{t("This project is not under version control yet.")}</p>
             <Button
               variant="outline"
               size="xs"
               onClick={() => void run(() => gitInit(project!.path))}
             >
-              Initialize repository
+              {t("Initialize repository")}
             </Button>
           </div>
         )}
@@ -273,7 +274,9 @@ export function GitPanel() {
               onPublish={(provider, name, isPrivate) =>
                 sync("publish", async () => {
                   const url = await publishTo(provider, project!.path, name, isPrivate);
-                  return `Published to ${remoteLabel(url)}.`;
+                  return t("Published to {remoteLabel}.", {
+                    remoteLabel: remoteLabel(url),
+                  });
                 })
               }
             />
@@ -284,7 +287,7 @@ export function GitPanel() {
             {conflicts.length > 0 && (
               <>
                 <p className="mt-2 px-2 text-2xs font-medium tracking-wide text-warning uppercase">
-                  Conflicts
+                  {t("Conflicts")}
                 </p>
                 {conflicts.map((path) => (
                   <ConflictRow
@@ -306,25 +309,25 @@ export function GitPanel() {
                 <Button
                   variant="outline"
                   size="xs"
-                  title="Drop the merge and go back to before the pull"
+                  title={t("Drop the merge and go back to before the pull")}
                   onClick={() => void run(() => gitAbortMerge(project!.path))}
                 >
                   <Undo2 />
-                  Abort merge
+                  {t("Abort merge")}
                 </Button>
               </div>
             )}
 
             {status.entries.length === 0 && conflicts.length === 0 && !merging && (
               <p className="mt-2 px-2 text-xs text-muted-foreground">
-                No changes since the last commit.
+                {t("No changes since the last commit.")}
               </p>
             )}
 
             {staged.length > 0 && (
               <>
                 <p className="mt-2 px-2 text-2xs font-medium tracking-wide text-muted-foreground uppercase">
-                  Staged
+                  {t("Staged")}
                 </p>
                 {staged.map((entry) => (
                   <GitRow
@@ -343,7 +346,7 @@ export function GitPanel() {
             {unstaged.length > 0 && (
               <>
                 <p className="mt-2 px-2 text-2xs font-medium tracking-wide text-muted-foreground uppercase">
-                  Changes
+                  {t("Changes")}
                 </p>
                 {unstaged.map((entry) => (
                   <GitRow
@@ -362,7 +365,7 @@ export function GitPanel() {
             <div className="mt-3 flex flex-col gap-1.5 px-2">
               <Input
                 className="h-7 rounded-3xl text-xs"
-                placeholder={merging ? MERGE_MESSAGE : "Commit message"}
+                placeholder={merging ? MERGE_MESSAGE : t("Commit message")}
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
                 onKeyDown={(event) => {
@@ -375,17 +378,17 @@ export function GitPanel() {
                 disabled={!canCommit}
                 title={
                   conflicts.length > 0
-                    ? "Resolve the conflicts first"
+                    ? t("Resolve the conflicts first")
                     : merging
-                      ? "Commit the merge"
+                      ? t("Commit the merge")
                       : hasStaged
-                        ? "Commit staged changes"
-                        : "Nothing staged"
+                        ? t("Commit staged changes")
+                        : t("Nothing staged")
                 }
                 onClick={commit}
               >
                 <Check className="size-3.5" />
-                {merging ? "Finish merge" : "Commit"}
+                {merging ? t("Finish merge") : t("Commit")}
               </Button>
             </div>
             {error && (
@@ -399,7 +402,7 @@ export function GitPanel() {
                       className="underline"
                       onClick={() => openSettings("git")}
                     >
-                      Open git accounts
+                      {t("Open git accounts")}
                     </button>
                   </>
                 )}
@@ -475,10 +478,10 @@ function RemoteRow({
         />
         <div className="flex gap-1">
           <Button size="xs" onClick={() => void save()}>
-            {url.trim() === "" && status.remote ? "Remove remote" : "Save remote"}
+            {url.trim() === "" && status.remote ? t("Remove remote") : t("Save remote")}
           </Button>
           <Button variant="ghost" size="xs" onClick={() => setEditing(false)}>
-            Cancel
+            {t("Cancel")}
           </Button>
         </div>
       </div>
@@ -495,7 +498,7 @@ function RemoteRow({
     return (
       <div className="flex flex-col gap-1.5 px-2 pt-1">
         <select
-          aria-label="Host"
+          aria-label={t("Host")}
           className="h-7 rounded-md border bg-background px-2 text-xs"
           value={publishing.provider}
           disabled={busy === "publish"}
@@ -511,7 +514,7 @@ function RemoteRow({
         </select>
         <Input
           autoFocus
-          aria-label="Repository name"
+          aria-label={t("Repository name")}
           className="h-7 text-xs"
           value={publishing.name}
           disabled={busy === "publish"}
@@ -532,7 +535,7 @@ function RemoteRow({
               setPublishing({ ...publishing, isPrivate: event.target.checked })
             }
           />
-          Private repository
+          {t("Private repository")}
         </label>
         <div className="flex gap-1">
           <Button
@@ -540,7 +543,7 @@ function RemoteRow({
             disabled={busy !== null || publishing.name.trim() === ""}
             onClick={() => void publish()}
           >
-            {busy === "publish" ? "Publishing…" : "Publish"}
+            {busy === "publish" ? t("Publishing…") : t("Publish")}
           </Button>
           <Button
             variant="ghost"
@@ -548,7 +551,7 @@ function RemoteRow({
             disabled={busy === "publish"}
             onClick={() => setPublishing(null)}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
         </div>
       </div>
@@ -558,12 +561,14 @@ function RemoteRow({
   if (!status.remote) {
     return (
       <div className="flex flex-wrap items-center justify-between gap-1 px-2 pt-1 text-xs text-muted-foreground">
-        <span>No remote yet.</span>
+        <span>{t("No remote yet.")}</span>
         <div className="flex gap-1">
           <Button
             variant="outline"
             size="xs"
-            title="Create a repository on GitHub or GitLab for this project and push it"
+            title={t(
+              "Create a repository on GitHub or GitLab for this project and push it",
+            )}
             onClick={() =>
               setPublishing({
                 provider: "github",
@@ -572,10 +577,10 @@ function RemoteRow({
               })
             }
           >
-            Publish…
+            {t("Publish…")}
           </Button>
           <Button variant="outline" size="xs" onClick={startEditing}>
-            Add remote…
+            {t("Add remote…")}
           </Button>
         </div>
       </div>
@@ -588,7 +593,7 @@ function RemoteRow({
       <button
         type="button"
         className="min-w-0 flex-1 truncate text-left text-xs text-muted-foreground hover:underline"
-        title={`${status.remote}\nClick to change the remote`}
+        title={t("{remote}\nClick to change the remote", { remote: status.remote })}
         onClick={startEditing}
       >
         {remoteLabel(status.remote)}
@@ -596,7 +601,7 @@ function RemoteRow({
       <Button
         variant="ghost"
         size="icon-xs"
-        title={busy === "fetch" ? "Fetching…" : "Fetch: see what the remote has"}
+        title={busy === "fetch" ? t("Fetching…") : t("Fetch: see what the remote has")}
         disabled={working}
         onClick={onFetch}
       >
@@ -605,22 +610,22 @@ function RemoteRow({
       <Button
         variant="outline"
         size="xs"
-        title={busy === "pull" ? "Pulling…" : "Pull the remote's commits"}
+        title={busy === "pull" ? t("Pulling…") : t("Pull the remote's commits")}
         disabled={working || status.merging}
         onClick={onPull}
       >
         <ArrowDown />
-        {status.behind > 0 ? `Pull ${status.behind}` : "Pull"}
+        {status.behind > 0 ? `Pull ${status.behind}` : t("Pull")}
       </Button>
       <Button
         variant="outline"
         size="xs"
-        title={busy === "push" ? "Pushing…" : "Push your commits"}
+        title={busy === "push" ? t("Pushing…") : t("Push your commits")}
         disabled={working || status.merging}
         onClick={onPush}
       >
         <ArrowUp />
-        {status.ahead > 0 ? `Push ${status.ahead}` : "Push"}
+        {status.ahead > 0 ? `Push ${status.ahead}` : t("Push")}
       </Button>
     </div>
   );
@@ -640,7 +645,7 @@ function ConflictRow({
   return (
     <div
       className="group flex items-center gap-1 rounded px-2 py-0.5 hover:bg-accent"
-      title={`conflict: ${path}`}
+      title={t("conflict: {path}", { path })}
     >
       <span className="w-3 shrink-0 text-center font-mono text-2xs text-warning">
         U
@@ -648,7 +653,7 @@ function ConflictRow({
       <button
         type="button"
         className="min-w-0 flex-1 truncate text-left text-xs hover:underline"
-        title="Open the file and pick per conflict"
+        title={t("Open the file and pick per conflict")}
         onClick={onOpen}
       >
         {path}
@@ -658,25 +663,25 @@ function ConflictRow({
           variant="ghost"
           size="xs"
           className="h-5 px-1.5 text-2xs"
-          title="Keep mine: the whole file as I had it"
+          title={t("Keep mine: the whole file as I had it")}
           onClick={() => onKeep("ours")}
         >
-          Mine
+          {t("Mine")}
         </Button>
         <Button
           variant="ghost"
           size="xs"
           className="h-5 px-1.5 text-2xs"
-          title="Keep theirs: the whole file as the remote has it"
+          title={t("Keep theirs: the whole file as the remote has it")}
           onClick={() => onKeep("theirs")}
         >
-          Theirs
+          {t("Theirs")}
         </Button>
         <Button
           variant="ghost"
           size="icon"
           className="size-5"
-          title="Mark resolved"
+          title={t("Mark resolved")}
           onClick={onResolved}
         >
           <Check className="size-3" />
@@ -719,7 +724,7 @@ function GitRow({
           variant="ghost"
           size="icon"
           className="size-5"
-          title="Show changes"
+          title={t("Show changes")}
           onClick={onDiff}
         >
           <FileDiff className="size-3" />
@@ -729,7 +734,7 @@ function GitRow({
             variant="ghost"
             size="icon"
             className="size-5"
-            title="Unstage"
+            title={t("Unstage")}
             onClick={onAction}
           >
             <Minus className="size-3" />
@@ -739,7 +744,7 @@ function GitRow({
             variant="ghost"
             size="icon"
             className="size-5"
-            title="Stage"
+            title={t("Stage")}
             onClick={onAction}
           >
             <Plus className="size-3" />

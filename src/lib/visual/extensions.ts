@@ -48,6 +48,7 @@ import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { useUiStore } from "@/store/ui";
 import { renderMathHtml, splitMathSrc } from "./math-render";
+import { t } from "@scholarkit/i18n";
 
 // ---------------------------------------------------------------------------
 // Generic editable-raw node view
@@ -419,7 +420,7 @@ class FigureView extends EditableRawView {
     const edit = document.createElement("button");
     edit.type = "button";
     edit.className = "vis-table-edit";
-    edit.textContent = "Edit table";
+    edit.textContent = t("Edit table");
     edit.title = "Edit the cells in a grid (double-click the block for its LaTeX)";
     edit.addEventListener("mousedown", (event) => event.preventDefault());
     edit.addEventListener("click", (event) => {
@@ -574,8 +575,8 @@ class EnvBlockView implements NodeView {
     pill.className = `vis-env-theorem-opt${empty ? " vis-env-theorem-add" : ""}`;
     pill.textContent = empty ? "+" : `(${value})`;
     pill.title = empty
-      ? "Add a title (the [..] after \\begin{env})"
-      : "Title: click to edit (the [..] after \\begin{env})";
+      ? t("Add a title (the [..] after \\begin{env})")
+      : t("Title: click to edit (the [..] after \\begin{env})");
     pill.addEventListener("click", () => {
       if (this.editingOpt) return;
       this.editingOpt = true;
@@ -702,12 +703,12 @@ class PreambleView extends EditableRawView {
     };
     const titleRow = document.createElement("div");
     titleRow.className = "vis-preamble-meta-title";
-    titleRow.append(pill("titleSrc", "Title", null));
+    titleRow.append(pill("titleSrc", t("Title"), null));
     const pillsRow = document.createElement("div");
     pillsRow.className = "vis-preamble-meta-row";
     pillsRow.append(
-      pill("authorSrc", "Author", USER_ICON),
-      pill("dateSrc", "Date", CALENDAR_ICON),
+      pill("authorSrc", t("Author"), USER_ICON),
+      pill("dateSrc", t("Date"), CALENDAR_ICON),
     );
     meta.append(titleRow, pillsRow);
     card.append(meta);
@@ -788,10 +789,10 @@ export function insertMaketitle(editor: Editor): boolean {
 
 /** The quote family the Insert menu offers. */
 export const INSERT_QUOTE_ENVS: { env: string; label: string }[] = [
-  { env: "quote", label: "Quote" },
-  { env: "quotation", label: "Quotation" },
-  { env: "center", label: "Center" },
-  { env: "abstract", label: "Abstract" },
+  { env: "quote", label: t("Quote") },
+  { env: "quotation", label: t("Quotation") },
+  { env: "center", label: t("Center") },
+  { env: "abstract", label: t("Abstract") },
 ];
 
 /** The theorem family the Insert menu offers: the standard names plus
@@ -925,10 +926,13 @@ function metaPill(
   const pill = document.createElement("button");
   pill.type = "button";
   pill.className = `vis-title-pill${isTitle ? " vis-title-edit" : ""}`;
-  pill.title = `${label}: click to edit (stored as \\${META_CMDS[key]})`;
+  pill.title = t("{label}: click to edit (stored as \\{value})", {
+    label,
+    value: META_CMDS[key],
+  });
   if (!enabled) {
     pill.disabled = true;
-    pill.title = "The file has no preamble to store this in";
+    pill.title = t("The file has no preamble to store this in");
   }
   if (iconPaths !== null) pill.append(svgIcon(iconPaths));
   const text = document.createElement("span");
@@ -1110,7 +1114,9 @@ function citeStatus(_editor: Editor, src: string): PillStatus | null {
   if (missing.length === 0) return null;
   return {
     cls: "vis-pill-warn",
-    title: `No BibTeX entry with key ${missing.map((key) => `"${key}"`).join(", ")}`,
+    title: t("No BibTeX entry with key {join}", {
+      join: missing.map((key) => `"${key}"`).join(", "),
+    }),
   };
 }
 
@@ -1120,7 +1126,7 @@ function refStatus(editor: Editor, src: string): PillStatus | null {
   if (name === undefined) return null;
   const known = new Set(Object.values(useProjectStore.getState().labelsByFile).flat());
   if (known.has(name) || docDefines(editor, "label", name)) return null;
-  return { cls: "vis-pill-warn", title: `Undefined label "${name}"` };
+  return { cls: "vis-pill-warn", title: t('Undefined label "{name}"', { name }) };
 }
 
 /** A label no file references. */
@@ -1129,7 +1135,10 @@ function labelStatus(editor: Editor, src: string): PillStatus | null {
   if (name === undefined) return null;
   const known = new Set(Object.values(useProjectStore.getState().refsByFile).flat());
   if (known.has(name) || docDefines(editor, "ref", name)) return null;
-  return { cls: "vis-pill-unused", title: `Label "${name}" is not referenced` };
+  return {
+    cls: "vis-pill-unused",
+    title: t('Label "{name}" is not referenced', { name }),
+  };
 }
 
 /** A pill that recomputes its hygiene status when the project's
@@ -1268,7 +1277,7 @@ function citeMenu(src: string): NativeMenuEntry[] | null {
   return [
     {
       id: "show-in-bibliography",
-      text: "Show in Bibliography",
+      text: t("Show in Bibliography"),
       action: () => {
         const key = commandKeys(src).split(",")[0]?.trim() ?? "";
         useUiStore.getState().setBibliographySearch(key);
@@ -1283,7 +1292,7 @@ function refMenu(src: string): NativeMenuEntry[] | null {
   return [
     {
       id: "jump-to-definition",
-      text: "Jump to definition",
+      text: t("Jump to definition"),
       action: () => void jumpToLabel(commandKeys(src)),
     },
   ];
@@ -1313,13 +1322,13 @@ export interface HeadingKind {
 
 /** All sectioning commands in document order. */
 export const HEADING_KINDS: HeadingKind[] = [
-  { cmd: "part", level: 1, label: "Part" },
-  { cmd: "chapter", level: 2, label: "Chapter" },
-  { cmd: "section", level: 3, label: "Section" },
-  { cmd: "subsection", level: 4, label: "Subsection" },
-  { cmd: "subsubsection", level: 5, label: "Subsubsection" },
-  { cmd: "paragraph", level: 6, label: "Paragraph" },
-  { cmd: "subparagraph", level: 6, label: "Subparagraph" },
+  { cmd: "part", level: 1, label: t("Part") },
+  { cmd: "chapter", level: 2, label: t("Chapter") },
+  { cmd: "section", level: 3, label: t("Section") },
+  { cmd: "subsection", level: 4, label: t("Subsection") },
+  { cmd: "subsubsection", level: 5, label: t("Subsubsection") },
+  { cmd: "paragraph", level: 6, label: t("Paragraph") },
+  { cmd: "subparagraph", level: 6, label: t("Subparagraph") },
 ];
 
 /** The friendly name of a sectioning command, starred included. */
@@ -1371,7 +1380,9 @@ class HeadingView implements NodeView {
     if (node.attrs.level !== this.node.attrs.level) return false; // recreate as h{level}
     if (node.attrs.cmd !== this.node.attrs.cmd) {
       this.node = node;
-      this.chip.title = `${headingLabel(node.attrs.cmd)}: click to change the heading level`;
+      this.chip.title = t("{headingLabel}: click to change the heading level", {
+        headingLabel: headingLabel(node.attrs.cmd),
+      });
       return true;
     }
     this.node = node;
@@ -1388,7 +1399,7 @@ class HeadingView implements NodeView {
     chip.type = "button";
     chip.className = "vis-heading-chip";
     const label = headingLabel(this.node.attrs.cmd);
-    chip.title = `${label}: click to change the heading level`;
+    chip.title = t("{label}: click to change the heading level", { label });
     chip.append(svgIcon(PILCROW_ICON, "vis-heading-chip-icon"));
     chip.addEventListener("mousedown", (event) => event.preventDefault());
     chip.addEventListener("click", (event) => {
@@ -1404,7 +1415,7 @@ class HeadingView implements NodeView {
         "separator" as const,
         {
           id: "body-text",
-          text: "Body text",
+          text: t("Body text"),
           action: () => setHeadingKind(this.editor, null),
         },
       ];
@@ -1542,8 +1553,8 @@ class ListItemView implements NodeView {
     chip.className = `vis-item-label${empty ? " vis-item-label-add" : ""}`;
     chip.textContent = empty ? "+" : `(${value})`;
     chip.title = empty
-      ? "Add a label (the [..] after \\item)"
-      : "Label: click to edit (the [..] after \\item)";
+      ? t("Add a label (the [..] after \\item)")
+      : t("Label: click to edit (the [..] after \\item)");
     chip.addEventListener("mousedown", (event) => event.preventDefault());
     chip.addEventListener("click", () => {
       if (this.editing) return;

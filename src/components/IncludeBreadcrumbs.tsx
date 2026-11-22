@@ -3,6 +3,7 @@ import { useDocumentStructure } from "@/hooks/useDocumentOrder";
 import { includeChain, includeLineOf, texPathsOf } from "@/lib/doc-structure";
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 /** Open an ancestor with the cursor on the line including `child`. */
 async function openAncestor(file: string, child: string) {
@@ -44,12 +45,12 @@ export function IncludeBreadcrumbs() {
 
   return (
     <nav
-      aria-label="Include path"
+      aria-label={t("Include path")}
       className="flex h-6 shrink-0 items-center gap-0.5 overflow-hidden border-b px-2 text-2xs text-muted-foreground"
     >
       {chain === null ? (
         <span className="truncate" title={activeFile}>
-          Not included from {mainFile}
+          {t("Not included from {mainFile}", { mainFile })}
         </span>
       ) : (
         chain.map((file, index) => {

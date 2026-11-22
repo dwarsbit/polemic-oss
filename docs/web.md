@@ -123,6 +123,14 @@ project, file, comment and compile commands from that document:
   limit allows, issues split back, a 429's wait honored. There is no
   built-in checker, so no choice of checker.
 - DOI lookup asks doi.org from the browser, when online lookup is on.
+- Reference sources (`src/web/sources.ts`) are your projects in the
+  account: a bib source's path is `/projects/<id>` for every .bib file of a
+  project, or `/projects/<id>/<file>.bib` for one. `list_bib_files` and
+  `read_external_file` read the project's document with
+  `POST /api/projects/:id/document/sync`, so a source follows the project on
+  every device. **Add source → BibTeX file from a project…** picks one
+  (`src/components/ProjectBibDialog.tsx`). Zotero cloud asks api.zotero.org
+  from the browser; its key stays in the browser's settings.
 
 `features` in `src/lib/target.ts` lists the desktop features the browser
 leaves out:
@@ -135,7 +143,8 @@ leaves out:
 - the desktop sign-in (the browser uses the site's session)
 - the assistant
 - the built-in grammar checker, and with it the choice of checker
-- reference sources outside the project: .bib files and Zotero
+- reference sources on this computer: .bib files and folders on disk, and
+  the Zotero app (the browser has the sources above instead)
 
 Components check those flags rather than the target, so each hidden feature
 says why it is hidden. The browser gets an app menu in the top bar for what

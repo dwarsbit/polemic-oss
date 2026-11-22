@@ -1,3 +1,4 @@
+import { t } from "@scholarkit/i18n";
 /**
  * App icon + name, vertical: the Sheet app icon (a white page with a slash on
  * the primary tile) centred above "Polemic" in DM Sans Bold (outlined). The
@@ -6,7 +7,12 @@
  */
 export function PolemicLogoVertical({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 383 381.51" className={className} role="img" aria-label="Polemic">
+    <svg
+      viewBox="0 0 383 381.51"
+      className={className}
+      role="img"
+      aria-label={t("Polemic")}
+    >
       <rect
         x={63.833}
         y={0}

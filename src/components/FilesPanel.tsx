@@ -19,6 +19,8 @@ import { gitIgnored, gitStatus, isTauri, type FileEntry } from "@/lib/tauri";
 import { showNativeContextMenu } from "@/lib/native-menu";
 import { resolveVersionControl, useSettingsStore } from "@/store/settings";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 type DialogKind = null | "newFile" | "newFolder" | "rename" | "delete";
 
@@ -125,7 +127,7 @@ export function FilesPanel() {
   return (
     <div className="flex h-full flex-col">
       <SectionHeader
-        label="Files"
+        label={t("Files")}
 
         actions={
           <div className="flex items-center gap-0.5">
@@ -133,7 +135,7 @@ export function FilesPanel() {
               variant="ghost"
               size="icon"
               className="size-6"
-              title="New file"
+              title={t("New file")}
               onClick={() => openDialog("newFile")}
             >
               <FilePlus2 className="size-3.5" />
@@ -142,7 +144,7 @@ export function FilesPanel() {
               variant="ghost"
               size="icon"
               className="size-6"
-              title="New folder"
+              title={t("New folder")}
               onClick={() => openDialog("newFolder")}
             >
               <FolderPlus className="size-3.5" />
@@ -160,12 +162,12 @@ export function FilesPanel() {
           void showNativeContextMenu([
             {
               id: "new-file",
-              text: "New File",
+              text: t("New File"),
               action: () => openDialog("newFile"),
             },
             {
               id: "new-folder",
-              text: "New Folder",
+              text: t("New Folder"),
               action: () => openDialog("newFolder"),
             },
           ]);
@@ -173,7 +175,7 @@ export function FilesPanel() {
       >
         {files.length === 0 ? (
           <p className="px-2 py-1 text-xs text-muted-foreground">
-            No files yet. Create one with the buttons above.
+            {t("No files yet. Create one with the buttons above.")}
           </p>
         ) : (
           <FileTree
@@ -202,16 +204,19 @@ export function FilesPanel() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {dialogKind === "newFile" && "New file"}
-              {dialogKind === "newFolder" && "New folder"}
-              {dialogKind === "rename" && "Rename"}
-              {dialogKind === "delete" && "Delete"}
+              {dialogKind === "newFile" && t("New file")}
+              {dialogKind === "newFolder" && t("New folder")}
+              {dialogKind === "rename" && t("Rename")}
+              {dialogKind === "delete" && t("Delete")}
             </DialogTitle>
           </DialogHeader>
           {dialogKind === "delete" ? (
             <p className="text-sm">
-              Move <span className="font-medium">{(target as FileEntry)?.path}</span> to
-              the trash? You can restore it from there.
+              {rich(
+                "Move <0>{path}</0> to the trash? You can restore it from there.",
+                [(c) => <span className="font-medium">{c}</span>],
+                { path: (target as FileEntry)?.path },
+              )}
             </p>
           ) : (
             <Input
@@ -235,15 +240,17 @@ export function FilesPanel() {
           {dialogError && <p className="text-xs text-destructive">{dialogError}</p>}
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogKind(null)}>
-              Cancel
+              {t("Cancel")}
             </Button>
             <Button
               variant={dialogKind === "delete" ? "destructive" : "default"}
               disabled={dialogKind !== "delete" && entryName.trim() === ""}
               onClick={() => void handleConfirm()}
             >
-              {dialogKind === "delete" && "Delete"}
-              {dialogKind === "rename" ? "Rename" : dialogKind !== "delete" && "Create"}
+              {dialogKind === "delete" && t("Delete")}
+              {dialogKind === "rename"
+                ? t("Rename")
+                : dialogKind !== "delete" && t("Create")}
             </Button>
           </DialogFooter>
         </DialogContent>

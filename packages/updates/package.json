@@ -1,0 +1,49 @@
+{
+  "name": "@scholarkit/updates",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Updates for the desktop apps: checks for a new version, downloads it and asks before restarting.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./updates": "./src/updates.ts",
+    "./notes": "./src/notes.ts",
+    "./use-updates": "./src/use-updates.ts",
+    "./tauri": "./src/tauri.ts",
+    "./components/UpdateCard": "./src/components/UpdateCard.tsx",
+    "./components/UpdatesSettings": "./src/components/UpdatesSettings.tsx",
+    "./updates.css": "./src/updates.css"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@scholarkit/i18n": "workspace:*",
+    "@tauri-apps/plugin-process": "^2.4.0",
+    "@tauri-apps/plugin-updater": "^2.14.1"
+  },
+  "peerDependencies": {
+    "@tauri-apps/api": "^2.12.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@scholarkit/eslint-config": "workspace:*",
+    "@scholarkit/tsconfig": "workspace:*",
+    "@tauri-apps/api": "^2.12.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "catalog:",
+    "happy-dom": "catalog:",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "catalog:",
+    "vite": "^8.3.7",
+    "vitest": "catalog:"
+  }
+}

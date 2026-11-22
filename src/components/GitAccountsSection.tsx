@@ -16,20 +16,25 @@ import {
   type Hosting,
   type SignIn,
 } from "@/lib/tauri";
+import { t } from "@scholarkit/i18n";
 
 /** Where a token comes from on the hosts people use most. */
 const TOKEN_HINTS: [string, string][] = [
   [
     "github.com",
-    "GitHub: Settings → Developer settings → Personal access tokens, with the repo scope.",
+    t(
+      "GitHub: Settings → Developer settings → Personal access tokens, with the repo scope.",
+    ),
   ],
   [
     "gitlab.com",
-    "GitLab: Preferences → Access tokens, with read_repository and write_repository.",
+    t(
+      "GitLab: Preferences → Access tokens, with read_repository and write_repository.",
+    ),
   ],
   [
     "git.overleaf.com",
-    "Overleaf: Account settings → Git integration; the username is git.",
+    t("Overleaf: Account settings → Git integration; the username is git."),
   ],
 ];
 
@@ -131,11 +136,11 @@ export function GitAccountsSection() {
   return (
     <div className="space-y-3 py-4">
       {accounts === null && !error && (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <p className="text-sm text-muted-foreground">{t("Loading…")}</p>
       )}
       {accounts !== null && accounts.length === 0 && form === null && (
         <p className="text-sm text-muted-foreground">
-          No accounts yet. Public remotes and SSH remotes work without one.
+          {t("No accounts yet. Public remotes and SSH remotes work without one.")}
         </p>
       )}
       {accounts !== null && accounts.length > 0 && (
@@ -149,14 +154,15 @@ export function GitAccountsSection() {
                 <p className="truncate text-sm font-medium">{account.host}</p>
                 <p className="truncate text-xs text-muted-foreground">
                   {account.name ?? account.username}
-                  {account.hasToken ? " · token set" : " · no token"}
+                  {" · "}
+                  {account.hasToken ? t("token set") : t("no token")}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-1">
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  title="Change the username or token"
+                  title={t("Change the username or token")}
                   disabled={busy}
                   onClick={() =>
                     setForm({
@@ -173,7 +179,7 @@ export function GitAccountsSection() {
                   variant="ghost"
                   size="icon-sm"
                   className="hover:text-destructive"
-                  title="Remove the account and forget its token"
+                  title={t("Remove the account and forget its token")}
                   disabled={busy}
                   onClick={() => void run(() => gitAccountRemove(account.id))}
                 >
@@ -191,8 +197,9 @@ export function GitAccountsSection() {
           aria-live="polite"
         >
           <p className="text-sm">
-            Enter this code on {HOSTING_NAMES[pending.provider]}, in the page that
-            opened in your browser:
+            {t("Enter this code on {value}, in the page that opened in your browser:", {
+              value: HOSTING_NAMES[pending.provider],
+            })}
           </p>
           <div className="flex items-center gap-2">
             <code className="rounded bg-accent px-2 py-1 font-mono text-base tracking-widest">
@@ -201,7 +208,7 @@ export function GitAccountsSection() {
             <Button
               variant="ghost"
               size="icon-sm"
-              title="Copy the code"
+              title={t("Copy the code")}
               onClick={() => {
                 void navigator.clipboard
                   ?.writeText(pending.code.userCode)
@@ -211,14 +218,18 @@ export function GitAccountsSection() {
             >
               <Copy />
             </Button>
-            {copied && <span className="text-xs text-muted-foreground">Copied</span>}
+            {copied && (
+              <span className="text-xs text-muted-foreground">{t("Copied")}</span>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">
-            Not open? Go to {pending.code.verificationUri}. Waiting for{" "}
-            {HOSTING_NAMES[pending.provider]}…
+            {t("Not open? Go to {verificationUri}. Waiting for {value}…", {
+              verificationUri: pending.code.verificationUri,
+              value: HOSTING_NAMES[pending.provider],
+            })}
           </p>
           <Button variant="outline" size="sm" onClick={() => void signInCancel()}>
-            Cancel
+            {t("Cancel")}
           </Button>
         </div>
       )}
@@ -230,10 +241,12 @@ export function GitAccountsSection() {
               key={provider}
               size="sm"
               disabled={busy || accounts === null}
-              title={`Sign in on ${HOSTING_NAMES[provider]}; the token is kept as its git account`}
+              title={t("Sign in on {value}; the token is kept as its git account", {
+                value: HOSTING_NAMES[provider],
+              })}
               onClick={() => void signInWith(provider)}
             >
-              Sign in with {HOSTING_NAMES[provider]}
+              {t("Sign in with {value}", { value: HOSTING_NAMES[provider] })}
             </Button>
           ))}
           <Button
@@ -243,14 +256,14 @@ export function GitAccountsSection() {
             onClick={() => setForm(EMPTY)}
           >
             <Plus />
-            Add account
+            {t("Add account")}
           </Button>
         </div>
       ) : form === null ? null : (
         <div className="space-y-2 rounded-lg border bg-background px-3 py-3">
           <div>
             <label className="text-xs text-muted-foreground" htmlFor="git-host">
-              Host
+              {t("Host")}
             </label>
             <Input
               id="git-host"
@@ -264,7 +277,7 @@ export function GitAccountsSection() {
           </div>
           <div>
             <label className="text-xs text-muted-foreground" htmlFor="git-username">
-              Username
+              {t("Username")}
             </label>
             <Input
               id="git-username"
@@ -273,20 +286,21 @@ export function GitAccountsSection() {
               onChange={(e) => setForm({ ...form, username: e.target.value })}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              What the host expects beside a token. GitHub and GitLab accept any name;
-              Overleaf wants git.
+              {t(
+                "What the host expects beside a token. GitHub and GitLab accept any name; Overleaf wants git.",
+              )}
             </p>
           </div>
           <div>
             <label className="text-xs text-muted-foreground" htmlFor="git-token">
-              Token
+              {t("Token")}
             </label>
             <Input
               id="git-token"
               className="mt-1"
               type="password"
               autoComplete="off"
-              placeholder={form.id !== undefined ? "Unchanged" : ""}
+              placeholder={form.id !== undefined ? t("Unchanged") : ""}
               value={form.token}
               onChange={(e) => setForm({ ...form, token: e.target.value })}
               onKeyDown={(e) => {
@@ -295,18 +309,20 @@ export function GitAccountsSection() {
             />
             <p className="mt-1 text-xs text-muted-foreground">
               {hint ??
-                "A personal access token from the host, allowed to read and write repositories."}{" "}
-              Kept in your system&rsquo;s credential store.
+                t(
+                  "A personal access token from the host, allowed to read and write repositories.",
+                )}{" "}
+              {t("Kept in your system’s credential store.")}
             </p>
           </div>
           <div className="flex gap-2">
             <Button size="sm" disabled={!canSave} onClick={() => void save()}>
               <KeyRound />
               {busy
-                ? "Saving…"
+                ? t("Saving…")
                 : form.id !== undefined
-                  ? "Save changes"
-                  : "Add account"}
+                  ? t("Save changes")
+                  : t("Add account")}
             </Button>
             <Button
               variant="ghost"
@@ -317,7 +333,7 @@ export function GitAccountsSection() {
                 setError(null);
               }}
             >
-              Cancel
+              {t("Cancel")}
             </Button>
           </div>
         </div>

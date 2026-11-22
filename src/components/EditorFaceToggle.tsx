@@ -3,6 +3,7 @@ import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { useUiStore, type EditorFace } from "@/store/ui";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /** Does the file kind have a Visual face? */
 export function hasEditorFace(path: string | null): boolean {
@@ -32,15 +33,15 @@ export function EditorFaceToggle() {
   const mode: EditorFace = locked ? "code" : isBib ? bibMode : texMode;
   const setMode = isBib ? setBibMode : setTexMode;
   const faces: { id: EditorFace; label: string }[] = [
-    { id: "code", label: "Code" },
-    { id: "visual", label: "Visual" },
+    { id: "code", label: t("Code") },
+    { id: "visual", label: t("Visual") },
   ];
 
   return (
     <div
       className="flex shrink-0 items-center rounded-lg bg-accent/50 p-0.5"
       role="tablist"
-      aria-label="Editor face"
+      aria-label={t("Editor face")}
     >
       {faces.map((face) => (
         <button
@@ -52,9 +53,9 @@ export function EditorFaceToggle() {
           title={
             face.id === "visual"
               ? locked
-                ? "Resolve the git conflict markers first"
-                : "The rendered or managed form of the file"
-              : "The raw text of the file"
+                ? t("Resolve the git conflict markers first")
+                : t("The rendered or managed form of the file")
+              : t("The raw text of the file")
           }
           className={cn(
             "rounded-md px-2 py-0.5 text-xs font-medium transition-colors",

@@ -16,6 +16,7 @@ import {
   Sparkles,
   SpellCheck,
   Sun,
+  RefreshCw,
   UserRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,9 +25,12 @@ import { AiSettingsSection } from "@/components/AiSettingsSection";
 import { CompileSettingsSection } from "@/components/CompileSettingsSection";
 import { GitAccountsSection } from "@/components/GitAccountsSection";
 import { GrammarSettingsSection } from "@/components/GrammarSettingsSection";
+import { LanguageSelect } from "@/components/LanguageSelect";
 import { SettingsRow } from "@/components/SettingsRow";
 import { SourcesSettingsCard } from "@/components/SourcesSettings";
 import { TexStatusSection } from "@/components/TexStatus";
+import { UpdatesSettingsSection } from "@/components/UpdatesSettingsSection";
+import { updater } from "@/lib/updates";
 import {
   Dialog,
   DialogContent,
@@ -58,30 +62,32 @@ import { SYNTAX_THEMES } from "@/lib/editor-themes";
 import { fuzzyMatch } from "@/lib/fuzzy";
 import { initialsOf, resolveVersionControl, useSettingsStore } from "@/store/settings";
 import { features } from "@/lib/target";
+import { languageCodes } from "@/lib/languages";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 const THEMES: { id: ThemePreference; label: string; icon: typeof Sun }[] = [
-  { id: "light", label: "Light", icon: Sun },
-  { id: "dark", label: "Dark", icon: Moon },
-  { id: "system", label: "System", icon: Monitor },
+  { id: "light", label: t("Light"), icon: Sun },
+  { id: "dark", label: t("Dark"), icon: Moon },
+  { id: "system", label: t("System"), icon: Monitor },
 ];
 const FONT_SIZES = [12, 14, 16, 18];
 
 const ENGLISH_VARIANTS = [
-  { id: "en-US", name: "American" },
-  { id: "en-GB", name: "British" },
-  { id: "en-AU", name: "Australian" },
-  { id: "en-CA", name: "Canadian" },
-  { id: "en-IN", name: "Indian" },
+  { id: "en-US", name: t("American") },
+  { id: "en-GB", name: t("British") },
+  { id: "en-AU", name: t("Australian") },
+  { id: "en-CA", name: t("Canadian") },
+  { id: "en-IN", name: t("Indian") },
 ];
 
 const LANGUAGE_NAMES: Record<string, string> = {
-  en: "English",
-  de: "German",
-  fr: "French",
-  es: "Spanish",
-  it: "Italian",
-  nl: "Dutch",
+  en: t("English"),
+  de: t("German"),
+  fr: t("French"),
+  es: t("Spanish"),
+  it: t("Italian"),
+  nl: t("Dutch"),
 };
 
 /** One settings row: label and description on the left, the control in
@@ -284,12 +290,15 @@ export function SettingsDialog({
     try {
       const response = await fetch(spellcheckLanguageUrl(lang)).catch(() => {
         throw new Error(
-          "Could not download the dictionary. Check your internet connection.",
+          t("Could not download the dictionary. Check your internet connection."),
         );
       });
       if (!response.ok) {
         throw new Error(
-          `The dictionary could not be downloaded (${response.status}). Try again in a moment.`,
+          t(
+            "The dictionary could not be downloaded ({status}). Try again in a moment.",
+            { status: response.status },
+          ),
         );
       }
       const content = await response.text();
@@ -320,20 +329,38 @@ export function SettingsDialog({
   const allSections: SectionDef[] = [
     {
       id: "general",
-      label: "General",
+      label: t("General"),
       icon: SlidersHorizontal,
       intro: features.localFiles
-        ? "Startup, where projects live, your name on suggestions and version control."
-        : "Startup and your name on suggestions.",
+        ? t(
+            "Startup, where projects live, your name on suggestions and version control.",
+          )
+        : t("Startup and your name on suggestions."),
       cards: [
         {
-          title: "Projects",
+          title: t("Language"),
+          // Shown once Polemic ships a language besides English.
+          hidden: languageCodes.length < 2,
+          rows: [
+            {
+              id: "interface-language",
+              label: t("Interface language"),
+              description: t(
+                "Menus, buttons and messages. Your documents and grammar checking keep their own language. Polemic reloads to switch.",
+              ),
+              keywords: t("language translation interface locale english"),
+              control: <LanguageSelect />,
+            },
+          ],
+        },
+        {
+          title: t("Projects"),
           rows: [
             {
               id: "reopen",
-              label: "Reopen the last project",
-              description: "On launch, open the project you worked on last.",
-              keywords: "startup launch restore",
+              label: t("Reopen the last project"),
+              description: t("On launch, open the project you worked on last."),
+              keywords: t("startup launch restore"),
               control: (
                 <Switch
                   checked={reopenLastProject}
@@ -344,20 +371,21 @@ export function SettingsDialog({
             {
               id: "projects-root",
               hidden: !features.localFiles,
-              label: "Projects folder",
-              description:
+              label: t("Projects folder"),
+              description: t(
                 "New projects are created here. Existing projects stay where they are.",
-              keywords: "directory location storage disk",
+              ),
+              keywords: t("directory location storage disk"),
               control: (
                 <Button variant="outline" size="sm" onClick={() => void pickRoot()}>
                   <FolderOpen />
-                  Choose…
+                  {t("Choose…")}
                 </Button>
               ),
               after: (
                 <>
                   <p className="mt-2 truncate rounded-md border bg-muted px-2 py-1 font-mono text-2xs text-muted-foreground">
-                    {projectsRoot ?? "Default location"}
+                    {projectsRoot ?? t("Default location")}
                   </p>
                   {rootError && (
                     <p className="mt-1 text-xs text-destructive">{rootError}</p>
@@ -367,10 +395,11 @@ export function SettingsDialog({
             },
             {
               id: "auto-include",
-              label: "Add new files to the main document",
-              description:
+              label: t("Add new files to the main document"),
+              description: t(
                 "A .tex file created in the Files panel is included with \\input{} right away.",
-              keywords: "input import document order include automatically",
+              ),
+              keywords: t("input import document order include automatically"),
               control: (
                 <Switch
                   checked={autoIncludeNewFiles}
@@ -381,19 +410,19 @@ export function SettingsDialog({
           ],
         },
         {
-          title: "Track changes",
+          title: t("Track changes"),
           rows: [
             {
               id: "author-name",
-              label: "Your name",
-              description: "Shown on your suggestions in Suggest mode.",
-              keywords: "author track changes suggestions review name",
+              label: t("Your name"),
+              description: t("Shown on your suggestions in Suggest mode."),
+              keywords: t("author track changes suggestions review name"),
               control: (
                 <Input
                   key={`name:${authorName}`}
                   className="h-8 w-44 text-xs"
-                  placeholder="Name"
-                  aria-label="Your name"
+                  placeholder={t("Name")}
+                  aria-label={t("Your name")}
                   defaultValue={authorName}
                   onBlur={(e) => {
                     if (e.target.value.trim() !== authorName) {
@@ -405,16 +434,17 @@ export function SettingsDialog({
             },
             {
               id: "author-initials",
-              label: "Your initials",
-              description:
+              label: t("Your initials"),
+              description: t(
                 "The id on your suggestions in the source. Empty uses the initials of your name.",
-              keywords: "author track changes suggestions initials id",
+              ),
+              keywords: t("author track changes suggestions initials id"),
               control: (
                 <Input
                   key={`initials:${authorInitials}`}
                   className="h-8 w-20 text-xs"
                   placeholder={initialsOf(authorName) || "LG"}
-                  aria-label="Your initials"
+                  aria-label={t("Your initials")}
                   defaultValue={authorInitials}
                   onBlur={(e) => {
                     if (e.target.value !== authorInitials) {
@@ -427,16 +457,16 @@ export function SettingsDialog({
           ],
         },
         {
-          title: "Version control",
+          title: t("Version control"),
           hidden: !features.versionControl,
           rows: [
             {
               id: "version-control",
-              label: "Track changes with",
+              label: t("Track changes with"),
               description: gitAvailable
-                ? "Git when it is installed, snapshots otherwise."
-                : "Git is not installed, so snapshots are used.",
-              keywords: "git snapshots backup history version control",
+                ? t("Git when it is installed, snapshots otherwise.")
+                : t("Git is not installed, so snapshots are used."),
+              keywords: t("git snapshots backup history version control"),
               control: (
                 <ToggleButtonGroup
                   type="single"
@@ -451,12 +481,12 @@ export function SettingsDialog({
                     value="git"
                     size="sm"
                     disabled={!gitAvailable}
-                    title={gitAvailable ? undefined : "Git is not installed"}
+                    title={gitAvailable ? undefined : t("Git is not installed")}
                   >
-                    Git
+                    {t("Git")}
                   </ToggleButton>
                   <ToggleButton value="snapshots" size="sm">
-                    Snapshots
+                    {t("Snapshots")}
                   </ToggleButton>
                 </ToggleButtonGroup>
               ),
@@ -468,20 +498,22 @@ export function SettingsDialog({
     {
       id: "account",
       hidden: !features.desktopAccount,
-      label: "Account",
+      label: t("Account"),
       icon: UserRound,
-      intro: "Sign in to a Polemic server. Local features never need an account.",
+      intro: t("Sign in to a Scholarkit server. Local features never need an account."),
       cards: [
         {
-          title: "Polemic account",
+          title: t("Scholarkit account"),
           rows: [
             {
               id: "account",
-              label: "Polemic account",
-              description:
+              label: t("Scholarkit account"),
+              description: t(
                 "Sign in for the online services. Local features never need an account.",
-              keywords:
+              ),
+              keywords: t(
                 "sign in sign out login logout sign up create account avatar photo account plan free student pro usage storage compile time server custom server self-hosted privacy data export download delete gdpr",
+              ),
               control: null,
             },
           ],
@@ -493,21 +525,24 @@ export function SettingsDialog({
     {
       id: "git",
       hidden: !features.versionControl,
-      label: "Git",
+      label: t("Git"),
       icon: GitBranch,
-      intro:
+      intro: t(
         "Accounts for private remotes over HTTPS. SSH remotes use your keys and agent and need nothing here.",
+      ),
       cards: [
         {
-          title: "Git accounts",
+          title: t("Git accounts"),
           rows: [
             {
               id: "git-accounts",
-              label: "Git accounts",
-              description:
+              label: t("Git accounts"),
+              description: t(
                 "A token per host: GitHub, GitLab, Gitea, Overleaf's git bridge or your own server.",
-              keywords:
+              ),
+              keywords: t(
                 "git remote token github gitlab gitea overleaf push pull clone credentials https",
+              ),
               control: null,
             },
           ],
@@ -517,18 +552,20 @@ export function SettingsDialog({
     },
     {
       id: "appearance",
-      label: "Appearance",
+      label: t("Appearance"),
       icon: Palette,
-      intro: "Theme, editor font and the text cursor.",
+      intro: t("Theme, editor font and the text cursor."),
       cards: [
         {
-          title: "Theme",
+          title: t("Theme"),
           rows: [
             {
               id: "theme",
-              label: "Mode",
-              description: "System follows the light or dark setting of your computer.",
-              keywords: "light dark mode appearance theme",
+              label: t("Mode"),
+              description: t(
+                "System follows the light or dark setting of your computer.",
+              ),
+              keywords: t("light dark mode appearance theme"),
               control: null,
               after: (
                 <div className="mt-2 flex gap-2">
@@ -548,14 +585,15 @@ export function SettingsDialog({
           ],
         },
         {
-          title: "Editor font",
+          title: t("Editor font"),
           rows: [
             {
               id: "editor-font",
-              label: "Font",
-              description:
+              label: t("Font"),
+              description: t(
                 "Bundled with the app, so the editor looks the same everywhere.",
-              keywords: "mono monospace typeface code editor font",
+              ),
+              keywords: t("mono monospace typeface code editor font"),
               control: (
                 <Select
                   value={editorFont}
@@ -578,8 +616,8 @@ export function SettingsDialog({
             },
             {
               id: "font-size",
-              label: "Size",
-              keywords: "text size scale editor font size",
+              label: t("Size"),
+              keywords: t("text size scale editor font size"),
               control: (
                 <Select
                   value={String(fontSize)}
@@ -593,7 +631,7 @@ export function SettingsDialog({
                   <SelectContent>
                     {FONT_SIZES.map((size) => (
                       <SelectItem key={size} value={String(size)}>
-                        {size} px
+                        {t("{size} px", { size })}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -602,9 +640,9 @@ export function SettingsDialog({
             },
             {
               id: "syntax-theme",
-              label: "Syntax colors",
-              description: "Each scheme has a light and a dark variant.",
-              keywords: "highlighting colors code syntax theme",
+              label: t("Syntax colors"),
+              description: t("Each scheme has a light and a dark variant."),
+              keywords: t("highlighting colors code syntax theme"),
               control: (
                 <Select
                   value={syntaxTheme}
@@ -628,13 +666,13 @@ export function SettingsDialog({
           ],
         },
         {
-          title: "Text cursor",
+          title: t("Text cursor"),
           rows: [
             {
               id: "cursor-style",
-              label: "Shape",
-              description: "A thin line, or a translucent block over the character.",
-              keywords: "caret text cursor block line style",
+              label: t("Shape"),
+              description: t("A thin line, or a translucent block over the character."),
+              keywords: t("caret text cursor block line style"),
               control: (
                 <ToggleButtonGroup
                   type="single"
@@ -646,25 +684,25 @@ export function SettingsDialog({
                   }}
                 >
                   <ToggleButton value="line" size="sm">
-                    Line
+                    {t("Line")}
                   </ToggleButton>
                   <ToggleButton value="block" size="sm">
-                    Block
+                    {t("Block")}
                   </ToggleButton>
                 </ToggleButtonGroup>
               ),
             },
             {
               id: "cursor-color",
-              label: "Color",
-              description: "Theme follows light and dark; custom keeps one color.",
-              keywords: "caret text cursor colour color",
+              label: t("Color"),
+              description: t("Theme follows light and dark; custom keeps one color."),
+              keywords: t("caret text cursor colour color"),
               control: (
                 <div className="flex items-center gap-1.5">
                   {caretColor === "custom" && (
                     <input
                       type="color"
-                      title="Custom cursor color"
+                      title={t("Custom cursor color")}
                       className="h-7 w-8 cursor-pointer rounded-md border bg-transparent p-0.5"
                       value={caretCustomColor}
                       onChange={(e) => void setCaretCustomColor(e.target.value)}
@@ -680,10 +718,10 @@ export function SettingsDialog({
                     }}
                   >
                     <ToggleButton value="primary" size="sm">
-                      Theme
+                      {t("Theme")}
                     </ToggleButton>
                     <ToggleButton value="custom" size="sm">
-                      Custom
+                      {t("Custom")}
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </div>
@@ -695,18 +733,18 @@ export function SettingsDialog({
     },
     {
       id: "editor",
-      label: "Editor",
+      label: t("Editor"),
       icon: PencilLine,
-      intro: "How the code editor behaves while you type and save.",
+      intro: t("How the code editor behaves while you type and save."),
       cards: [
         {
-          title: "Typing",
+          title: t("Typing"),
           rows: [
             {
               id: "supsub",
-              label: "Braces after ^ and _",
-              description: "Typing ^ or _ inserts {} with the cursor inside.",
-              keywords: "superscript subscript exponent auto braces math input",
+              label: t("Braces after ^ and _"),
+              description: t("Typing ^ or _ inserts {} with the cursor inside."),
+              keywords: t("superscript subscript exponent auto braces math input"),
               control: (
                 <Switch
                   checked={supsubBraces}
@@ -716,9 +754,9 @@ export function SettingsDialog({
             },
             {
               id: "double-dollar",
-              label: "Turn $$ into \\[ \\]",
-              description: "The second $ of a pair becomes display-math brackets.",
-              keywords: "display math delimiters brackets convert dollar",
+              label: t("Turn $$ into \\[ \\]"),
+              description: t("The second $ of a pair becomes display-math brackets."),
+              keywords: t("display math delimiters brackets convert dollar"),
               control: (
                 <Switch
                   checked={convertDoubleDollar}
@@ -728,9 +766,9 @@ export function SettingsDialog({
             },
             {
               id: "math-preview",
-              label: "Math preview on hover",
-              description: "A card above a formula shows how it renders.",
-              keywords: "hover math render preview katex",
+              label: t("Math preview on hover"),
+              description: t("A card above a formula shows how it renders."),
+              keywords: t("hover math render preview katex"),
               control: (
                 <Switch
                   checked={mathPreviewEngine === "katex"}
@@ -743,14 +781,15 @@ export function SettingsDialog({
           ],
         },
         {
-          title: "Saving",
+          title: t("Saving"),
           rows: [
             {
               id: "format-on-save",
-              label: "Format on save",
-              description:
+              label: t("Format on save"),
+              description: t(
                 "Indent environments and tidy whitespace in .tex files. Shift+Alt+F formats now.",
-              keywords: "indent whitespace pretty print format",
+              ),
+              keywords: t("indent whitespace pretty print format"),
               control: (
                 <Switch
                   checked={formatOnSave}
@@ -764,19 +803,20 @@ export function SettingsDialog({
     },
     {
       id: "writing",
-      label: "Writing",
+      label: t("Writing"),
       icon: SpellCheck,
-      intro: "Spelling and grammar checks, in both the code and the visual editor.",
+      intro: t("Spelling and grammar checks, in both the code and the visual editor."),
       cards: [
         {
-          title: "Spelling",
+          title: t("Spelling"),
           rows: [
             {
               id: "spellcheck",
-              label: "Check spelling",
-              description:
+              label: t("Check spelling"),
+              description: t(
                 "Right-click a marked word for corrections, or to add it to your dictionary.",
-              keywords: "dictionary words typo underline spellcheck",
+              ),
+              keywords: t("dictionary words typo underline spellcheck"),
               control: (
                 <Switch
                   checked={spellcheckEnabled}
@@ -786,11 +826,13 @@ export function SettingsDialog({
             },
             {
               id: "spellcheck-language",
-              label: "Language",
-              description:
+              label: t("Language"),
+              description: t(
                 "A language that is not installed yet is downloaded (10–20 MB).",
-              keywords:
+              ),
+              keywords: t(
                 "dictionary wordlist download german french spanish spellcheck language",
+              ),
               control: (
                 <Select
                   value={spellcheckLanguage}
@@ -805,7 +847,7 @@ export function SettingsDialog({
                   <SelectTrigger
                     className="w-36"
                     disabled={downloading !== null}
-                    title={downloading !== null ? "Downloading…" : undefined}
+                    title={downloading !== null ? t("Downloading…") : undefined}
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -827,14 +869,15 @@ export function SettingsDialog({
           ],
         },
         {
-          title: "Grammar and style",
+          title: t("Grammar and style"),
           rows: [
             {
               id: "grammar",
-              label: "Check grammar and style",
-              description:
+              label: t("Check grammar and style"),
+              description: t(
                 "Marks issues in blue; right-click for the fix or to turn a rule off.",
-              keywords: "grammar style languagetool harper check sentence",
+              ),
+              keywords: t("grammar style languagetool harper check sentence"),
               control: (
                 <Switch
                   checked={grammar.enabled !== false}
@@ -844,9 +887,9 @@ export function SettingsDialog({
             },
             {
               id: "english-variant",
-              label: "English variant",
-              description: "The spelling conventions the grammar check expects.",
-              keywords: "british american australian canadian indian dialect",
+              label: t("English variant"),
+              description: t("The spelling conventions the grammar check expects."),
+              keywords: t("british american australian canadian indian dialect"),
               control: (
                 <Select
                   value={grammar.englishVariant ?? "en-US"}
@@ -870,16 +913,19 @@ export function SettingsDialog({
           ],
         },
         {
-          title: features.grammarChoice ? "Checker and rules" : "Rules",
+          title: features.grammarChoice ? t("Checker and rules") : t("Rules"),
           rows: [
             {
               id: "grammar-checker",
-              label: features.grammarChoice ? "Checker and rules" : "Rules",
+              label: features.grammarChoice ? t("Checker and rules") : t("Rules"),
               description: features.grammarChoice
-                ? "Built in, offline and English only. Polemic or a LanguageTool server check every language."
-                : "Polemic checks every language, on every plan.",
-              keywords:
+                ? t(
+                    "Built in, offline and English only. Polemic or a LanguageTool server check every language.",
+                  )
+                : t("Polemic checks every language, on every plan."),
+              keywords: t(
                 "languagetool polemic server rules disable passive voice checker",
+              ),
               control: null,
             },
           ],
@@ -890,33 +936,37 @@ export function SettingsDialog({
     {
       id: "tex",
       hidden: !features.localTex,
-      label: "Compile",
+      label: t("Compile"),
       icon: Package,
-      intro:
+      intro: t(
         "Where documents compile, and the TeX tools Polemic found on this computer.",
+      ),
       cards: [
         {
-          title: "Where to compile",
+          title: t("Where to compile"),
           rows: [
             {
               id: "compile-provider",
-              label: "Where to compile",
-              description:
+              label: t("Where to compile"),
+              description: t(
                 "On this computer with your TeX distribution, or with Polemic without installing TeX.",
-              keywords: "cloud server polemic compile remote online tex live",
+              ),
+              keywords: t("cloud server polemic compile remote online tex live"),
               control: null,
             },
           ],
           content: <CompileSettingsSection />,
         },
         {
-          title: "TeX distribution",
+          title: t("TeX distribution"),
           rows: [
             {
               id: "tex-status",
-              label: "TeX distribution",
-              description: "pdflatex, xelatex, lualatex and latexmk on this computer.",
-              keywords: "tex live miktex latexmk pdflatex xelatex lualatex compile",
+              label: t("TeX distribution"),
+              description: t(
+                "pdflatex, xelatex, lualatex and latexmk on this computer.",
+              ),
+              keywords: t("tex live miktex latexmk pdflatex xelatex lualatex compile"),
               control: null,
             },
           ],
@@ -926,35 +976,37 @@ export function SettingsDialog({
     },
     {
       id: "bibliography",
-      label: "Bibliography",
+      label: t("Bibliography"),
       icon: BookOpen,
-      intro: "Where citations come from when you add one.",
+      intro: t("Where citations come from when you add one."),
       cards: [
         {
-          title: "Sources",
-          hidden: !features.referenceSources,
+          title: t("Sources"),
           rows: [
             {
               id: "sources",
-              label: "Sources",
-              description:
+              label: t("Sources"),
+              description: t(
                 "The .bib files and Zotero libraries that “Add from Sources…” searches.",
-              keywords: "zotero bibtex bib references citations sources",
+              ),
+              keywords: t("zotero bibtex bib references citations sources"),
               control: null,
             },
           ],
           content: <SourcesSettingsCard />,
         },
         {
-          title: "Online lookup",
+          title: t("Online lookup"),
           rows: [
             {
               id: "online-lookup",
-              label: "Look up DOI and arXiv IDs online",
-              description:
+              label: t("Look up DOI and arXiv IDs online"),
+              description: t(
                 "Fetches the entry from doi.org. Only the identifier you paste is sent. Off by default.",
-              keywords:
+              ),
+              keywords: t(
                 "doi arxiv import online lookup network bibtex crossref datacite",
+              ),
               control: (
                 <Switch
                   checked={onlineLookup}
@@ -969,23 +1021,53 @@ export function SettingsDialog({
     {
       id: "ai",
       hidden: !features.assistant,
-      label: "Assistant",
+      label: t("Assistant"),
       icon: Sparkles,
-      intro:
+      intro: t(
         "An optional AI model for the assistant: help with LaTeX errors, packages, tables and layout. Use your own account with a provider, or a model on this computer.",
+      ),
       cards: [
         {
-          title: "Provider and model",
+          title: t("Provider and model"),
           rows: [
             {
               id: "ai-provider",
-              label: "Provider",
-              keywords:
+              label: t("Provider"),
+              keywords: t(
                 "ai llm assistant provider mistral openai anthropic claude ollama lm studio local custom endpoint base url api key model",
+              ),
               control: null,
             },
           ],
           content: <AiSettingsSection />,
+        },
+      ],
+    },
+    {
+      id: "updates",
+      hidden: !updater,
+      label: "Updates",
+      icon: RefreshCw,
+      intro: "New versions of Polemic, and when it looks for them.",
+      cards: [
+        {
+          title: "Updates",
+          rows: [
+            {
+              id: "updates-auto",
+              label: "Check for updates automatically",
+              keywords: "update upgrade new version release download install restart",
+              control: null,
+            },
+            {
+              id: "updates-version",
+              label: "Version",
+              keywords: "version about check now latest",
+              control: null,
+            },
+          ],
+          content: updater ? <UpdatesSettingsSection updater={updater} /> : null,
+          bare: true,
         },
       ],
     },
@@ -1031,7 +1113,7 @@ export function SettingsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[600px] max-h-[90vh] w-full max-w-4xl flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
         <DialogHeader className="px-5 pt-4 pb-3">
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle>{t("Settings")}</DialogTitle>
         </DialogHeader>
         <div className="grid min-h-0 flex-1 grid-cols-[184px_1fr]">
           <nav className="flex min-h-0 flex-col border-r bg-muted/30 p-2">
@@ -1039,7 +1121,7 @@ export function SettingsDialog({
               <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 className="h-8 rounded-lg pl-8 text-xs"
-                placeholder="Search settings"
+                placeholder={t("Search settings")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
@@ -1075,7 +1157,7 @@ export function SettingsDialog({
               {trimmed.length > 0 ? (
                 results.length === 0 ? (
                   <p className="px-1 py-2 text-sm text-muted-foreground">
-                    No settings match &ldquo;{trimmed}&rdquo;.
+                    {t("No settings match “{trimmed}”.", { trimmed })}
                   </p>
                 ) : (
                   <div className="space-y-3">

@@ -32,6 +32,7 @@ import {
 } from "@/lib/table-grid";
 import { useDialogsStore, type TableGridRequest } from "@/store/dialogs";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 /** A rule line's name for the divider label (\toprule -> "toprule"). */
 function ruleName(rule: string): string {
@@ -130,23 +131,23 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
     <Dialog open onOpenChange={(open) => !open && close()}>
       <DialogContent className="flex max-h-[85vh] max-w-4xl flex-col">
         <DialogHeader>
-          <DialogTitle>Edit table</DialogTitle>
+          <DialogTitle>{t("Edit table")}</DialogTitle>
         </DialogHeader>
         <div className="flex flex-wrap items-center gap-0.5 border-b pb-2">
           <ToolButton
-            label="Insert row above"
+            label={t("Insert row above")}
             onClick={() => update(insertRow(grid, row), { row, col })}
           >
             <ArrowUpToLine className="size-4" />
           </ToolButton>
           <ToolButton
-            label="Insert row below"
+            label={t("Insert row below")}
             onClick={() => update(insertRow(grid, row + 1), { row: row + 1, col })}
           >
             <ArrowDownToLine className="size-4" />
           </ToolButton>
           <ToolButton
-            label="Delete row"
+            label={t("Delete row")}
             disabled={grid.rows.length <= 1}
             onClick={() =>
               update(deleteRow(grid, row), { row: Math.max(0, row - 1), col })
@@ -156,21 +157,21 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
           </ToolButton>
           <div className="mx-1 h-5 w-px bg-border" />
           <ToolButton
-            label="Insert column left"
+            label={t("Insert column left")}
             disabled={grid.hasSpans}
             onClick={() => update(insertColumn(grid, col), { row, col })}
           >
             <ArrowLeftToLine className="size-4" />
           </ToolButton>
           <ToolButton
-            label="Insert column right"
+            label={t("Insert column right")}
             disabled={grid.hasSpans}
             onClick={() => update(insertColumn(grid, col + 1), { row, col: col + 1 })}
           >
             <ArrowRightToLine className="size-4" />
           </ToolButton>
           <ToolButton
-            label="Delete column"
+            label={t("Delete column")}
             disabled={grid.hasSpans || grid.columns.length <= 1}
             onClick={() =>
               update(deleteColumn(grid, col), { row, col: Math.max(0, col - 1) })
@@ -181,9 +182,9 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
           <div className="mx-1 h-5 w-px bg-border" />
           {(
             [
-              ["l", "Align column left", AlignLeft],
-              ["c", "Center column", AlignCenter],
-              ["r", "Align column right", AlignRight],
+              ["l", t("Align column left"), AlignLeft],
+              ["c", t("Center column"), AlignCenter],
+              ["r", t("Align column right"), AlignRight],
             ] as [Align, string, typeof AlignLeft][]
           ).map(([value, label, Icon]) => (
             <Button
@@ -200,7 +201,7 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
             </Button>
           ))}
           <span className="ml-auto text-xs text-muted-foreground">
-            Row {row + 1}, column {col + 1}
+            {t("Row {row}, column {column}", { row: row + 1, column: col + 1 })}
           </span>
         </div>
         <div className="min-h-0 flex-1 overflow-auto">
@@ -215,7 +216,7 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
                       "px-1 pb-1 text-left font-mono font-normal text-muted-foreground",
                       c === col && "text-foreground",
                     )}
-                    title="Column spec"
+                    title={t("Column spec")}
                   >
                     {grid.columns[c]?.raw ?? "?"}
                   </th>
@@ -236,7 +237,10 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
                           if (el) cellRefs.current.set(`${r}:${c}`, el);
                           else cellRefs.current.delete(`${r}:${c}`);
                         }}
-                        aria-label={`Row ${r + 1}, column ${c + 1}`}
+                        aria-label={t("Row {row}, column {column}", {
+                          row: r + 1,
+                          column: c + 1,
+                        })}
                         spellCheck={false}
                         disabled={c >= cells.length}
                         className={cn(
@@ -260,14 +264,15 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
           </table>
         </div>
         <p className="text-xs text-muted-foreground">
-          Cells are LaTeX. Enter moves down (and adds a row at the end); paste cells
-          copied from a spreadsheet to fill several at once.
+          {t(
+            "Cells are LaTeX. Enter moves down (and adds a row at the end); paste cells copied from a spreadsheet to fill several at once.",
+          )}
           {grid.hasSpans &&
-            " This table has merged cells (\\multicolumn/\\multirow): columns cannot be added or removed here."}
+            ` ${t("This table has merged cells (\\multicolumn/\\multirow): columns cannot be added or removed here.")}`}
         </p>
         <DialogFooter>
           <Button variant="outline" onClick={close}>
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             onClick={() => {
@@ -275,7 +280,7 @@ function TableGridEditor({ request }: { request: TableGridRequest }) {
               close();
             }}
           >
-            Save
+            {t("Save")}
           </Button>
         </DialogFooter>
       </DialogContent>

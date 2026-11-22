@@ -47,6 +47,7 @@ import { noteKey } from "@/lib/suggestion-notes";
 import { useCommentsStore } from "@/store/comments";
 import { useProjectStore } from "@/store/project";
 import { suggestDeleteChar, suggestReplace, type SuggestResult } from "@/lib/suggest";
+import { t } from "@scholarkit/i18n";
 
 /** CSS colors for the xcolor names authors are usually given. */
 const XCOLORS: Record<string, string> = {
@@ -109,7 +110,7 @@ export function authorStyles(
   };
   for (const author of authors) add(author.id, author.name, author.color);
   for (const id of ids) {
-    if (id === null) styles.set(null, { name: "Unknown author", color: ANONYMOUS });
+    if (id === null) styles.set(null, { name: t("Unknown author"), color: ANONYMOUS });
     else add(id, null, null);
   }
   return styles;
@@ -287,10 +288,10 @@ export function resolveChangeIn(
 }
 
 const KIND_LABEL: Record<Change["kind"], string> = {
-  added: "Added",
-  deleted: "Deleted",
-  replaced: "Replaced",
-  highlight: "Highlighted",
+  added: t("Added"),
+  deleted: t("Deleted"),
+  replaced: t("Replaced"),
+  highlight: t("Highlighted"),
 };
 
 function actionButton(label: string, title: string, run: () => void): HTMLElement {
@@ -325,7 +326,7 @@ const changeHover = hoverTooltip(
         dot.style.background = style?.color ?? ANONYMOUS;
         const who = document.createElement("span");
         who.className = "change-card-author";
-        who.textContent = style?.name ?? change.author ?? "Unknown author";
+        who.textContent = style?.name ?? change.author ?? t("Unknown author");
         const kind = document.createElement("span");
         kind.className = "change-card-kind";
         kind.textContent = KIND_LABEL[change.kind];
@@ -342,8 +343,8 @@ const changeHover = hoverTooltip(
         const at = { ...change.range };
         actions.append(
           actionButton(
-            change.note === null ? "Note" : "Edit note",
-            "A note on this suggestion, shown in the Comments panel",
+            change.note === null ? t("Note") : t("Edit note"),
+            t("A note on this suggestion, shown in the Comments panel"),
             () => {
               const file = useProjectStore.getState().activeFile;
               if (file === null) return;
@@ -356,11 +357,11 @@ const changeHover = hoverTooltip(
               });
             },
           ),
-          actionButton("Accept", "Accept this suggestion", () => {
+          actionButton(t("Accept"), t("Accept this suggestion"), () => {
             resolveChangeIn(view, at, "accept");
             view.focus();
           }),
-          actionButton("Reject", "Reject this suggestion", () => {
+          actionButton(t("Reject"), t("Reject this suggestion"), () => {
             resolveChangeIn(view, at, "reject");
             view.focus();
           }),
@@ -389,7 +390,7 @@ class ChangeBar extends GutterMarker {
     const dom = document.createElement("div");
     dom.className = "cm-change-bar";
     dom.style.background = this.color;
-    dom.title = "Suggestion";
+    dom.title = t("Suggestion");
     dom.addEventListener("mousedown", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -636,7 +637,7 @@ const suggestFilter = EditorState.transactionFilter.of((tr) => {
     queueMicrotask(() => listener?.message(message));
     return {};
   };
-  if (edits.length !== 1) return refused("Suggest mode edits one place at a time.");
+  if (edits.length !== 1) return refused(t("Suggest mode edits one place at a time."));
   const [edit] = edits;
   const source = tr.startState.doc.toString();
   // The preamble is set up, not suggested.

@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { collapseContext, lineDiff } from "@/lib/diff";
 import { gitShowHead, readProjectFile } from "@/lib/tauri";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Diff of one file between HEAD and the working tree (unsaved edits
@@ -47,9 +48,9 @@ export function GitDiffDialog({
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="flex h-[70vh] max-h-[85vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
         <DialogHeader className="px-6 pt-6 pb-3">
-          <DialogTitle>Changes in {path}</DialogTitle>
+          <DialogTitle>{t("Changes in {path}", { path })}</DialogTitle>
           <p className="text-xs text-muted-foreground">
-            HEAD compared with the current file (unsaved edits included).
+            {t("HEAD compared with the current file (unsaved edits included).")}
           </p>
         </DialogHeader>
         <div className="flex-1 min-h-0 px-6 pb-6">
@@ -59,11 +60,11 @@ export function GitDiffDialog({
             )}
             {!error && data && data.oldText === "" && data.newText === "" && (
               <p className="p-2 text-xs text-muted-foreground">
-                File is empty on both sides.
+                {t("File is empty on both sides.")}
               </p>
             )}
             {!error && !data && (
-              <p className="p-2 text-xs text-muted-foreground">Loading…</p>
+              <p className="p-2 text-xs text-muted-foreground">{t("Loading…")}</p>
             )}
             <DiffRows rows={rows} />
           </ScrollArea>

@@ -9,6 +9,7 @@ import {
 import { useProjectStore } from "@/store/project";
 import { MATH_SYMBOL_CATEGORIES } from "@/lib/math-symbols";
 import type { FileEntry } from "@/lib/tauri";
+import { t } from "@scholarkit/i18n";
 
 export interface CommandSpec {
   label: string;
@@ -17,45 +18,45 @@ export interface CommandSpec {
 }
 
 export const COMMANDS: CommandSpec[] = [
-  { label: "\\section", template: "\\section{${title}}", detail: "Section heading" },
+  { label: "\\section", template: "\\section{${title}}", detail: t("Section heading") },
   {
     label: "\\subsection",
     template: "\\subsection{${title}}",
-    detail: "Subsection heading",
+    detail: t("Subsection heading"),
   },
   {
     label: "\\subsubsection",
     template: "\\subsubsection{${title}}",
-    detail: "Subsubsection heading",
+    detail: t("Subsubsection heading"),
   },
-  { label: "\\textbf", template: "\\textbf{${text}}", detail: "Bold text" },
-  { label: "\\textit", template: "\\textit{${text}}", detail: "Italic text" },
-  { label: "\\emph", template: "\\emph{${text}}", detail: "Emphasize" },
-  { label: "\\underline", template: "\\underline{${text}}", detail: "Underline" },
-  { label: "\\item", template: "\\item ", detail: "List item" },
-  { label: "\\footnote", template: "\\footnote{${note}}", detail: "Footnote" },
-  { label: "\\label", template: "\\label{${key}}", detail: "Label for referencing" },
-  { label: "\\ref", template: "\\ref{${key}}", detail: "Reference a label" },
-  { label: "\\eqref", template: "\\eqref{${key}}", detail: "Reference an equation" },
+  { label: "\\textbf", template: "\\textbf{${text}}", detail: t("Bold text") },
+  { label: "\\textit", template: "\\textit{${text}}", detail: t("Italic text") },
+  { label: "\\emph", template: "\\emph{${text}}", detail: t("Emphasize") },
+  { label: "\\underline", template: "\\underline{${text}}", detail: t("Underline") },
+  { label: "\\item", template: "\\item ", detail: t("List item") },
+  { label: "\\footnote", template: "\\footnote{${note}}", detail: t("Footnote") },
+  { label: "\\label", template: "\\label{${key}}", detail: t("Label for referencing") },
+  { label: "\\ref", template: "\\ref{${key}}", detail: t("Reference a label") },
+  { label: "\\eqref", template: "\\eqref{${key}}", detail: t("Reference an equation") },
   {
     label: "\\usepackage",
     template: "\\usepackage{${package}}",
-    detail: "Load a package",
+    detail: t("Load a package"),
   },
-  { label: "\\title", template: "\\title{${title}}", detail: "Document title" },
-  { label: "\\author", template: "\\author{${author}}", detail: "Document author" },
-  { label: "\\date", template: "\\date{${date}}", detail: "Document date" },
-  { label: "\\maketitle", template: "\\maketitle", detail: "Render title block" },
+  { label: "\\title", template: "\\title{${title}}", detail: t("Document title") },
+  { label: "\\author", template: "\\author{${author}}", detail: t("Document author") },
+  { label: "\\date", template: "\\date{${date}}", detail: t("Document date") },
+  { label: "\\maketitle", template: "\\maketitle", detail: t("Render title block") },
   {
     label: "\\tableofcontents",
     template: "\\tableofcontents",
-    detail: "Table of contents",
+    detail: t("Table of contents"),
   },
-  { label: "\\newpage", template: "\\newpage", detail: "Page break" },
+  { label: "\\newpage", template: "\\newpage", detail: t("Page break") },
   {
     label: "\\includegraphics",
     template: "\\includegraphics[width=${width}\\textwidth]{${file}}",
-    detail: "Include an image",
+    detail: t("Include an image"),
   },
 ];
 
@@ -67,45 +68,49 @@ const CITE_COMMANDS: {
   detail: string;
   package: "natbib" | "biblatex" | null;
 }[] = [
-  { name: "cite", detail: "Cite a reference", package: null },
-  { name: "nocite", detail: "List in the bibliography without citing", package: null },
-  { name: "citet", detail: "Textual citation: Author (Year)", package: "natbib" },
+  { name: "cite", detail: t("Cite a reference"), package: null },
+  {
+    name: "nocite",
+    detail: t("List in the bibliography without citing"),
+    package: null,
+  },
+  { name: "citet", detail: t("Textual citation: Author (Year)"), package: "natbib" },
   {
     name: "citep",
-    detail: "Parenthetical citation: (Author, Year)",
+    detail: t("Parenthetical citation: (Author, Year)"),
     package: "natbib",
   },
   {
     name: "citealt",
-    detail: "Textual citation without parentheses",
+    detail: t("Textual citation without parentheses"),
     package: "natbib",
   },
   {
     name: "citealp",
-    detail: "Parenthetical citation without parentheses",
+    detail: t("Parenthetical citation without parentheses"),
     package: "natbib",
   },
-  { name: "citeauthor", detail: "Cite the author only", package: "natbib" },
-  { name: "citeyear", detail: "Cite the year only", package: "natbib" },
-  { name: "parencite", detail: "Parenthetical citation", package: "biblatex" },
-  { name: "textcite", detail: "Textual citation", package: "biblatex" },
+  { name: "citeauthor", detail: t("Cite the author only"), package: "natbib" },
+  { name: "citeyear", detail: t("Cite the year only"), package: "natbib" },
+  { name: "parencite", detail: t("Parenthetical citation"), package: "biblatex" },
+  { name: "textcite", detail: t("Textual citation"), package: "biblatex" },
   {
     name: "autocite",
-    detail: "Citation in the style's preferred form",
+    detail: t("Citation in the style's preferred form"),
     package: "biblatex",
   },
-  { name: "footcite", detail: "Citation in a footnote", package: "biblatex" },
+  { name: "footcite", detail: t("Citation in a footnote"), package: "biblatex" },
   {
     name: "smartcite",
-    detail: "Footnote citation, or parenthetical inside one",
+    detail: t("Footnote citation, or parenthetical inside one"),
     package: "biblatex",
   },
-  { name: "citeauthor", detail: "Cite the author only", package: "biblatex" },
-  { name: "citeyear", detail: "Cite the year only", package: "biblatex" },
-  { name: "citetitle", detail: "Cite the title only", package: "biblatex" },
+  { name: "citeauthor", detail: t("Cite the author only"), package: "biblatex" },
+  { name: "citeyear", detail: t("Cite the year only"), package: "biblatex" },
+  { name: "citetitle", detail: t("Cite the title only"), package: "biblatex" },
   {
     name: "fullcite",
-    detail: "Full bibliography entry in the text",
+    detail: t("Full bibliography entry in the text"),
     package: "biblatex",
   },
 ];
@@ -199,7 +204,7 @@ function commandOptions(): Completion[] {
   const envOptions: Completion[] = ENVIRONMENTS.map((env) => ({
     label: `\\begin{${env.name}}`,
     type: "keyword",
-    detail: "Environment",
+    detail: t("Environment"),
     apply: snippet(env.template),
   }));
   const cmdOptions: Completion[] = COMMANDS.map((cmd) => ({
@@ -257,7 +262,7 @@ function mathCommandOptions(): Completion[] {
     out.push({
       label,
       type: "function",
-      detail: "Math",
+      detail: t("Math"),
       apply: snippet(template),
     });
   }
@@ -269,11 +274,11 @@ export const IMAGE_EXTENSIONS = [".pdf", ".png", ".jpg", ".jpeg", ".eps", ".gif"
 
 /** Commands whose first braced argument is a project file path. */
 const PATH_COMMANDS: Record<string, { extensions: string[]; kind: string }> = {
-  input: { extensions: [".tex"], kind: "TeX file" },
-  include: { extensions: [".tex"], kind: "TeX file" },
-  includegraphics: { extensions: IMAGE_EXTENSIONS, kind: "Image" },
-  bibliography: { extensions: [".bib"], kind: "Bibliography" },
-  addbibresource: { extensions: [".bib"], kind: "Bibliography" },
+  input: { extensions: [".tex"], kind: t("TeX file") },
+  include: { extensions: [".tex"], kind: t("TeX file") },
+  includegraphics: { extensions: IMAGE_EXTENSIONS, kind: t("Image") },
+  bibliography: { extensions: [".bib"], kind: t("Bibliography") },
+  addbibresource: { extensions: [".bib"], kind: t("Bibliography") },
 };
 
 /** Project-relative paths of all files in the tree, depth first. */

@@ -39,6 +39,7 @@ import {
   type ProjectView,
 } from "@/lib/project-doc";
 import { fromBase64, isEmptyUpdate, toBase64 } from "@/lib/share";
+import { formatList, t } from "@scholarkit/i18n";
 
 /** Origin of the transactions that bring in the server's changes. */
 export const REMOTE_ORIGIN = Symbol("polemic-remote");
@@ -229,7 +230,8 @@ export class LinkSync {
         }
       }
       await this.save(failed);
-      if (failed.length > 0) throw new Error(`Could not write ${failed.join(", ")}.`);
+      if (failed.length > 0)
+        throw new Error(t("Could not write {files}.", { files: formatList(failed) }));
     }
 
     // 2. Changes made here.
@@ -306,7 +308,10 @@ export class LinkSync {
       }
     }
     await this.save([...failed]);
-    if (failed.size > 0) throw new Error(`Could not write ${[...failed].join(", ")}.`);
+    if (failed.size > 0)
+      throw new Error(
+        t("Could not write {files}.", { files: formatList([...failed]) }),
+      );
     return done;
   }
 

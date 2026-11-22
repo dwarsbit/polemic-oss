@@ -24,6 +24,7 @@ import {
 import { useLinkStore } from "@/store/link";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t } from "@scholarkit/i18n";
 
 function statusLabel(status: OnlineChange["status"]): string {
   switch (status) {
@@ -121,10 +122,11 @@ export function OnlineSnapshotDialog({
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="flex h-[70vh] max-h-[85vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-4xl">
         <DialogHeader className="px-6 pt-6 pb-3">
-          <DialogTitle>Snapshot changes</DialogTitle>
+          <DialogTitle>{t("Snapshot changes")}</DialogTitle>
           <p className="text-xs text-muted-foreground">
-            {new Date(snapshot.createdAt).toLocaleString()} compared with the current
-            project (unsaved edits included).
+            {t("{date} compared with the current project (unsaved edits included).", {
+              date: new Date(snapshot.createdAt).toLocaleString(),
+            })}
           </p>
         </DialogHeader>
         <div className="grid flex-1 min-h-0 grid-cols-[220px_1fr] px-6 pb-6">
@@ -134,8 +136,8 @@ export function OnlineSnapshotDialog({
                 {loadError
                   ? errorText(loadError)
                   : changes.data === undefined
-                    ? "Loading…"
-                    : "No differences."}
+                    ? t("Loading…")
+                    : t("No differences.")}
               </p>
             )}
             <ul>
@@ -178,7 +180,7 @@ export function OnlineSnapshotDialog({
                       variant="ghost"
                       size="icon"
                       className="size-6"
-                      title="Restore this file from the snapshot"
+                      title={t("Restore this file from the snapshot")}
                       disabled={restoring}
                       onClick={() => void restoreActiveFile()}
                     >
@@ -191,7 +193,7 @@ export function OnlineSnapshotDialog({
             <ScrollArea className="min-h-0 flex-1">
               {active && active.before === null && active.after === null && (
                 <p className="py-2 text-xs text-muted-foreground">
-                  This file isn't text, so there is no line-by-line view.
+                  {t("This file isn't text, so there is no line-by-line view.")}
                 </p>
               )}
               <DiffRows rows={rows} />

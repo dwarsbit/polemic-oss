@@ -5,6 +5,7 @@ import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { t } from "@scholarkit/i18n";
 
 /**
  * A single-date picker (the shadcn pattern): an outline button that
@@ -14,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 function DatePicker({
   value,
   onValueChange,
-  placeholder = "Pick a date",
+  placeholder = t("Pick a date"),
   className,
   disabled,
 }: {

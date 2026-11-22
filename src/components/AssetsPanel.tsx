@@ -44,6 +44,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
+import { t, tn } from "@scholarkit/i18n";
 
 /** An \includegraphics path no project file matches. */
 interface MissingRef {
@@ -55,11 +56,11 @@ interface MissingRef {
 }
 
 const FILTERS: { id: AssetFilter; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "image", label: "Images" },
-  { id: "pdf", label: "PDFs" },
-  { id: "data", label: "Data" },
-  { id: "other", label: "Other" },
+  { id: "all", label: t("All") },
+  { id: "image", label: t("Images") },
+  { id: "pdf", label: t("PDFs") },
+  { id: "data", label: t("Data") },
+  { id: "other", label: t("Other") },
 ];
 
 /**
@@ -237,7 +238,7 @@ export function AssetsPanel() {
     if (!project) return;
     const picked = await openFileDialog({
       multiple: true,
-      title: "Import assets (copied into the project)",
+      title: t("Import assets (copied into the project)"),
     });
     if (picked === null) return;
     const sources = Array.isArray(picked) ? picked : [picked];
@@ -278,14 +279,14 @@ export function AssetsPanel() {
   return (
     <div className="flex h-full flex-col">
       <SectionHeader
-        label="Assets"
+        label={t("Assets")}
 
         actions={
           !project?.readOnly && (
             <Button
               variant="ghost"
               size="icon-sm"
-              title="Import assets (copies files into assets/)"
+              title={t("Import assets (copies files into assets/)")}
               onClick={() => void importFiles()}
             >
               <Plus className="size-4" />
@@ -298,7 +299,7 @@ export function AssetsPanel() {
           <Search className="absolute top-1/2 left-2 size-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-7 rounded-md pl-6 text-xs"
-            placeholder="Search assets"
+            placeholder={t("Search assets")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -353,12 +354,13 @@ export function AssetsPanel() {
       <div className="flex-1 overflow-y-auto p-1.5">
         {paths.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
-            No assets yet. Import images, PDFs or data with the + button; they are
-            copied into assets/.
+            {t(
+              "No assets yet. Import images, PDFs or data with the + button; they are copied into assets/.",
+            )}
           </p>
         ) : filtered.length === 0 ? (
           <p className="px-2 text-xs text-muted-foreground">
-            No assets match your filters.
+            {t("No assets match your filters.")}
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-2">
@@ -372,7 +374,10 @@ export function AssetsPanel() {
                     "group flex flex-col gap-1 rounded-lg border p-1.5 text-left transition-colors hover:bg-accent",
                     selected === path && "ring-2 ring-inset ring-primary",
                   )}
-                  title={`${path} (double-click to insert, or drag into the editor for a figure)`}
+                  title={t(
+                    "{path} (double-click to insert, or drag into the editor for a figure)",
+                    { path },
+                  )}
                   onClick={() => {
                     if (wasDragged()) return;
                     setSelected((prev) => (prev === path ? null : path));
@@ -384,19 +389,22 @@ export function AssetsPanel() {
                     void showNativeContextMenu([
                       {
                         id: "insert",
-                        text: "Insert",
+                        text: t("Insert"),
                         action: () => insert(path),
                       },
                       {
                         id: "delete",
-                        text: "Delete",
+                        text: t("Delete"),
                         action: () => {
                           void (async () => {
-                            const confirmed = await ask(`Move ${path} to the trash?`, {
-                              title: "Delete asset",
-                              kind: "warning",
-                              okLabel: "Delete",
-                            }).catch(() => false);
+                            const confirmed = await ask(
+                              t("Move {path} to the trash?", { path }),
+                              {
+                                title: t("Delete asset"),
+                                kind: "warning",
+                                okLabel: t("Delete"),
+                              },
+                            ).catch(() => false);
                             if (!confirmed) return;
                             await useProjectStore.getState().deleteEntry(path);
                           })().catch(setImportError);
@@ -419,7 +427,7 @@ export function AssetsPanel() {
             <div className="flex items-center rounded hover:bg-accent">
               <button
                 type="button"
-                title={missingOpen ? "Collapse" : "Expand"}
+                title={missingOpen ? t("Collapse") : t("Expand")}
                 className="flex size-5 shrink-0 items-center justify-center"
                 onClick={() => setMissingOpen((open) => !open)}
               >
@@ -431,7 +439,7 @@ export function AssetsPanel() {
                 />
               </button>
               <span className="min-w-0 flex-1 truncate py-1.5 text-xs font-medium text-warning">
-                Missing files
+                {t("Missing files")}
               </span>
               <span className="mr-1 shrink-0 text-2xs tabular-nums text-muted-foreground">
                 {missing.length}
@@ -446,7 +454,11 @@ export function AssetsPanel() {
                   <button
                     type="button"
                     className="min-w-0 flex-1 truncate py-1.5 text-left text-xs"
-                    title={`${ref.count} reference${ref.count === 1 ? "" : "s"} to a file not in the project`}
+                    title={tn(
+                      ref.count,
+                      "{count} reference to a file not in the project",
+                      "{count} references to a file not in the project",
+                    )}
                     onClick={() => goTo(ref.file, ref.line)}
                   >
                     {ref.path}
@@ -472,7 +484,7 @@ export function AssetsPanel() {
         <div className="relative shrink-0 border-t px-2 pt-2 pb-1.5">
           <button
             type="button"
-            title="Close inspector"
+            title={t("Close inspector")}
             className="absolute top-1.5 right-1.5 rounded p-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             onClick={() => setSelected(null)}
           >
@@ -499,7 +511,7 @@ export function AssetsPanel() {
                 {tag}
                 <button
                   type="button"
-                  title={`Remove ${tag}`}
+                  title={t("Remove {tag}", { tag })}
                   onClick={() =>
                     setTags(
                       selected,
@@ -513,7 +525,7 @@ export function AssetsPanel() {
             ))}
             <input
               className="min-w-0 flex-1 border-b bg-transparent text-2xs outline-none focus:border-primary"
-              placeholder="Add tag…"
+              placeholder={t("Add tag…")}
               value={tagDraft}
               onChange={(e) => setTagDraft(e.target.value)}
               onKeyDown={(e) => {
@@ -592,7 +604,7 @@ function InspectorDetails({
       {dims && <p className="text-muted-foreground">{dims}</p>}
       <p className="text-muted-foreground">
         {formatBytes(entry.size)} ·{" "}
-        {kind === "raster" ? "Image" : kind === "pdf" ? "PDF" : "File"}
+        {kind === "raster" ? t("Image") : kind === "pdf" ? "PDF" : t("File")}
       </p>
       <p className="truncate text-muted-foreground" title={path}>
         {path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "(root)"}
@@ -604,8 +616,8 @@ function InspectorDetails({
       )}
       <p className={cn(usageCount === 0 ? "text-warning" : "text-muted-foreground")}>
         {usageCount === 0
-          ? "Unused"
-          : `Used ${usageCount === 1 ? "once" : `${usageCount} times`}`}
+          ? t("Unused")
+          : tn(usageCount, "Used once", "Used {count} times")}
       </p>
     </div>
   );

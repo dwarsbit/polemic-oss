@@ -10,6 +10,7 @@ import {
   type TexEngine,
 } from "@/lib/tauri";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 export type PreviewStatus = "idle" | "compiling" | "ok" | "error";
 
@@ -125,7 +126,7 @@ async function runCompile(
   if (!project || !mainFile) {
     set({
       status: "error",
-      error: "No project with a main .tex file is open.",
+      error: t("No project with a main .tex file is open."),
       errorKind: "failed",
       issues: [],
       log: null,

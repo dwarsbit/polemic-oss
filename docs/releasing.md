@@ -1,13 +1,13 @@
 # Releasing
 
 Polemic is developed in the Scholarkit repository (`apps/polemic`) and
-mirrored to dwarsbit/polemic-2, where the installers are built and
+mirrored to dwarsbit/polemic-oss, where the installers are built and
 published. A release takes two workflows:
 
 - **Polemic release** in Scholarkit
   (`.github/workflows/polemic-release.yml` at its root) sets the version,
-  commits it and mirrors the commit to polemic-2 with the tag `vX.Y.Z`.
-- **Release** in polemic-2 (`.github/workflows/release.yml` here) runs
+  commits it and mirrors the commit to polemic-oss with the tag `vX.Y.Z`.
+- **Release** in polemic-oss (`.github/workflows/release.yml` here) runs
   on that tag, started by the mirror: it builds the installers and
   publishes the GitHub release.
 
@@ -18,7 +18,7 @@ It releases the version of the `## X.Y.Z (unreleased)` heading in
    at the top of the changelog. Every pull request that changes, adds or
    fixes something adds its line there; start the heading if there is
    none yet.
-2. Once CI on Scholarkit's `main` is green, and CI on polemic-2's `main`
+2. Once CI on Scholarkit's `main` is green, and CI on polemic-oss's `main`
    is green for the same files, run **Polemic release** from the Actions
    tab of Scholarkit, on `main`. It takes no input.
 
@@ -37,5 +37,14 @@ the release as the latest one. If a build fails, the draft and the tag
 stay: re-run the failed jobs. A fix that needs a code change goes out as
 the next version.
 
+Each build also makes the files the installed apps update from, signed
+with the updater key, and the release gets a `latest.json` that lists
+them. The Scholarkit server reads that file to tell the apps about the
+new version. **Release** stops at the start when the updater key is
+missing: the `TAURI_SIGNING_PRIVATE_KEY` and
+`TAURI_SIGNING_PRIVATE_KEY_PASSWORD` secrets in polemic-oss, and the public
+key in `src-tauri/tauri.conf.json`. See
+[the updates package](../packages/updates/README.md).
+
 macOS and Windows builds are signed once the signing secrets are set in
-polemic-2; see [Code signing](signing.md) for the setup.
+polemic-oss; see [Code signing](signing.md) for the setup.

@@ -19,6 +19,8 @@ import {
 import { useDialogsStore } from "@/store/dialogs";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 function formatDate(iso: string): string {
   if (!iso) return "";
@@ -26,7 +28,7 @@ function formatDate(iso: string): string {
 }
 
 /**
- * The projects on the Polemic account, made in the browser or shared
+ * The projects on the Scholarkit account, made in the browser or shared
  * from another computer. Opening one asks where to keep it: a new
  * folder in the projects folder, or a new or empty folder you pick.
  * The folder then syncs both ways. A project already on this computer
@@ -125,16 +127,17 @@ function AccountProjects({
     return (
       <>
         <DialogHeader>
-          <DialogTitle>Open “{placing.name}”</DialogTitle>
+          <DialogTitle>{t("Open “{name}”", { name: placing.name })}</DialogTitle>
           <DialogDescription className="text-xs">
-            Choose where to keep this project on your computer. The folder stays in sync
-            with your account.
+            {t(
+              "Choose where to keep this project on your computer. The folder stays in sync with your account.",
+            )}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
           <PlaceButton
             icon={<Folder />}
-            label="In your projects folder"
+            label={t("In your projects folder")}
             detail={projectsRoot}
             busy={opening !== null && !opening.choose}
             disabled={opening !== null}
@@ -142,8 +145,8 @@ function AccountProjects({
           />
           <PlaceButton
             icon={<FolderOpen />}
-            label="In another folder…"
-            detail="Pick a new or empty folder."
+            label={t("In another folder…")}
+            detail={t("Pick a new or empty folder.")}
             busy={opening !== null && opening.choose}
             disabled={opening !== null}
             onClick={() => void open(placing, true)}
@@ -165,7 +168,7 @@ function AccountProjects({
             }}
           >
             <ArrowLeft />
-            All projects
+            {t("All projects")}
           </Button>
         </div>
       </>
@@ -175,37 +178,44 @@ function AccountProjects({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Open from your account</DialogTitle>
+        <DialogTitle>{t("Open from your account")}</DialogTitle>
         <DialogDescription className="text-xs">
-          Projects you made in your browser or shared from another computer. Opening one
-          puts it in a folder on this computer that stays in sync with your account.
+          {t(
+            "Projects you made in your browser or shared from another computer. Opening one puts it in a folder on this computer that stays in sync with your account.",
+          )}
         </DialogDescription>
       </DialogHeader>
       {missing && (
         <p className="text-xs text-muted-foreground" role="status">
-          That project isn’t in this account. Sign in with the account you use in your
-          browser, or pick a project below.
+          {t(
+            "That project isn’t in this account. Sign in with the account you use in your browser, or pick a project below.",
+          )}
         </p>
       )}
       {projects === null ? (
         <Loader2 className="size-4 animate-spin text-muted-foreground" />
       ) : signedOut ? (
         <p className="text-xs text-muted-foreground">
-          Sign in to your Polemic account first.{" "}
-          <button
-            type="button"
-            className="underline underline-offset-2 hover:text-foreground"
-            onClick={() => {
-              onDone();
-              openSettings("account");
-            }}
-          >
-            Sign in
-          </button>
+          {rich("Sign in to your Scholarkit account first. <0>Sign in</0>", [
+            (c) => (
+              <button
+                type="button"
+                className="underline underline-offset-2 hover:text-foreground"
+                onClick={() => {
+                  onDone();
+                  openSettings("account");
+                }}
+              >
+                {c}
+              </button>
+            ),
+          ])}
         </p>
       ) : projects.length === 0 && !error ? (
         <p className="text-xs text-muted-foreground">
-          No projects in your account yet. Share a project, or make one in your browser.
+          {t(
+            "No projects in your account yet. Share a project, or make one in your browser.",
+          )}
         </p>
       ) : (
         <ul className="max-h-72 divide-y overflow-y-auto rounded-md border text-sm">
@@ -220,7 +230,7 @@ function AccountProjects({
                   {[
                     p.role === "owner" ? "" : `${p.owner?.name ?? "Someone"}’s project`,
                     p.folder
-                      ? "On this computer"
+                      ? t("On this computer")
                       : p.updatedAt
                         ? `Changed ${formatDate(p.updatedAt)}`
                         : "",
@@ -236,7 +246,7 @@ function AccountProjects({
                 onClick={() => choose(p)}
               >
                 {opening?.id === p.id && <Loader2 className="size-3 animate-spin" />}
-                {p.folder ? "Open" : "Open…"}
+                {p.folder ? t("Open") : t("Open…")}
               </Button>
             </li>
           ))}

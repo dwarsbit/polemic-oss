@@ -7,6 +7,7 @@ import type { ProseBlock } from "@/lib/prose";
 import { blockWordRanges, findMisspelled } from "@/lib/spellcheck";
 import { useSettingsStore } from "@/store/settings";
 import type { WritingIssue } from "@/components/WritingPopover";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Spelling and grammar in the Visual editor: the same checks as the
@@ -115,7 +116,7 @@ export async function runVisualChecks(view: EditorView): Promise<void> {
             to,
             {
               class: "writing-grammar",
-              title: `${issue.message} (right-click for fixes)`,
+              title: t("{message} (right-click for fixes)", { message: issue.message }),
             },
             { issue: { kind: "grammar", issue: placed } },
           ),

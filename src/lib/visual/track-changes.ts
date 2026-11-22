@@ -45,6 +45,7 @@ import {
 import type { PreambleAttrs } from "./doc-types";
 import { splitPreamble } from "./parse";
 import { preambleText } from "./serialize";
+import { t } from "@scholarkit/i18n";
 
 /** Marks a transaction of ours: suggest mode leaves it alone. */
 const SKIP = "trackChangesSkip";
@@ -257,15 +258,15 @@ function problemWith(tr: Transaction): string | null {
   for (let k = 0; k < tr.steps.length; k++) {
     const step = tr.steps[k];
     if (!(step instanceof ReplaceStep)) {
-      return "This change can't be suggested. Turn Suggest off to make it.";
+      return t("This change can't be suggested. Turn Suggest off to make it.");
     }
     const { from, to } = step as unknown as { from: number; to: number };
     if (from < to) {
       const doc = tr.docs[k];
       if (!doc.resolve(from).sameParent(doc.resolve(to))) {
         return doc.textBetween(from, to, "", "\ufffc").length === 0
-          ? "Can't suggest joining paragraphs."
-          : "Can't suggest across paragraphs. Select within one paragraph.";
+          ? t("Can't suggest joining paragraphs.")
+          : t("Can't suggest across paragraphs. Select within one paragraph.");
       }
     }
   }

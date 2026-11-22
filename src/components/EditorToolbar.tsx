@@ -34,6 +34,7 @@ import { applyTextWrapper } from "@/lib/editor-wrappers";
 import { THEOREM_ENVS, newtheoremDeclarations } from "@/lib/visual/parse";
 import { useEditorStore } from "@/store/editor";
 import { formatShortcut } from "@/lib/platform";
+import { t } from "@scholarkit/i18n";
 
 /** A list skeleton with the caret right after the first \item. */
 function listSkeleton(kind: "itemize" | "enumerate") {
@@ -74,7 +75,7 @@ export function EditorToolbar() {
     const contentNow = useEditorStore.getState().content;
     const beginAt = findDocumentBegin(contentNow);
     if (beginAt === -1) {
-      return "The file has no preamble: no \\begin{document} to declare before.";
+      return t("The file has no preamble: no \\begin{document} to declare before.");
     }
     ensurePackages(["amsthm"]);
     // The package line may have shifted positions; re-read the doc.
@@ -84,7 +85,8 @@ export function EditorToolbar() {
     const changed = applyEditsInView([
       { from: lineStart, to: lineStart, insert: `\\newtheorem{${env}}{${name}}\n` },
     ]);
-    if (!changed) return "The declaration needs the Code face with an open .tex file.";
+    if (!changed)
+      return t("The declaration needs the Code face with an open .tex file.");
     if (insertInstance) {
       const skeleton = envSkeleton(env);
       insertAtCursor(skeleton.text, skeleton.cursorOffset);
@@ -108,12 +110,12 @@ export function EditorToolbar() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="h-7 gap-1 px-2 text-xs">
             <Plus className="size-3.5" />
-            Insert
+            {t("Insert")}
             <ChevronDown className="size-3.5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="max-h-[28rem] overflow-y-auto">
-          <DropdownMenuLabel>Environments</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("Environments")}</DropdownMenuLabel>
           {["quote", "quotation", "center", "abstract"].map((env) => {
             const skeleton = envSkeleton(env);
             return (
@@ -126,7 +128,7 @@ export function EditorToolbar() {
             );
           })}
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Theorem environments</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("Theorem environments")}</DropdownMenuLabel>
           {theoremEntries.map((entry) => {
             const skeleton = envSkeleton(entry.env);
             return (
@@ -142,37 +144,37 @@ export function EditorToolbar() {
             );
           })}
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Inline &amp; floats</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("Inline & floats")}</DropdownMenuLabel>
           <DropdownMenuItem onSelect={() => insertAtCursor("\\footnote{}", 11)}>
-            Footnote (\footnote)
+            {t("Footnote (\\footnote)")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => insertAtCursor("\\[\n  \n\\]", "\\[\n  ".length)}
           >
-            Display math (\[…\])
+            {t("Display math (\\[…\\])")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() =>
               insertAtCursor(FIGURE_SCAFFOLD, FIGURE_SCAFFOLD.indexOf("{}") + 1)
             }
           >
-            Figure
+            {t("Figure")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() =>
               insertAtCursor(TABLE_SCAFFOLD, TABLE_SCAFFOLD.indexOf("a & b"))
             }
           >
-            Table
+            {t("Table")}
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={() => useDialogsStore.getState().setCsvImport({ path: null })}
           >
-            Table or plot from CSV…
+            {t("Table or plot from CSV…")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={() => setTheoremOpen(true)}>
-            New theorem environment…
+            {t("New theorem environment…")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -187,7 +189,9 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Insert or edit table (${formatShortcut("Mod+Shift+T")})`}
+          title={t("Insert or edit table ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+Shift+T"),
+          })}
           onClick={() => insertOrEditTable()}
         >
           <TableProperties className="size-4" />
@@ -195,7 +199,9 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Figure from image (${formatShortcut("Mod+Alt+G")})`}
+          title={t("Figure from image ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+Alt+G"),
+          })}
           onClick={() => wrapFigure()}
         >
           <Image className="size-4" />
@@ -203,7 +209,7 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title="Bulleted list"
+          title={t("Bulleted list")}
           onClick={() => insertAtCursor(itemize.text, itemize.cursorOffset)}
         >
           <List className="size-4" />
@@ -211,7 +217,7 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title="Numbered list"
+          title={t("Numbered list")}
           onClick={() => insertAtCursor(enumerate.text, enumerate.cursorOffset)}
         >
           <ListOrdered className="size-4" />
@@ -222,7 +228,9 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Bold (${formatShortcut("Mod+B")})`}
+          title={t("Bold ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+B"),
+          })}
           onClick={() => applyTextWrapper("bold")}
         >
           <Bold className="size-4" />
@@ -230,7 +238,9 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Emphasis (${formatShortcut("Mod+I")})`}
+          title={t("Emphasis ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+I"),
+          })}
           onClick={() => applyTextWrapper("emph")}
         >
           <Italic className="size-4" />
@@ -238,7 +248,9 @@ export function EditorToolbar() {
         <Button
           variant="ghost"
           size="icon-sm"
-          title={`Underline (${formatShortcut("Mod+U")})`}
+          title={t("Underline ({formatShortcut})", {
+            formatShortcut: formatShortcut("Mod+U"),
+          })}
           onClick={() => applyTextWrapper("underline")}
         >
           <Underline className="size-4" />

@@ -1,6 +1,7 @@
 import { resolveIncludePath, texPathsOf } from "@/lib/doc-structure";
 import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
+import { t } from "@scholarkit/i18n";
 
 /**
  * Open the file an \input/\include spec names (Cmd/Ctrl+click on
@@ -13,7 +14,7 @@ export async function openIncludeTarget(spec: string): Promise<boolean> {
   if (target === null) {
     usePreviewStore
       .getState()
-      .setNotice(`No file in the project matches \\input{${spec}}.`);
+      .setNotice(t("No file in the project matches \\input{{spec}}.", { spec }));
     return false;
   }
   if (target !== activeFile) await openFile(target);

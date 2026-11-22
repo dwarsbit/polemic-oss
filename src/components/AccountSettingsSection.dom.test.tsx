@@ -94,7 +94,7 @@ describe("AccountSettingsSection", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     server.status = {
-      server: "https://app.polemicapp.com",
+      server: "https://app.scholarkit.app",
       signedIn: false,
       user: null,
       problem: null,
@@ -190,7 +190,7 @@ describe("AccountSettingsSection", () => {
     await render();
     expect(host.textContent).toContain("download your data or delete your account");
     await click("Manage account");
-    expect(openUrl).toHaveBeenCalledWith("https://app.polemicapp.com/account");
+    expect(openUrl).toHaveBeenCalledWith("https://app.scholarkit.app/account");
     await click("Privacy policy");
     expect(openUrl).toHaveBeenCalledWith("https://polemicapp.com/privacy");
   });
@@ -243,7 +243,7 @@ describe("AccountSettingsSection", () => {
     server.status = {
       ...server.status,
       signedIn: true,
-      problem: "Could not reach https://app.polemicapp.com.",
+      problem: "Could not reach https://app.scholarkit.app.",
     };
     await render();
     expect(host.textContent).toContain("Signed in");

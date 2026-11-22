@@ -3,6 +3,8 @@ import { CheckCircle2, ExternalLink, RefreshCcw, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { detectTex } from "@/lib/tauri";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import { t } from "@scholarkit/i18n";
+import { rich } from "@scholarkit/i18n/react";
 
 function StatusRow({
   label,
@@ -53,21 +55,25 @@ export function TexStatusSection() {
 
   return (
     <div>
-      <p className="mb-1.5 font-medium">TeX distribution</p>
+      <p className="mb-1.5 font-medium">{t("TeX distribution")}</p>
       <p className="mb-1.5 text-xs text-muted-foreground">
-        Polemic compiles on your machine using your own TeX installation. It needs{" "}
-        <span className="font-mono">pdflatex</span> and{" "}
-        <span className="font-mono">latexmk</span> on your PATH (
-        <span className="font-mono">xelatex</span> or{" "}
-        <span className="font-mono">lualatex</span> for projects set to those engines);{" "}
-        <span className="font-mono">synctex</span> enables click navigation.
+        {rich(
+          "Polemic compiles on your machine using your own TeX installation. It needs <0>pdflatex</0> and <1>latexmk</1> on your PATH (<2>xelatex</2> or <3>lualatex</3> for projects set to those engines); <4>synctex</4> enables click navigation.",
+          [
+            (c) => <span className="font-mono">{c}</span>,
+            (c) => <span className="font-mono">{c}</span>,
+            (c) => <span className="font-mono">{c}</span>,
+            (c) => <span className="font-mono">{c}</span>,
+            (c) => <span className="font-mono">{c}</span>,
+          ],
+        )}
       </p>
       <div className="my-2">
         {tex === undefined ? (
-          <p className="text-sm text-muted-foreground">Detecting…</p>
+          <p className="text-sm text-muted-foreground">{t("Detecting…")}</p>
         ) : tex === null ? (
           <p className="text-sm text-muted-foreground">
-            Detection is unavailable (not running in the desktop app).
+            {t("Detection is unavailable (not running in the desktop app).")}
           </p>
         ) : (
           <>
@@ -79,7 +85,7 @@ export function TexStatusSection() {
             <StatusRow
               label="xelatex"
               found={tex.xelatex.found}
-              hint={tex.xelatex.version ?? "optional, for fontspec documents"}
+              hint={tex.xelatex.version ?? t("optional, for fontspec documents")}
             />
             <StatusRow
               label="lualatex"
@@ -95,23 +101,26 @@ export function TexStatusSection() {
         )}
       </div>
       <div className="space-y-2 rounded border p-3 text-sm">
-        <p className="font-medium">Install a distribution</p>
+        <p className="font-medium">{t("Install a distribution")}</p>
         <p>
-          macOS: MacTeX includes pdflatex, latexmk, and synctex.{" "}
+          {t("macOS: MacTeX includes pdflatex, latexmk, and synctex.")}{" "}
           <LinkButton url="https://www.tug.org/mactex/" label="tug.org/mactex" />
         </p>
         <p>
-          Linux: TeX Live from your package manager (e.g.{" "}
-          <span className="font-mono">sudo apt install texlive-full</span>).{" "}
+          {rich(
+            "Linux: TeX Live from your package manager (e.g. <0>sudo apt install texlive-full</0>).",
+            [(c) => <span className="font-mono">{c}</span>],
+          )}{" "}
           <LinkButton url="https://tug.org/texlive/" label="tug.org/texlive" />
         </p>
         <p>
-          Windows: MiKTeX installs packages on demand; latexmk comes with it.{" "}
+          {t("Windows: MiKTeX installs packages on demand; latexmk comes with it.")}{" "}
           <LinkButton url="https://miktex.org/" label="miktex.org" />
         </p>
         <p className="text-xs text-muted-foreground">
-          After installing, reopen the terminal so the new PATH is picked up, then
-          re-check.
+          {t(
+            "After installing, reopen the terminal so the new PATH is picked up, then re-check.",
+          )}
         </p>
       </div>
       <Button
@@ -121,7 +130,7 @@ export function TexStatusSection() {
         onClick={() => void queryClient.invalidateQueries({ queryKey: ["tex-status"] })}
       >
         <RefreshCcw />
-        Re-check
+        {t("Re-check")}
       </Button>
     </div>
   );

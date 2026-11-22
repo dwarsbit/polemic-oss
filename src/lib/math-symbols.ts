@@ -1,3 +1,4 @@
+import { t } from "@scholarkit/i18n";
 export interface MathSymbol {
   /** LaTeX inserted at the cursor. */
   insert: string;
@@ -27,7 +28,7 @@ const construct = (glyph: string, template: string, label: string): MathSymbol =
 export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   {
     id: "greek-lower",
-    name: "Greek",
+    name: t("Greek"),
     symbols: [
       greek("α", "\\alpha"),
       greek("β", "\\beta"),
@@ -58,7 +59,7 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   },
   {
     id: "greek-upper",
-    name: "Greek (capital)",
+    name: t("Greek (capital)"),
     symbols: [
       greek("Γ", "\\Gamma"),
       greek("Δ", "\\Delta"),
@@ -75,7 +76,7 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   },
   {
     id: "operators",
-    name: "Operators",
+    name: t("Operators"),
     symbols: [
       greek("±", "\\pm"),
       greek("∓", "\\mp"),
@@ -97,7 +98,7 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   },
   {
     id: "relations",
-    name: "Relations",
+    name: t("Relations"),
     symbols: [
       greek("≤", "\\leq"),
       greek("≥", "\\geq"),
@@ -119,7 +120,7 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   },
   {
     id: "arrows",
-    name: "Arrows",
+    name: t("Arrows"),
     symbols: [
       greek("←", "\\leftarrow"),
       greek("→", "\\rightarrow"),
@@ -135,7 +136,7 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   },
   {
     id: "logic",
-    name: "Logic",
+    name: t("Logic"),
     symbols: [
       greek("∀", "\\forall"),
       greek("∃", "\\exists"),
@@ -152,7 +153,7 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
   },
   {
     id: "calculus",
-    name: "Calculus",
+    name: t("Calculus"),
     symbols: [
       greek("∑", "\\sum"),
       greek("∏", "\\prod"),
@@ -163,18 +164,18 @@ export const MATH_SYMBOL_CATEGORIES: MathSymbolCategory[] = [
       greek("∇", "\\nabla"),
       greek("∞", "\\infty"),
       greek("∅", "\\emptyset"),
-      construct("∑ᵢ", "\\sum_{|}^{}", "sum with limits"),
-      construct("∫ᵃ", "\\int_{|}^{}", "integral with limits"),
+      construct("∑ᵢ", "\\sum_{|}^{}", t("sum with limits")),
+      construct("∫ᵃ", "\\int_{|}^{}", t("integral with limits")),
       construct("lim", "\\lim_{|}", "limit"),
     ],
   },
   {
     id: "constructs",
-    name: "Constructs",
+    name: t("Constructs"),
     symbols: [
       construct("a⁄b", "\\frac{|}{}", "fraction"),
-      construct("√", "\\sqrt{|}", "square root"),
-      construct("√ⁿ", "\\sqrt[|]{}", "n-th root"),
+      construct("√", "\\sqrt{|}", t("square root")),
+      construct("√ⁿ", "\\sqrt[|]{}", t("n-th root")),
       construct("x̄", "\\bar{|}", "bar"),
       construct("x⃗", "\\vec{|}", "vector"),
       construct("x̂", "\\hat{|}", "hat"),
