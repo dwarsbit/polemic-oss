@@ -12,8 +12,12 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 # Every workspace package the editor depends on, dev tools included, needs its manifest here.
 COPY packages/tsconfig packages/tsconfig
 COPY packages/eslint-config/package.json packages/eslint-config/
+COPY packages/i18n/package.json packages/i18n/
+COPY packages/updates/package.json packages/updates/
 COPY apps/polemic/package.json apps/polemic/
 RUN pnpm install --frozen-lockfile --ignore-scripts --filter @scholarkit/polemic...
+COPY packages/i18n packages/i18n
+COPY packages/updates packages/updates
 COPY apps/polemic apps/polemic
 RUN pnpm --filter @scholarkit/polemic build:web
 

@@ -611,7 +611,7 @@
   "A modern LaTeX editing experience. Write, compile and revise with a live PDF preview and comments.": "Ein moderner LaTeX-Editor. Schreiben, kompilieren und überarbeiten mit Live-PDF-Vorschau und Kommentaren.",
   "Version": "Version",
   "Released under the MIT License.": "Veröffentlicht unter der MIT-Lizenz.",
-  "github.com/dwarsbit/polemic": "github.com/dwarsbit/polemic",
+  "github.com/dwarsbit/polemic-oss": "github.com/dwarsbit/polemic-oss",
   "{seconds}s ago": "vor {seconds} s",
   "{minutes} min ago": "vor {minutes} min",
   "{hours} h ago": "vor {hours} h",

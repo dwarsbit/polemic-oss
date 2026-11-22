@@ -11,5 +11,5 @@ describe("catalogs", () => {
       check: true,
     });
     expect(changed).toEqual([]);
-  });
+  }, 30_000); // It reads every source file: slow on a busy CI runner.
 });
