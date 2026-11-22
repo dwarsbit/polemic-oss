@@ -255,6 +255,50 @@ What stays English in every language: the names Scholarkit, Polemic, Binder and 
 | owner, editor, commenter, viewer | Propriétaire, Peut modifier, Peut commenter, Peut lire | roles name what the person can do |
 | commit, push, pull, stage | Commit, Push, Pull, Indexer | Git verbs stay as Git shows them |
 
+### Spanish (Español)
+
+- **Informal "tú"**, never "usted": "Guarda tu proyecto", "Inicia sesión".
+- **Buttons and menu items are infinitives**: "Guardar", "Abrir proyecto", "Copiar enlace". Instructions in running text use the imperative: "Vuelve a intentarlo". Titles and labels that are not actions are nouns: "Ajustes", "Lista de lectura".
+- **Sentence case**, as in English. Only names and the first word get a capital.
+- **Spain Spanish** for words that differ: "ordenador", "archivo", "carpeta".
+- **Abbreviations**: PDF, DOI, ISBN, URL and API stay in capitals ("Clave de API", "el PDF"). Keys are "Cmd/Ctrl", "Mayús", "Intro" and "Esc". "p. ej." for "e.g.".
+- **Punctuation**: opening ¿ and ¡. Quotes are « », with straight quotes kept for code-like text such as label names. No serial comma, no em dashes, one-character ellipsis. Decimal comma ("5,7 m") and a space before % ("40 %").
+- **Errors** say what happened and what to do, with "Vuelve a intentarlo" rather than "Por favor, inténtelo".
+
+| English | Spanish | Note |
+| --- | --- | --- |
+| sign in, sign out | iniciar sesión, cerrar sesión | "Inicia sesión para…" |
+| account | cuenta | "tu cuenta de Scholarkit" |
+| plan | plan | "el plan Pro" |
+| online services | servicios en línea | |
+| cloud compile | compilación en la nube | "compilar" for the verb |
+| review link | enlace de revisión | |
+| comment | comentario | |
+| suggestion, Suggest mode | sugerencia, el modo Sugerir | |
+| snapshot | instantánea | |
+| project, file, folder | proyecto, archivo, carpeta | |
+| source (a work) | fuente | |
+| references, bibliography | referencias, bibliografía | |
+| citation, cite | cita, citar | |
+| cross-reference (\ref) | referencia cruzada | |
+| entry (BibTeX), item (Binder) | entrada, elemento | |
+| inbox | bandeja de entrada | |
+| reading list | lista de lectura | |
+| note, thought | nota, idea | |
+| highlight | resaltado | "resaltar" for the verb |
+| assistant, provider | asistente, proveedor | |
+| key (API) | clave | "clave de API" |
+| sync | sincronizar | |
+| trash | papelera | |
+| template | plantilla | |
+| slide, speaker notes | diapositiva, notas del orador | |
+| learner | estudiante | |
+| package (LaTeX), float | paquete, flotante | |
+| binder (the noun) | binder | "este binder" |
+| Settings | Ajustes | |
+| owner, editor, commenter, viewer | propietario, editor, comentador, lector | |
+| commit, push, pull, stage | commit, push, pull, preparar | Git verbs stay as Git shows them |
+
 ## Checklist
 
 1. US spelling, sentence case, no serial comma?
