@@ -213,6 +213,48 @@ What stays English in every language: the names Scholarkit, Polemic, Binder and 
 | owner, editor, commenter, viewer | Eigentümer:in, Bearbeiten, Kommentieren, Lesen | roles name what the person can do |
 | commit, push, pull, stage | Committen, Push, Pull, Stagen | Git verbs stay as Git shows them |
 
+### French (Français)
+
+- **Formal "vous"**, never "tu". It is what French software and universities use.
+- **Buttons and menu items are infinitives**: "Enregistrer", "Ouvrir le projet", "Copier le lien". Titles and labels that are not actions are nouns: "Paramètres", "Liste de lecture".
+- **Sentence case**, as in English. Only names and the first word get a capital.
+- **Abbreviations**: PDF, DOI, ISBN, URL and API stay in capitals ("Clé API", "le PDF"). Keys are "Cmd/Ctrl", "Maj", "Entrée" and "Échap". Sizes use French units: "Mo", "Go".
+- **Typography**: a non-breaking space (U+00A0) before ":", ";", "?" and "!" and inside guillemets: « texte ». Typographic apostrophe (’). No serial comma, no em dashes, one-character ellipsis. Decimal comma ("5,7 m").
+- **Errors** say what happened and what to do, with "Réessayez" rather than "Veuillez réessayer".
+
+| English | French | Note |
+| --- | --- | --- |
+| sign in, sign out | se connecter, se déconnecter | "Connectez-vous pour…" |
+| account | compte | "votre compte Scholarkit" |
+| plan | offre | "l’offre Pro" |
+| online services | services en ligne | |
+| cloud compile | compilation en ligne | "compiler" for the verb |
+| review link | lien de relecture | |
+| comment | commentaire | |
+| suggestion, Suggest mode | suggestion, le mode Suggérer | |
+| snapshot | instantané | |
+| project, file, folder | projet, fichier, dossier | |
+| source (a work) | source | |
+| references, bibliography | références, bibliographie | |
+| citation, cite | référence, citer | |
+| entry (BibTeX), item (Binder) | entrée, élément | |
+| inbox | boîte de réception | |
+| reading list | liste de lecture | |
+| note, thought | note, idée | |
+| highlight | surlignage | "surligner" for the verb |
+| assistant, provider | assistant, fournisseur | |
+| key (API) | clé | "clé API" |
+| sync | synchroniser | |
+| trash | corbeille | |
+| template | modèle | |
+| slide, speaker notes | diapositive, notes de l’orateur | |
+| learner | apprenant | |
+| package (LaTeX), float | package, flottant | |
+| binder (the noun) | binder | "ce binder" |
+| Settings | Paramètres | |
+| owner, editor, commenter, viewer | Propriétaire, Peut modifier, Peut commenter, Peut lire | roles name what the person can do |
+| commit, push, pull, stage | Commit, Push, Pull, Indexer | Git verbs stay as Git shows them |
+
 ## Checklist
 
 1. US spelling, sentence case, no serial comma?
