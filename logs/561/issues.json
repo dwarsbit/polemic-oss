@@ -5,7 +5,8 @@
   "line": null,
   "message": "Class revtex4-2 Warning: No Society specified, using default society aps",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -13,7 +14,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `baevski2020wav2vec' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -21,7 +23,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `radford2023robust' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -29,7 +32,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `gulati2020conformer' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -37,7 +41,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `peng2023reproducing' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -45,7 +50,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `puvvada2024less' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -53,7 +59,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `ghosh2026audio' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -61,7 +68,8 @@
   "line": 75,
   "message": "Package natbib Warning: Citation `gong2023whisper' on page 1 undefined on input line 75",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -69,7 +77,8 @@
   "line": 77,
   "message": "Package natbib Warning: Citation `schwartz2020green' on page 1 undefined on input line 77",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -77,7 +86,8 @@
   "line": 77,
   "message": "Package natbib Warning: Citation `parcollet2021energy' on page 1 undefined on input line 77",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -85,7 +95,8 @@
   "line": 77,
   "message": "Package natbib Warning: Citation `puvvada2024less' on page 1 undefined on input line 77",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -93,7 +104,8 @@
   "line": 77,
   "message": "Package natbib Warning: Citation `samsi2023words' on page 1 undefined on input line 77",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -101,7 +113,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `kovavc201020' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -109,7 +122,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `laughlin2003communication' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -117,7 +131,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `levy1996energy' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -125,7 +140,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `simoncelli2001natural' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -133,7 +149,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `tang2018large' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -141,7 +158,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `hromadka2008sparse' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -149,7 +167,8 @@
   "line": 79,
   "message": "Package natbib Warning: Citation `schneider2013sparse' on page 1 undefined on input line 79",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -157,7 +176,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `mead1990neuromorphic' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -165,7 +185,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `davies2018loihi' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -173,7 +194,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `furber2020spinnaker' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -181,7 +203,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `kudithipudi2025neuromorphic' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -189,7 +212,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `shrestha2024efficient' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -197,7 +221,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `davies2021advancing' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -205,7 +230,8 @@
   "line": 81,
   "message": "Package natbib Warning: Citation `stewart2023speech2spikes' on page 1 undefined on input line 81",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -213,7 +239,8 @@
   "line": 83,
   "message": "Package natbib Warning: Citation `doupe1999birdsong' on page 1 undefined on input line 83",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -221,7 +248,8 @@
   "line": 83,
   "message": "Package natbib Warning: Citation `jin2013neural' on page 1 undefined on input line 83",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -229,7 +257,8 @@
   "line": 83,
   "message": "Package natbib Warning: Citation `koumura2016automatic' on page 1 undefined on input line 83",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -237,7 +266,8 @@
   "line": 83,
   "message": "Package natbib Warning: Citation `cohen2022automated' on page 1 undefined on input line 83",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -245,7 +275,8 @@
   "line": 83,
   "message": "Package natbib Warning: Citation `vengrovski2025tweetybert' on page 1 undefined on input line 83",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -253,7 +284,8 @@
   "line": 85,
   "message": "Package natbib Warning: Citation `schafer2014noise' on page 2 undefined on input line 85",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -261,7 +293,8 @@
   "line": 92,
   "message": "Package natbib Warning: Citation `patterson1987efficient' on page 2 undefined on input line 92",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -269,7 +302,8 @@
   "line": 94,
   "message": "Package natbib Warning: Citation `cortes1995support' on page 2 undefined on input line 94",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -277,7 +311,8 @@
   "line": 145,
   "message": "Package natbib Warning: Citation `freund1997decision' on page 4 undefined on input line 145",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -285,7 +320,8 @@
   "line": 151,
   "message": "Package natbib Warning: Citation `james2020statistical' on page 4 undefined on input line 151",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -293,7 +329,8 @@
   "line": 151,
   "message": "Package natbib Warning: Citation `koumura2016automatic' on page 4 undefined on input line 151",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -301,7 +338,8 @@
   "line": 152,
   "message": "LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix] on input line 152",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -309,7 +347,8 @@
   "line": 155,
   "message": "Package natbib Warning: Citation `koumura2016automatic' on page 5 undefined on input line 155",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -317,7 +356,8 @@
   "line": 188,
   "message": "LaTeX Warning: Float too large for page by 18.0894pt on input line 188",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -325,7 +365,8 @@
   "line": 190,
   "message": "Package natbib Warning: Citation `davies2018loihi' on page 5 undefined on input line 190",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -333,7 +374,8 @@
   "line": 190,
   "message": "Package natbib Warning: Citation `davies2021advancing' on page 5 undefined on input line 190",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -341,7 +383,8 @@
   "line": 192,
   "message": "Package natbib Warning: Citation `jin2008decoding' on page 5 undefined on input line 192",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -349,7 +392,8 @@
   "line": 202,
   "message": "Package natbib Warning: Citation `davies2018loihi' on page 8 undefined on input line 202",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -357,7 +401,8 @@
   "line": 207,
   "message": "Package natbib Warning: Citation `schneider2013sparse' on page 8 undefined on input line 207",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -365,7 +410,8 @@
   "line": 208,
   "message": "Package natbib Warning: Citation `schafer2014noise' on page 8 undefined on input line 208",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -373,7 +419,8 @@
   "line": 214,
   "message": "Package natbib Warning: Citation `schafer2014noise' on page 8 undefined on input line 214",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -381,7 +428,8 @@
   "line": 218,
   "message": "Package natbib Warning: Citation `cohen2022automated' on page 8 undefined on input line 218",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -389,7 +437,8 @@
   "line": 218,
   "message": "Package natbib Warning: Citation `vengrovski2025tweetybert' on page 8 undefined on input line 218",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -397,7 +446,8 @@
   "line": 220,
   "message": "Package natbib Warning: Citation `lu2025partially' on page 8 undefined on input line 220",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -405,7 +455,8 @@
   "line": 220,
   "message": "Package natbib Warning: Citation `vengrovski2025tweetybert' on page 8 undefined on input line 220",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -413,7 +464,8 @@
   "line": 231,
   "message": "Package natbib Warning: Citation `shrestha2024efficient' on page 8 undefined on input line 231",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -421,7 +473,8 @@
   "line": 233,
   "message": "Package natbib Warning: Citation `kohonen2013essentials' on page 8 undefined on input line 233",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -429,7 +482,8 @@
   "line": 235,
   "message": "Package natbib Warning: Citation `unnikrishnan1991connected' on page 8 undefined on input line 235",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -437,7 +491,8 @@
   "line": 238,
   "message": "Package natbib Warning: Citation `juang2005automatic' on page 8 undefined on input line 238",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -445,7 +500,8 @@
   "line": 239,
   "message": "Package natbib Warning: Citation `juang2005automatic' on page 8 undefined on input line 239",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -453,7 +509,8 @@
   "line": 239,
   "message": "Package natbib Warning: Citation `de2007template' on page 8 undefined on input line 239",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -461,7 +518,8 @@
   "line": 240,
   "message": "Package natbib Warning: Citation `kamper2016deep' on page 8 undefined on input line 240",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -469,7 +527,8 @@
   "line": 241,
   "message": "Package natbib Warning: Citation `kudithipudi2025neuromorphic' on page 8 undefined on input line 241",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -477,7 +536,8 @@
   "line": 243,
   "message": "Package natbib Warning: Citation `cohen2022automated' on page 9 undefined on input line 243",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -485,7 +545,8 @@
   "line": 244,
   "message": "Package natbib Warning: Citation `tavares2022automatic' on page 9 undefined on input line 244",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -493,7 +554,8 @@
   "line": 245,
   "message": "Package natbib Warning: Citation `jin2008decoding' on page 9 undefined on input line 245",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -501,7 +563,8 @@
   "line": 265,
   "message": "Package natbib Warning: Citation `koumura2016automatic' on page 9 undefined on input line 265",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -509,7 +572,8 @@
   "line": 273,
   "message": "Package natbib Warning: Citation `koumura2016automatic' on page 9 undefined on input line 273",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -517,7 +581,8 @@
   "line": 307,
   "message": "Package natbib Warning: Citation `patterson1987efficient' on page 9 undefined on input line 307",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -525,7 +590,8 @@
   "line": 313,
   "message": "Package natbib Warning: Citation `slaney1993efficient' on page 9 undefined on input line 313",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -533,7 +599,8 @@
   "line": 315,
   "message": "Package natbib Warning: Citation `glasberg1990derivation' on page 10 undefined on input line 315",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -541,7 +608,8 @@
   "line": 315,
   "message": "Package natbib Warning: Citation `woolley2013songbird' on page 10 undefined on input line 315",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -549,7 +617,8 @@
   "line": 315,
   "message": "Package natbib Warning: Citation `marean1998auditory' on page 10 undefined on input line 315",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -557,7 +626,8 @@
   "line": 321,
   "message": "Package natbib Warning: Citation `moore1983suggested' on page 10 undefined on input line 321",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -565,7 +635,8 @@
   "line": 321,
   "message": "Package natbib Warning: Citation `holdsworth1988implementing' on page 10 undefined on input line 321",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -573,7 +644,8 @@
   "line": 338,
   "message": "Package natbib Warning: Citation `cortes1995support' on page 10 undefined on input line 338",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -581,7 +653,8 @@
   "line": 338,
   "message": "Package natbib Warning: Citation `chang2011libsvm' on page 10 undefined on input line 338",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -589,7 +662,8 @@
   "line": 338,
   "message": "Package natbib Warning: Citation `scikitlearn2011' on page 10 undefined on input line 338",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -597,7 +671,8 @@
   "line": 380,
   "message": "Package natbib Warning: Citation `freund1997decision' on page 11 undefined on input line 380",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -605,7 +680,8 @@
   "line": 380,
   "message": "Package natbib Warning: Citation `viola2004robust' on page 11 undefined on input line 380",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -613,7 +689,8 @@
   "line": 389,
   "message": "Package natbib Warning: Citation `scikitlearn2011' on page 12 undefined on input line 389",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -621,7 +698,8 @@
   "line": 391,
   "message": "Package natbib Warning: Citation `viola2004robust' on page 12 undefined on input line 391",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -629,7 +707,8 @@
   "line": 435,
   "message": "Package natbib Warning: Citation `jin2008decoding' on page 12 undefined on input line 435",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -637,7 +716,8 @@
   "line": 435,
   "message": "Package natbib Warning: Citation `davies2018loihi' on page 12 undefined on input line 435",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -645,6 +725,7 @@
   "line": null,
   "message": "Package natbib Warning: There were undefined citations",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  }
 ]

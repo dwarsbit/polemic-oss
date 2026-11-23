@@ -3,65 +3,93 @@
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 26,
-  "message": "LaTeX Error: Command \\c@lemma already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@lemma already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.26 \\newtheorem",
+   "                {corollary}[theorem]{Corollary}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 27,
-  "message": "LaTeX Error: Command \\c@corollary already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@corollary already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.27 \\newtheorem",
+   "                {proposition}[theorem]{Proposition}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 28,
-  "message": "LaTeX Error: Command \\c@proposition already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@proposition already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.28"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 42,
-  "message": "LaTeX Error: Command \\c@conj already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@conj already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.42 \\newtheorem",
+   "                {prop}[theorem]{Proposition}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 43,
-  "message": "LaTeX Error: Command \\c@prop already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@prop already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.43"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 46,
-  "message": "LaTeX Error: Command \\c@defn already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@defn already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.46 \\newtheorem",
+   "                {example}[theorem]{Example}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 47,
-  "message": "LaTeX Error: Command \\c@example already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@example already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.47"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Additive_energy,_Freiman_s_lemma,_and_an_edge-isoperimetric_problem_on_the_boolean_cube.tex",
   "line": 50,
-  "message": "LaTeX Error: Command \\c@remark already defined.",
-  "detail": [],
-  "hint": null
+  "message": "LaTeX Error: Command \\c@remark already defined. Or name \\end... illegal, see p.192 of the manual.",
+  "detail": [
+   "l.50"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -69,6 +97,7 @@
   "line": 322,
   "message": "Package amsmath Warning: Foreign command \\atopwithdelims; \\frac or \\genfrac should be used instead on input line 322",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  }
 ]

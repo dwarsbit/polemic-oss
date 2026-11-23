@@ -4,40 +4,57 @@
   "file": "Template NIH/NIH_Bio.tex",
   "line": 28,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.28 \\gobble",
+   "            {{\\bf   William and Sue Gross Professor  }\\\\"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\gobble"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 29,
   "message": "Missing } inserted.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.29  &",
+   "        \\ \\ \\ \\ \\ \\ {\\bf  of Computer Science and Biochemistry (as of 8/1/20..."
+  ],
+  "hint": null,
+  "reading": "<inserted text>"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 30,
   "message": "Misplaced \\noalign.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.30 \\hline"
+  ],
+  "hint": null,
+  "reading": "\\hline ->\\noalign"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 31,
   "message": "Misplaced \\crcr.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.31 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 31,
   "message": "Extra }, or forgotten \\endgroup.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.31 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr \\egroup \\egroup \\egroup"
  },
  {
   "severity": "error",
@@ -48,31 +65,41 @@
    "l.54 \\gobble",
    "            {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 56,
   "message": "LaTeX Error: Environment Description undefined.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.56 \\begin{Description}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 57,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.57 \\item[]"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 60,
   "message": "LaTeX Error: \\begin{document} ended by \\end{Description}.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.60 \\end{Description}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
@@ -83,7 +110,8 @@
    "l.86 \\gobble",
    "            {{\\myitem} \\parens{1998} Founder, M.D.-Ph.D.~Program in Computat..."
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
@@ -94,7 +122,8 @@
    "l.135 176 total, with 19 in 2005--6)}\\gobble",
    "                                            {\\\\ {\\sf Publications available ..."
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
@@ -105,111 +134,151 @@
    "l.141 \\gobble",
    "             {{{\\mystar} {\\em Note: In Computer Science, certain conferences"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 173,
   "message": "LaTeX Error: Environment Enumerate undefined.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.173 \\begin{Enumerate}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 185,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.185 \\bibitem{KapurMundyDonald92}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 185,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.185 \\bibitem{KapurMundyDonald92}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 185,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.185 \\bibitem{KapurMundyDonald92}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 190,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.190 \\bibitem{CannyDonaldReifXavier93}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 190,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.190 \\bibitem{CannyDonaldReifXavier93}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 190,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.190 \\bibitem{CannyDonaldReifXavier93}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 195,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.195 \\bibitem{jcb00-jigsaw}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 195,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.195 \\bibitem{jcb00-jigsaw}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 195,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.195 \\bibitem{jcb00-jigsaw}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 202,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.202 \\bibitem{jcb00-sar}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 202,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.202 \\bibitem{jcb00-sar}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 202,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.202 \\bibitem{jcb00-sar}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
@@ -220,55 +289,74 @@
    "l.208 \\gobble",
    "             {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 209,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.209 \\bibitem{icra01}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 209,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.209 \\bibitem{icra01}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 209,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.209 \\bibitem{icra01}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 217,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.217 \\bibitem{recomb01}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 217,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.217 \\bibitem{recomb01}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 217,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.217 \\bibitem{recomb01}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
@@ -279,175 +367,239 @@
    "l.225 \\gobble",
    "             {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 226,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.226 \\bibitem{csb02}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 226,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.226 \\bibitem{csb02}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 226,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.226 \\bibitem{csb02}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 234,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.234 \\bibitem{jcb-rage}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 234,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.234 \\bibitem{jcb-rage}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 234,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.234 \\bibitem{jcb-rage}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 240,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.240 \\bibitem{jcb-fld03}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 240,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.240 \\bibitem{jcb-fld03}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 240,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.240 \\bibitem{jcb-fld03}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 246,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.246 \\bibitem{recomb03}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 246,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.246 \\bibitem{recomb03}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 246,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.246 \\bibitem{recomb03}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 254,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.254 \\bibitem{ieeecsb-langmead03}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 254,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.254 \\bibitem{ieeecsb-langmead03}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 254,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.254 \\bibitem{ieeecsb-langmead03}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 261,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.261 \\bibitem{oneil-jbc03}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 261,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.261 \\bibitem{oneil-jbc03}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 261,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.261 \\bibitem{oneil-jbc03}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 268,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.268 \\bibitem{oneil-jem03}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 268,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.268 \\bibitem{oneil-jem03}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 268,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.268 \\bibitem{oneil-jem03}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
@@ -458,175 +610,239 @@
    "l.275 \\gobble",
    "             {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 276,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.276 \\bibitem{ieeecsb03-wang}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 276,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.276 \\bibitem{ieeecsb03-wang}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 276,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.276 \\bibitem{ieeecsb03-wang}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 284,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.284 \\bibitem{langmead-jbnmr04}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 284,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.284 \\bibitem{langmead-jbnmr04}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 284,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.284 \\bibitem{langmead-jbnmr04}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 290,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.290 \\bibitem{wang-jbnmr03}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 290,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.290 \\bibitem{wang-jbnmr03}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 290,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.290 \\bibitem{wang-jbnmr03}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 297,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.297 \\bibitem{langmead-jcb04}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 297,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.297 \\bibitem{langmead-jcb04}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 297,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.297 \\bibitem{langmead-jcb04}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 303,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.303 \\bibitem{recomb-04}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 303,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.303 \\bibitem{recomb-04}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 303,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.303 \\bibitem{recomb-04}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 312,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.312 \\bibitem{lilien-acd04}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 312,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.312 \\bibitem{lilien-acd04}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 312,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.312 \\bibitem{lilien-acd04}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 319,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.319 \\bibitem{LangmeadDonald-csb04}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 319,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.319 \\bibitem{LangmeadDonald-csb04}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 319,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.319 \\bibitem{LangmeadDonald-csb04}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
@@ -637,79 +853,107 @@
    "l.327 \\gobble",
    "             {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 328,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.328 \\bibitem{Dartmouth:TR2004-492}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 328,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.328 \\bibitem{Dartmouth:TR2004-492}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 328,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.328 \\bibitem{Dartmouth:TR2004-492}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 337,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.337 \\bibitem{WangDonald-csb04}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 337,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.337 \\bibitem{WangDonald-csb04}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 337,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.337 \\bibitem{WangDonald-csb04}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 346,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.346 \\bibitem{ismb05}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 346,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.346 \\bibitem{ismb05}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 346,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.346 \\bibitem{ismb05}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
@@ -720,31 +964,44 @@
    "l.351 \\gobble",
    "             {special issue from papers presented at the 2005 Int'l.~Conf.~on"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 355,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.355 R",
+   "       .~Lilien, B.~Stevens, A.~Anderson, and {\\brd}."
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 362,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.362 L",
+   "       .~Wang and B.~R. Donald."
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 371,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.371 L",
+   "       .~Wang, R.~Mettu, and B.~R. Donald."
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
@@ -755,119 +1012,163 @@
    "l.378 \\gobble",
    "             {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 380,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.380 I",
+   "       .~Georgiev, R.~Lilien, and B.~R. Donald."
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 390,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.390 \\bibitem{ismb06}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 390,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.390 \\bibitem{ismb06}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 390,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.390 \\bibitem{ismb06}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 398,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.398 \\bibitem{csb06}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 398,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.398 \\bibitem{csb06}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 398,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.398 \\bibitem{csb06}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 406,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.406 \\bibitem{jcb-poly06}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 406,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.406 \\bibitem{jcb-poly06}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 406,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.406 \\bibitem{jcb-poly06}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 413,
   "message": "LaTeX Error: Lonely \\item--perhaps a missing list environment.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.413 \\bibitem{proteins06}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 413,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.413 \\bibitem{proteins06}"
+  ],
+  "hint": null,
+  "reading": "<argument> \\@listctr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 413,
   "message": "You can't use `\\relax' after \\the.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.413 \\bibitem{proteins06}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\c@"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 425,
   "message": "LaTeX Error: \\begin{document} ended by \\end{Enumerate}.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.425 \\end{Enumerate}"
+  ],
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
@@ -878,7 +1179,8 @@
    "l.434 \\MEMS",
    "           {Change URL}"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
@@ -889,102 +1191,145 @@
    "l.436 \\gobble",
    "             {"
   ],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 457,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.457 \\effortamount",
+   "                   {\\$150,000 &\\\\}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\effortamount"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 457,
   "message": "Missing } inserted.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.457 \\effortamount{\\$150,000 &",
+   "                               \\\\}"
+  ],
+  "hint": null,
+  "reading": "<inserted text>"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 458,
   "message": "Misplaced \\crcr.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.458 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 458,
   "message": "Extra }, or forgotten \\endgroup.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.458 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr \\egroup \\egroup \\egroup"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 473,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.473 \\effortamount",
+   "                   {\\$150,000 {(total); Donald sub only: \\$11,000.} & \\\\}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\effortamount"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 473,
   "message": "Missing } inserted.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.473 ...0 {(total); Donald sub only: \\$11,000.} &",
+   "                                                   \\\\}"
+  ],
+  "hint": null,
+  "reading": "<inserted text>"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 474,
   "message": "Misplaced \\crcr.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.474 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 474,
   "message": "Extra }, or forgotten \\endgroup.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.474 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr \\egroup \\egroup \\egroup"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 492,
   "message": "Undefined control sequence.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.492 \\effortamount",
+   "                   {        \\$37,500 &\\\\}"
+  ],
+  "hint": null,
+  "reading": "<recently read> \\effortamount"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 492,
   "message": "Missing } inserted.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.492 \\effortamount{        \\$37,500 &",
+   "                                      \\\\}"
+  ],
+  "hint": null,
+  "reading": "<inserted text>"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 493,
   "message": "Misplaced \\crcr.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.493 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr"
  },
  {
   "severity": "error",
   "file": "Template NIH/NIH_Bio.tex",
   "line": 493,
   "message": "Extra }, or forgotten \\endgroup.",
-  "detail": [],
-  "hint": null
+  "detail": [
+   "l.493 \\end{tabular}"
+  ],
+  "hint": null,
+  "reading": "\\endtabular ->\\crcr \\egroup \\egroup \\egroup"
  }
 ]

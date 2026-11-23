@@ -1,12 +1,12 @@
 # Corpus test
 
-829 projects in 1 batches.
+829 projects, each with its latest result.
 
 | Outcome | Projects |
 | --- | ---: |
-| Both compiled | 390 |
+| Both compiled | 391 |
 | Failed in both | 310 |
-| Failed only in Polemic | 46 |
+| Failed only in Polemic | 45 |
 | No .tex file | 29 |
 | Download failed | 27 |
 | Failed only with plain latexmk | 22 |
@@ -17,8 +17,7 @@
 
 | Batch | Project | Main file | Engine | First error |
 | --- | --- | --- | --- | --- |
-| 0001 | [SquareBracketAssociates/LearningOOPWithPharo](https://github.com/SquareBracketAssociates/LearningOOPWithPharo) ([logs](logs/286)) | _support/latex/sbabook/cover-pharoexpl.tex | pdflatex |  |
-| 0001 | [kirillbobyrev/TD-Gamma](https://github.com/kirillbobyrev/TD-Gamma) ([logs](logs/374)) | poster/poster.tex | pdflatex | Package pdftex.def Error: File `figures/rl-intro-diagram-eps-converted-to.pdf' not found: using draft setting. |
+| 0002 | [kirillbobyrev/TD-Gamma](https://github.com/kirillbobyrev/TD-Gamma) ([logs](logs/374)) | poster/poster.tex | pdflatex | Package pdftex.def Error: File `figures/rl-intro-diagram-eps-converted-to.pdf' not found: using draft setting. |
 | 0001 | [holgern/TUB_PhDThesisTemplate](https://github.com/holgern/TUB_PhDThesisTemplate) ([logs](logs/49)) | thesis.tex | pdflatex | I can't write on file `./3/TikzPictures/thesis-figure0.md5'. |
 | 0001 | [satotomoya63m-alt/jp-lab-report-latex-template](https://github.com/satotomoya63m-alt/jp-lab-report-latex-template) ([logs](logs/109)) | template/main.tex | pdflatex |  |
 | 0001 | [dyweb/Deedy-Resume-for-Chinese](https://github.com/dyweb/Deedy-Resume-for-Chinese) ([logs](logs/324)) | OpenFonts.Chinese/resume.tex | pdflatex |  |
@@ -71,8 +70,8 @@
 
 | Batch | Project | Main file | Engine | First error |
 | --- | --- | --- | --- | --- |
-| 0001 | [stanfordnlp/cs224n-winter17-notes](https://github.com/stanfordnlp/cs224n-winter17-notes) ([logs](logs/245)) | gradient-notes.tex | pdflatex | author's: notes1.tex |
-| 0001 | [lgloege/YAML-CV](https://github.com/lgloege/YAML-CV) ([logs](logs/344)) | templates/pdf/cv-template.tex | pdflatex | author's: build/pdf/cv.tex |
+| 0002 | [stanfordnlp/cs224n-winter17-notes](https://github.com/stanfordnlp/cs224n-winter17-notes) ([logs](logs/245)) | gradient-notes.tex | pdflatex | author's: notes1.tex |
+| 0002 | [lgloege/YAML-CV](https://github.com/lgloege/YAML-CV) ([logs](logs/344)) | templates/pdf/cv-template.tex | pdflatex | author's: build/pdf/cv.tex |
 | 0001 | [projeduc/oop4coders](https://github.com/projeduc/oop4coders) ([logs](logs/305)) | book-ar/classObject.tex | pdflatex | author's: book-ar/OOPintro.tex |
 | 0001 | [sjtug/sjtulib-latex-talk](https://github.com/sjtug/sjtulib-latex-talk) ([logs](logs/225)) | latex-talk.tex | pdflatex | author's: support/beamer/poster.tex |
 | 0001 | [myfsr/LLP2017_Folien](https://github.com/myfsr/LLP2017_Folien) ([logs](logs/231)) | aushangThemen.tex | pdflatex | author's: poster.tex |

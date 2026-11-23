@@ -1,10 +1,11 @@
 [
  {
   "severity": "warning",
-  "file": null,
+  "file": "templates/pdf/cv-class.cls",
   "line": null,
   "message": "LaTeX Warning: You have requested document class `cv-class', but the document class provides `my_cv'",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  }
 ]

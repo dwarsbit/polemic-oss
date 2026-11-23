@@ -1,1 +1,29 @@
-[]
+[
+ {
+  "severity": "warning",
+  "file": "_support/latex/sbabook/sbabook.cls",
+  "line": null,
+  "message": "Package fontspec Warning: Ignored XeTeX-only feature: 'HyphenChar'",
+  "detail": [],
+  "hint": null,
+  "reading": null
+ },
+ {
+  "severity": "warning",
+  "file": "_support/latex/sbabook/sbabook.cls",
+  "line": 429,
+  "message": "Class memoir Warning: \\addtodef is marked deprecated and will be removed in 2026, use instead \\patchcmd, \\pretocmd or \\apptocmd from the etoolbox package (which is autoloaded by the class) on input line 429",
+  "detail": [],
+  "hint": null,
+  "reading": null
+ },
+ {
+  "severity": "warning",
+  "file": "_support/latex/sbabook/cover-pharoexpl.tex",
+  "line": 16,
+  "message": "Package varwidth Warning: Failed to reprocess entire contents on input line 16",
+  "detail": [],
+  "hint": null,
+  "reading": null
+ }
+]

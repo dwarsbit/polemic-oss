@@ -5,7 +5,8 @@
   "line": 46,
   "message": "LaTeX Font Warning: Font shape `OMS/zavm/b/n' undefined using `OMS/zavm/m/n' instead on input line 46",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -13,6 +14,7 @@
   "line": null,
   "message": "LaTeX Font Warning: Some font shapes were not available, defaults substituted",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  }
 ]

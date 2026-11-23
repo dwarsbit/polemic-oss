@@ -5,7 +5,8 @@
   "line": 12,
   "message": "LaTeX Warning: \\include should only be used after \\begin{document} on input line 12",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -13,6 +14,7 @@
   "line": null,
   "message": "Package caption Warning: Unknown document class (or package), standard defaults will be used",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  }
 ]

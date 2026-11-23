@@ -14,12 +14,12 @@
   "ok": false,
   "exit": 12,
   "timedOut": false,
-  "durationMs": 1381,
+  "durationMs": 1147,
   "tail": "exit 12, PDF found\nLatexmk: Getting log file 'NIH_Bio.log'\nLatexmk: Examining 'NIH_Bio.fls'\nLatexmk: Examining 'NIH_Bio.log'\nLatexmk: Log file says output to 'NIH_Bio.pdf'\nLatexmk: Errors, in force_mode: so I tried finishing targets\nCollected error summary (may duplicate other messages):\n  pdflatex: Command for 'pdflatex' gave return code 1\n      Refer to 'NIH_Bio.log' and/or above output for details"
  },
  "polemic": {
   "status": "failure",
-  "durationMs": 423,
+  "durationMs": 518,
   "outputs": [
    "pdf",
    "synctex",

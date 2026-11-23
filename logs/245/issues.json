@@ -5,7 +5,8 @@
   "line": null,
   "message": "LaTeX Warning: Command \\underbar  has changed. Check if current package is valid",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  },
  {
   "severity": "warning",
@@ -13,6 +14,7 @@
   "line": null,
   "message": "LaTeX Warning: Command \\underline  has changed. Check if current package is valid",
   "detail": [],
-  "hint": null
+  "hint": null,
+  "reading": null
  }
 ]

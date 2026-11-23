@@ -15,11 +15,11 @@
   "ok": true,
   "exit": 0,
   "timedOut": false,
-  "durationMs": 1613
+  "durationMs": 1687
  },
  "polemic": {
   "status": "success",
-  "durationMs": 1346,
+  "durationMs": 1483,
   "outputs": [
    "pdf",
    "synctex",

@@ -4,28 +4,28 @@
  "name": "SquareBracketAssociates/LearningOOPWithPharo",
  "url": "https://github.com/SquareBracketAssociates/LearningOOPWithPharo",
  "type": "Book",
- "version": "79773b9d1842ca520686abb3415a095bb2d0795b",
- "files": 975,
+ "version": "1cdf6e3f4268d5d6772116a97b82cb59bf495a42",
+ "files": 853,
  "main": "_support/latex/sbabook/cover-pharoexpl.tex",
- "engine": "pdflatex",
- "detectedEngine": "lualatex (latexmkrc)",
+ "engine": "lualatex",
  "baseline": {
   "main": "_support/latex/sbabook/cover-pharoexpl.tex",
   "engine": "lualatex",
   "ok": true,
   "exit": 0,
   "timedOut": false,
-  "durationMs": 21658
+  "durationMs": 27089
  },
  "polemic": {
-  "status": "failure",
-  "durationMs": 315,
+  "status": "success",
+  "durationMs": 14827,
   "outputs": [
+   "pdf",
+   "synctex",
    "log"
-  ],
-  "tail": "      Refer to 'build/cover-pharoexpl.log' and/or above output for details\n\nLatexmk: Sometimes, the -f option can be used to get latexmk\n  to try to force complete processing.\n  But normally, you will need to correct the file(s) that caused the\n  error, and then rerun latexmk.\n  In some cases, it is best to clean out generated files before rerunning\n  latexmk after you've corrected the files."
+  ]
  },
  "errors": 0,
- "warnings": 0,
- "outcome": "polemic-only-fail"
+ "warnings": 3,
+ "outcome": "both-ok"
 }
