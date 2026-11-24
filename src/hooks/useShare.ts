@@ -330,7 +330,7 @@ export function useShare() {
     /** The project in the browser; null on the web, where it is open there. */
     projectPage:
       features.localFiles && status?.link
-        ? `${status.server}/projects/${status.link.projectId}`
+        ? `${status.server}/polemic/projects/${status.link.projectId}`
         : null,
     attempt,
     share,

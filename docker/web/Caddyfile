@@ -12,16 +12,17 @@
 	header Content-Security-Policy "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
 
 	# Vite puts a content hash in these file names.
-	handle /projects/assets/* {
+	handle /polemic/assets/* {
 		header Cache-Control "public, max-age=31536000, immutable"
 		file_server
 	}
 
-	# Every other path under /projects is the app (/projects/<id> opens a project).
-	@app path /projects /projects/*
+	# Every other path under /polemic is the app: /polemic/projects is the list and
+	# /polemic/projects/<id> opens a project.
+	@app path /polemic /polemic/*
 	handle @app {
 		header Cache-Control "no-cache"
-		try_files {path} /projects/index.html
+		try_files {path} /polemic/index.html
 		file_server
 	}
 

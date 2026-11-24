@@ -1,7 +1,7 @@
 /**
  * What the browser build adds around the editor: the address follows
- * the open project (`/projects/<id>`), edits save as you type, and
- * changes from others reach the open file. Started once by App.
+ * the open project (`/polemic/projects/<id>`), edits save as you type,
+ * and changes from others reach the open file. Started once by App.
  */
 
 import { useCommentsStore } from "@/store/comments";
@@ -15,12 +15,29 @@ import {
   projectIdOf,
 } from "@/web/projects";
 
-const START = "/projects/";
+/** Where the browser build is served: "/polemic". */
+const BASE = import.meta.env.BASE_URL.replace(/\/+$/, "");
+
+/** The list of projects, as a path next to the projects' own (`/projects/<id>`). */
+const LIST = "/projects";
+
+/**
+ * The address of a project's path, or of the list of projects: the path under where the app is
+ * served, so `/projects/<id>` is at `/polemic/projects/<id>`.
+ */
+export const addressOf = (path: string | null, base = BASE): string =>
+  base + (path ?? LIST);
+
+/** The path of the project an address names, or null: for the list and for anything else. */
+export function projectPathIn(address: string, base = BASE): string | null {
+  if (!address.startsWith(`${base}/`)) return null;
+  const path = address.slice(base.length).replace(/\/+$/, "");
+  return projectIdOf(path) ? path : null;
+}
 
 /** The project the address names, to open at startup. */
 export function projectFromAddress(): string | null {
-  const path = window.location.pathname;
-  return projectIdOf(path) ? path.replace(/\/+$/, "") : null;
+  return projectPathIn(window.location.pathname);
 }
 
 /** How long typing pauses before the edits are saved. */
@@ -28,6 +45,10 @@ const SAVE_DELAY_MS = 800;
 
 export function startWebSession(): () => void {
   const stops: (() => void)[] = [];
+
+  // The list of projects has one address, whichever way the page was reached (/polemic/).
+  if (projectFromAddress() === null && window.location.pathname !== addressOf(null))
+    window.history.replaceState(null, "", addressOf(null) + window.location.search);
 
   // Who else is in the project, and where.
   stops.push(startPresence());
@@ -74,7 +95,7 @@ export function startWebSession(): () => void {
   stops.push(
     useProjectStore.subscribe((state, previous) => {
       if (state.project?.path === previous.project?.path) return;
-      const want = state.project?.path ?? START;
+      const want = addressOf(state.project?.path ?? null);
       if (window.location.pathname !== want) window.history.pushState(null, "", want);
       document.title = state.project ? `${state.project.name} · Polemic` : "Polemic";
       if (!state.project) closeProject();

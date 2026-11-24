@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# The editor's browser build (pnpm build:web), served at /projects by Caddy.
+# The editor's browser build (pnpm build:web), served at /polemic by Caddy.
 # CI pushes this image to ghcr.io; the services' Compose stack runs it behind
 # its own Caddy, on the account app's origin. Build from the repository root:
 #   docker build -f apps/polemic/docker/web/Dockerfile .
@@ -33,5 +33,5 @@ RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
 
 FROM caddy:2-alpine
 COPY apps/polemic/docker/web/Caddyfile /etc/caddy/Caddyfile
-COPY --from=build /repo/apps/polemic/dist-web /srv/projects
+COPY --from=build /repo/apps/polemic/dist-web /srv/polemic
 EXPOSE 80

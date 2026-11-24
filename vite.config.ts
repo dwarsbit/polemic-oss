@@ -51,8 +51,8 @@ const apiProxy = {
 export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss(), ...sourceMaps],
 
-  // The browser build is served at /projects on the services app.
-  base: mode === "web" ? "/projects/" : "/",
+  // The browser build is served at /polemic on the services app.
+  base: mode === "web" ? "/polemic/" : "/",
 
   define: {
     __APP_VERSION__: JSON.stringify(version),

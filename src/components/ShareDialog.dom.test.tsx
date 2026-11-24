@@ -269,7 +269,7 @@ describe("ShareDialog", () => {
     expect(text()).toContain("Review links");
     await click("Open in browser");
     expect(openUrl).toHaveBeenCalledWith(
-      `https://polemic.example.org/projects/${"p".repeat(22)}`,
+      `https://polemic.example.org/polemic/projects/${"p".repeat(22)}`,
     );
     expect(tauri.sharePublish).not.toHaveBeenCalled();
   });

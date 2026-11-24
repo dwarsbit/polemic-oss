@@ -5,6 +5,7 @@
 ### Changed
 
 - In the browser, the Scholarkit icon next to the menu opens your Scholarkit home page. It replaces the **Scholarkit home** link on the list of projects.
+- In the browser, Polemic has its own address: your projects are at `app.scholarkit.app/polemic/projects`. Links and bookmarks to the old address keep working.
 
 ## 0.26.0 (2026-11-24)
 
