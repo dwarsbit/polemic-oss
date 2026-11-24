@@ -5,6 +5,7 @@ import {
   FileArchive,
   Info,
   Keyboard,
+  LayoutList,
   LifeBuoy,
   Menu,
   MessageSquareWarning,
@@ -62,6 +63,12 @@ export function WebAppMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-60">
+        {/* The Scholarkit home page: every app's projects in one list. */}
+        <DropdownMenuItem onSelect={() => window.location.assign("/")}>
+          <LayoutList />
+          {t("Scholarkit home")}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => dialogs().setPaletteOpen(true)}>
           <Command />
           {t("Command palette")}

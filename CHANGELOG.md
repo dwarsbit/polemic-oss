@@ -5,6 +5,7 @@
 ### Added
 
 - When something goes wrong, Polemic sends us an error report so we can fix it: what failed and where in its code, never your text, file names or email address. In the desktop app, turn it off under **Settings → General → Error reports**.
+- In the browser, **Scholarkit home** on the list of projects and in the menu opens your Scholarkit home page. It lists everything in your account, from Binder, Polemic and Cursive, in one place.
 
 ### Changed
 
