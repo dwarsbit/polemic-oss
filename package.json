@@ -20,7 +20,8 @@
     "test": "vitest run",
     "i18n": "scholarkit-i18n extract src node_modules/@scholarkit/updates/src src/locales",
     "lint:rust": "cargo fmt --check --manifest-path src-tauri/Cargo.toml && cargo fmt --check --manifest-path tools/corpus/probe/Cargo.toml && cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --locked -- -D warnings",
-    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --locked && cargo test --manifest-path tools/corpus/probe/Cargo.toml --locked"
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --locked && cargo test --manifest-path tools/corpus/probe/Cargo.toml --locked",
+    "prepare": "pnpm --filter @scholarkit/i18n --filter @scholarkit/monitoring build"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.20.3",
