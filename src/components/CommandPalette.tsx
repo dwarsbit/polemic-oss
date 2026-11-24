@@ -119,7 +119,7 @@ export function CommandPalette() {
         id: "account",
         title: t("Scholarkit account…"),
         icon: UserRound,
-        keywords: t("sign in sign out login logout plan free student pro server"),
+        keywords: t("sign in sign out login logout plan free plus pro server"),
         run: () => useSettingsStore.getState().openSettings("account"),
       },
       {

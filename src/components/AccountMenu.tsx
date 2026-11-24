@@ -2,7 +2,7 @@ import { errorText } from "@/lib/error-text";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useEffect, useState } from "react";
 import { ExternalLink, LogOut, UserRound } from "lucide-react";
-import { Avatar, PLAN_NAMES, UsageMeters } from "@/components/AccountParts";
+import { Avatar, planName, UsageMeters } from "@/components/AccountParts";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -47,7 +47,7 @@ export function AccountMenu() {
 
   if (!status?.signedIn) return null;
   const user = status.user;
-  const plan = user?.plan ? PLAN_NAMES[user.plan] : null;
+  const plan = user?.plan ? planName(user.plan) : null;
   const links = usage?.reviewLinks;
 
   async function signOut() {

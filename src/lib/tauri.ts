@@ -1141,8 +1141,11 @@ export interface AccountUser {
   email: string;
   emailVerified: boolean;
   createdAt: string;
-  /** null from servers without billing; "professional" from servers before the Free, Student and Pro plans. */
-  plan: "free" | "student" | "pro" | "professional" | null;
+  /**
+   * "free", "plus" or "pro"; null from servers without billing. Older servers send "student", or
+   * "professional" from before the Free, Student and Pro plans; later ones may add plans.
+   */
+  plan: string | null;
   /** Photo from Google, Apple or Microsoft sign-in; absent from older servers. */
   image?: string | null;
 }

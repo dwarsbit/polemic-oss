@@ -1,17 +1,24 @@
 import { UserRound } from "lucide-react";
 import { formatCompileUsed, formatStorage } from "@/components/UsageSummary";
-import type { AccountUsage, AccountUser } from "@/lib/tauri";
+import type { AccountUsage } from "@/lib/tauri";
 import { initialsOf } from "@/store/settings";
 import { cn } from "cn";
 import { t } from "@scholarkit/i18n";
 
-/** Plan names as the account page shows them; "professional" comes from servers before the current plans. */
-export const PLAN_NAMES: Record<NonNullable<AccountUser["plan"]>, string> = {
+/**
+ * Plan names as the account page shows them. "student" and "professional" come from servers
+ * before the current plans; a plan this version doesn't know shows as the server names it.
+ */
+const PLAN_NAMES: Record<string, string> = {
   free: t("Free"),
-  student: t("Student"),
+  plus: t("Plus"),
   pro: t("Pro"),
+  student: t("Student"),
   professional: t("Pro"),
 };
+
+export const planName = (plan: string): string =>
+  PLAN_NAMES[plan] ?? plan.charAt(0).toUpperCase() + plan.slice(1);
 
 const SIZES = {
   sm: "size-7 text-[11px]",

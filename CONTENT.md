@@ -28,7 +28,7 @@ Plain, precise and calm, for researchers and students who write papers.
 ## Capitalization
 
 - **Sentence case everywhere**: page titles, headings, nav, docs titles, buttons, menu items, dialog titles, tabs, table headers. "Download for macOS", "New file", "Compile and preview".
-- Proper names keep their own case: LaTeX, BibTeX, Git, GitHub, Zotero, macOS. Plan names are capitalized: Free, Student, Pro.
+- Proper names keep their own case: LaTeX, BibTeX, Git, GitHub, Zotero, macOS. Plan names are capitalized: Free, Plus, Pro. Plus's lower price for students is "the student price", never a plan of its own.
 - Nothing is set in all caps, the logo included: it reads "Polemic".
 
 ## Punctuation
@@ -52,11 +52,11 @@ Plain, precise and calm, for researchers and students who write papers.
 | logo | wordmark, lockup | The mark next to "Polemic" |
 | app icon | tile, favicon | The plum tile with the white page and the slash: dock, taskbar, browser tab |
 | app icon and name | lockup | The app icon with "Polemic", horizontal or vertical |
-| Free, Student, Pro | Community, Professional, Premium, tier | The plans of the online services; "the Pro plan" in running text, "Polemic Pro" where it stands alone, as at checkout |
+| Free, Plus, Pro, student price | Community, Professional, Premium, tier, Student plan | The plans of the online services; "the Pro plan" in running text, "Polemic Pro" where it stands alone, as at checkout |
 | online services | hosted services, cloud services | Storage, review links, grammar checking and cloud compile; every plan has them, with different limits |
 | cloud compile | online compile, server compile | Compiling on Polemic's servers instead of your own TeX distribution |
 | % used | minutes, seconds, fair use | How much of today's cloud compile you've used, on every plan: "34% used", rounded to a whole percent and never over 100%. Minutes stay on the server |
-| Limited, N× more | minutes per day, fair use, unlimited | How plans compare cloud compile: Free "Limited", Student "10× more", Pro "60× more", from the server's numbers |
+| Limited, N× more | minutes per day, fair use, unlimited | How plans compare cloud compile: Free "Limited", Plus "5× more", Pro "20× more", from the server's numbers |
 | LaTeX, TeX, BibTeX, biblatex, XeLaTeX, LuaLaTeX, pdfLaTeX | Latex, latex, LATEX, Bibtex | Always this casing, also in headings |
 | TeX distribution | TeX install | TeX Live, MacTeX, MiKTeX by name |
 | Git | git | `git` in code font only for the command |
@@ -104,7 +104,7 @@ Add a row whenever a new name comes up. Use one term per concept in every surfac
 **Marketing pages**
 
 - A headline is a short claim about what the reader can do ("Write LaTeX on your own machine"); the subheadline backs it with concrete facts.
-- Every claim is true for the current release. Features that are not released yet say "Coming soon"; online services name the plans whose limits they mention (Free, Student, Pro).
+- Every claim is true for the current release. Features that are not released yet say "Coming soon"; online services name the plans whose limits they mention (Free, Plus, Pro).
 - Competitors (Overleaf, TeXstudio) are named only on Compare and in the FAQ, factually and without digs.
 - No lorem ipsum or "Placeholder copy" in anything that ships: a section waits until its copy exists.
 
@@ -128,7 +128,7 @@ Add a row whenever a new name comes up. Use one term per concept in every surfac
 
 The interface is written in English first; every other language translates it (see `packages/i18n`). A translation follows the voice above and the rules of its own section below. A draft stays out of release builds until a fluent reader has reviewed it.
 
-What stays English in every language: the names Scholarkit, Polemic, Binder and Cursive, the plan names Free, Student and Pro, LaTeX names (commands, environments, packages, `latexmk`), Git verbs where Git shows them (commit, push, pull), and anything the reader types or that is written into their files.
+What stays English in every language: the names Scholarkit, Polemic, Binder and Cursive, the plan names Free, Plus and Pro, LaTeX names (commands, environments, packages, `latexmk`), Git verbs where Git shows them (commit, push, pull), and anything the reader types or that is written into their files.
 
 ### Dutch (Nederlands)
 

@@ -44,7 +44,7 @@ pub struct AccountUser {
     pub email: String,
     pub email_verified: bool,
     pub created_at: String,
-    /// "free", "student" or "pro" ("professional" from older servers); None from servers before billing.
+    /// "free", "plus" or "pro" ("student" or "professional" from older servers); None from servers before billing.
     #[serde(default)]
     pub plan: Option<String>,
     /// Profile photo from Google, Apple or Microsoft sign-in: a URL or a

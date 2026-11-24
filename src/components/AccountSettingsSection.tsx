@@ -2,7 +2,7 @@ import { errorText } from "@/lib/error-text";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useEffect, useState } from "react";
 import { ExternalLink, LogOut, MoreHorizontal } from "lucide-react";
-import { Avatar, PLAN_NAMES, UsageMeters } from "@/components/AccountParts";
+import { Avatar, planName, UsageMeters } from "@/components/AccountParts";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -237,7 +237,7 @@ export function AccountSettingsSection() {
         </div>
         {user?.plan && (
           <PlanSummary
-            plan={PLAN_NAMES[user.plan]}
+            plan={planName(user.plan)}
             usage={usage}
             onChangePlan={openAccountPage}
           />

@@ -536,7 +536,7 @@ export function SettingsDialog({
                 "Sign in for the online services. Local features never need an account.",
               ),
               keywords: t(
-                "sign in sign out login logout sign up create account avatar photo account plan free student pro usage storage compile time server custom server self-hosted privacy data export download delete gdpr",
+                "sign in sign out login logout sign up create account avatar photo account plan free plus pro usage storage compile time server custom server self-hosted privacy data export download delete gdpr",
               ),
               control: null,
             },

@@ -30,7 +30,7 @@ Polemic is an open-source desktop editor for LaTeX, for macOS, Windows and
 Linux. It compiles with the TeX distribution on your machine and keeps your
 files where they are. A free Polemic account adds online services: review
 links, grammar checking in almost every language and cloud compile, with
-more storage and compile time on the Student and Pro plans. The
+more storage and compile time on the Plus and Pro plans. The
 [documentation](https://polemicapp.com/docs) covers installation, your first
 project and every feature below.
 
