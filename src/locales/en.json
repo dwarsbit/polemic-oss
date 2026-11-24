@@ -793,7 +793,6 @@
   "No .bib files in this project.": "No .bib files in this project.",
   "All .bib files in this project": "All .bib files in this project",
   "Add source": "Add source",
-  "Scholarkit home": "Scholarkit home",
   "New project name": "New project name",
   "Template": "Template",
   "Publisher": "Publisher",
@@ -836,6 +835,7 @@
   "Document": "Document",
   "Before the first heading": "Before the first heading",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.",
+  "Scholarkit home": "Scholarkit home",
   "Replace {count} matches": {
     "one": "Replace {count} match",
     "other": "Replace {count} matches"

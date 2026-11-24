@@ -36,7 +36,7 @@ import { PolemicLogoVertical } from "@/components/PolemicLogo";
 import { UsageSummary } from "@/components/UsageSummary";
 import { useDialogsStore } from "@/store/dialogs";
 import { useProjectStore } from "@/store/project";
-import { features, isWeb } from "@/lib/target";
+import { features } from "@/lib/target";
 import { t } from "@scholarkit/i18n";
 import { rich } from "@scholarkit/i18n/react";
 
@@ -210,16 +210,7 @@ export function ProjectsView() {
   const selectedPublisher = publisherTemplates.find((t) => t.id === templateId);
 
   return (
-    <div className="relative flex h-full flex-col items-center overflow-y-auto px-4 pt-10 pb-16 text-foreground">
-      {isWeb && (
-        // The Scholarkit home page: every app's projects in one list.
-        <a
-          href="/"
-          className="absolute top-3 left-4 text-xs text-muted-foreground hover:text-foreground"
-        >
-          {t("Scholarkit home")}
-        </a>
-      )}
+    <div className="flex h-full flex-col items-center overflow-y-auto px-4 pt-10 pb-16 text-foreground">
       <h1 className="mt-auto mb-8 shrink-0 text-foreground">
         <PolemicLogoVertical className="h-28 w-auto" />
       </h1>

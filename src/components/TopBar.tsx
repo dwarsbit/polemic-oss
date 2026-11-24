@@ -16,6 +16,7 @@ import { AccountMenu } from "@/components/AccountMenu";
 import { EditorFaceToggle } from "@/components/EditorFaceToggle";
 import { PresenceAvatars } from "@/components/PresenceAvatars";
 import { SharePopover } from "@/components/SharePopover";
+import { ScholarkitHome } from "@/components/ScholarkitHome";
 import { WebAppMenu } from "@/components/WebAppMenu";
 import {
   STOPLIGHT_WIDTH,
@@ -107,7 +108,12 @@ export function TopBar() {
       }}
     >
       <div className="flex min-w-0 items-center gap-3 pl-3">
-        {isWeb && <WebAppMenu />}
+        {isWeb && (
+          <div className="flex flex-none items-center gap-1">
+            <ScholarkitHome />
+            <WebAppMenu />
+          </div>
+        )}
         {showProjectControls && (
           <div className="flex min-w-0 items-center gap-1.5">
             {renaming ? (

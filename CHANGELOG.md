@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.26.1 (unreleased)
+
+### Changed
+
+- In the browser, the Scholarkit icon next to the menu opens your Scholarkit home page. It replaces the **Scholarkit home** link on the list of projects.
+
 ## 0.26.0 (2026-11-24)
 
 ### Added

@@ -793,7 +793,6 @@
   "No .bib files in this project.": "Keine .bib-Dateien in diesem Projekt.",
   "All .bib files in this project": "Alle .bib-Dateien in diesem Projekt",
   "Add source": "Quelle hinzufügen",
-  "Scholarkit home": "Scholarkit-Startseite",
   "New project name": "Name des neuen Projekts",
   "Template": "Vorlage",
   "Publisher": "Verlag",
@@ -836,6 +835,7 @@
   "Document": "Dokument",
   "Before the first heading": "Vor der ersten Überschrift",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Gezählt wie texcount: Wörter im Hauptteil des Dokuments (Text, Überschriften, Beschriftungen, Fußnoten); Befehle, Mathematik, Kommentare und das Literaturverzeichnis zählen nicht. Abschnittszahlen enthalten ihre Unterabschnitte.",
+  "Scholarkit home": "Scholarkit-Startseite",
   "Replace {count} matches": {
     "one": "{count} Treffer ersetzen",
     "other": "{count} Treffer ersetzen"
