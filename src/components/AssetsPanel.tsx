@@ -4,7 +4,7 @@ import { useDialogsStore } from "@/store/dialogs";
 import * as pdfjs from "pdfjs-dist";
 import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { ChevronRight, Plus, Search, X } from "lucide-react";
-import { ask, open as openFileDialog } from "@tauri-apps/plugin-dialog";
+import { ask } from "@tauri-apps/plugin-dialog";
 import { AssetThumb } from "@/components/AssetThumb";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,13 @@ import {
   resolveGraphicsRef,
 } from "@/lib/graphics-refs";
 import { showNativeContextMenu } from "@/lib/native-menu";
-import { importAssets, readAsset, readProjectFile, type FileEntry } from "@/lib/tauri";
+import {
+  importAssets,
+  pickImportFiles,
+  readAsset,
+  readProjectFile,
+  type FileEntry,
+} from "@/lib/tauri";
 import { useAssetsStore } from "@/store/assets";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
@@ -236,13 +242,11 @@ export function AssetsPanel() {
     setImportError(null);
     const { project } = useProjectStore.getState();
     if (!project) return;
-    const picked = await openFileDialog({
+    const sources = await pickImportFiles({
       multiple: true,
       title: t("Import assets (copied into the project)"),
     });
-    if (picked === null) return;
-    const sources = Array.isArray(picked) ? picked : [picked];
-    if (sources.length === 0) return;
+    if (sources === null || sources.length === 0) return;
     try {
       await importAssets(project.path, sources);
       await useProjectStore.getState().refreshFiles();

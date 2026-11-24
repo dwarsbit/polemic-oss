@@ -1,5 +1,4 @@
 import { errorText } from "@/lib/error-text";
-import { save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { exportPdf } from "@/lib/tauri";
 import { isWeb } from "@/lib/target";
 import { useProjectStore } from "@/store/project";
@@ -16,13 +15,7 @@ export async function exportPdfAs(): Promise<void> {
     return;
   }
   try {
-    const dest = await saveDialog({
-      defaultPath: `${project.name}.pdf`,
-      filters: [{ name: "PDF", extensions: ["pdf"] }],
-    });
-    if (typeof dest === "string" && dest) {
-      await exportPdf(project.path, mainFile, dest);
-    }
+    await exportPdf(project.path, mainFile, `${project.name}.pdf`);
   } catch (e) {
     usePreviewStore.getState().setNotice(errorText(e));
   }

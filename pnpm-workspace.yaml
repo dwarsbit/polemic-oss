@@ -6,6 +6,9 @@ catalog:
   "@eslint/js": ^10.0.1
   "@next/eslint-plugin-next": ^16.4.6
   "@playwright/test": ^1.65.1
+  "@sentry/cli": ^3.8.2
+  "@sentry/vite-plugin": ^11.16.0
+  "@types/chrome": ^0.3.7
   "@types/node": ^22.20.5
   "@vitest/coverage-v8": ^5.1.0
   eslint: ^10.15.0
@@ -21,8 +24,9 @@ catalog:
   vitest: ^5.1.0
 
 # Install scripts that don't run. The "prepare" script installs the Git hooks, so
-# lefthook's own script isn't needed, and esbuild ships its binary as a package.
+# lefthook's own script isn't needed, and esbuild and sentry-cli ship their binaries as packages.
 allowBuilds:
+  "@sentry/cli": false
   esbuild: false
   lefthook: false
 

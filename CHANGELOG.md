@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.26.0 (unreleased)
+
+### Added
+
+- When something goes wrong, Polemic sends us an error report so we can fix it: what failed and where in its code, never your text, file names or email address. In the desktop app, turn it off under **Settings → General → Error reports**.
+
+### Fixed
+
+- The desktop app guards your files and keys better, in case harmful code ever ran inside it. It imports only files you pick or drop, and **Export PDF** saves only where you choose. Your saved API keys for the AI provider and Zotero stay inside the app. Each key goes only to the address you saved it for. After you change the AI provider's address, paste your key again.
+
 ## 0.25.0 (2026-11-22)
 
 ### Added

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { startLanguage } from "@scholarkit/i18n";
 import { catalogs } from "@/lib/languages";
+import { startMonitoring } from "@/lib/monitoring";
 import { hasTrafficLights } from "@/lib/platform";
 import { isWeb } from "@/lib/target";
 import "./index.css";
@@ -32,6 +33,7 @@ if (import.meta.env.DEV && new URLSearchParams(location.search).has("lab")) {
  * load, so they load once it is set.
  */
 async function start() {
+  void startMonitoring();
   await startLanguage({ loaders: catalogs, dev: import.meta.env.DEV });
   const [{ default: App }, { translateMenus }, { updater }, { useProjectStore }] =
     await Promise.all([

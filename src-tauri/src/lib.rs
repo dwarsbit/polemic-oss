@@ -4,6 +4,7 @@ mod assets;
 mod bib_lookup;
 mod cloud_compile;
 mod comments;
+mod crash;
 mod errors;
 mod excludes;
 mod files;
@@ -14,6 +15,7 @@ mod gitlab;
 mod grammar;
 mod guard;
 mod hosting;
+mod imports;
 mod link;
 mod logparse;
 mod profile;
@@ -31,9 +33,9 @@ use std::process::Command;
 
 use bib_lookup::lookup_bibtex;
 use files::{list_bib_files, read_external_file, FileEntry};
-use settings::{Settings, SettingsState, SourceDef};
+use settings::{SettingsState, SourceDef};
 use tauri::Manager;
-use zotero::zotero_local_fetch;
+use zotero::{zotero_cloud_fetch, zotero_local_fetch};
 
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -451,16 +453,17 @@ fn detect_tex() -> TexStatus {
 // --- settings / projects ---------------------------------------------------
 
 #[tauri::command]
-fn get_settings(app: tauri::AppHandle) -> Result<Settings, String> {
-    settings::effective(&app)
+fn get_settings(app: tauri::AppHandle) -> Result<settings::Shown, String> {
+    settings::effective(&app).map(Into::into)
 }
 
 #[tauri::command]
-fn set_projects_root(app: tauri::AppHandle, path: String) -> Result<Settings, String> {
+fn set_projects_root(app: tauri::AppHandle, path: String) -> Result<settings::Shown, String> {
     settings::update(&app, |s| {
         s.projects_root = Some(path);
         s.clone()
     })
+    .map(Into::into)
 }
 
 #[tauri::command]
@@ -553,11 +556,12 @@ fn admit_project(app: &tauri::AppHandle, dir: &std::path::Path) -> Result<Projec
 }
 
 #[tauri::command]
-fn remove_recent_project(app: tauri::AppHandle, path: String) -> Result<Settings, String> {
+fn remove_recent_project(app: tauri::AppHandle, path: String) -> Result<settings::Shown, String> {
     settings::update(&app, |s| {
         s.recent_projects.retain(|r| r.path != path);
         s.clone()
     })
+    .map(Into::into)
 }
 
 // The front end sends each setting as its own argument.
@@ -583,11 +587,12 @@ fn update_preferences(
     tex_editor_mode: Option<String>,
     bib_editor_mode: Option<String>,
     online_lookup: Option<bool>,
+    error_reports: Option<bool>,
     sources: Option<Vec<SourceDef>>,
     author_name: Option<String>,
     author_initials: Option<String>,
     assistant_mode: Option<String>,
-) -> Result<Settings, String> {
+) -> Result<settings::Shown, String> {
     settings::update(&app, |s| {
         if let Some(mode) = assistant_mode {
             if matches!(mode.as_str(), "syntax" | "prose") {
@@ -660,19 +665,26 @@ fn update_preferences(
         if online_lookup.is_some() {
             s.online_lookup = online_lookup;
         }
+        if error_reports.is_some() {
+            s.error_reports = error_reports;
+        }
         if let Some(sources) = sources {
             settings::check_bib_paths(&s.sources, &sources)?;
-            s.sources = sources;
+            s.sources = secrets::restore_sources(sources, &s.sources);
         }
         Ok(s.clone())
     })?
+    .map(Into::into)
 }
 
 /// Add a bib source through a native picker: a .bib file, or a folder
 /// searched for .bib files. The only way a bib path enters the
 /// settings, since `read_external_file` reads only under them.
 #[tauri::command]
-async fn pick_bib_source(app: tauri::AppHandle, folder: bool) -> Result<Option<Settings>, String> {
+async fn pick_bib_source(
+    app: tauri::AppHandle,
+    folder: bool,
+) -> Result<Option<settings::Shown>, String> {
     use tauri_plugin_dialog::DialogExt;
     let dialog = app.dialog().file();
     let picked = if folder {
@@ -706,7 +718,7 @@ async fn pick_bib_source(app: tauri::AppHandle, folder: bool) -> Result<Option<S
         });
         s.clone()
     })
-    .map(Some)
+    .map(|s| Some(s.into()))
 }
 
 /// Configure the assistant's AI provider; replaces the whole block.
@@ -717,11 +729,22 @@ fn update_ai_settings(
     base_url: Option<String>,
     api_key: Option<String>,
     model: Option<String>,
-) -> Result<Settings, String> {
+) -> Result<settings::Shown, String> {
     if let Some(url) = base_url.as_deref().filter(|u| !u.trim().is_empty()) {
         ai::check_base_url(url)?;
     }
     settings::update(&app, |s| {
+        // The webview sends secrets::KEPT back for a key it didn't change.
+        // The key stays with its address: a new address gets no key until
+        // one is typed, so a script can't move the key to its own server.
+        let kept =
+            s.ai.as_ref()
+                .filter(|ai| match (ai.base_url.as_deref(), base_url.as_deref()) {
+                    (Some(saved), Some(sent)) => ai::same_address(saved, sent),
+                    _ => false,
+                })
+                .and_then(|ai| ai.api_key.as_ref());
+        let api_key = secrets::restore(api_key, kept);
         s.ai = Some(settings::AiSettings {
             provider,
             base_url,
@@ -730,6 +753,7 @@ fn update_ai_settings(
         });
         s.clone()
     })
+    .map(Into::into)
 }
 
 /// Allow or revoke the assistant compiling on its own in a project.
@@ -738,7 +762,7 @@ fn set_assistant_compile(
     app: tauri::AppHandle,
     project_path: String,
     allowed: bool,
-) -> Result<Settings, String> {
+) -> Result<settings::Shown, String> {
     settings::update(&app, |s| {
         s.assistant_compile_projects.retain(|p| p != &project_path);
         if allowed {
@@ -746,13 +770,14 @@ fn set_assistant_compile(
         }
         s.clone()
     })
+    .map(Into::into)
 }
 
 #[tauri::command]
 fn update_grammar_settings(
     app: tauri::AppHandle,
     grammar: settings::GrammarSettings,
-) -> Result<Settings, String> {
+) -> Result<settings::Shown, String> {
     let mut grammar = grammar;
     grammar.language_tool_url = grammar
         .language_tool_url
@@ -770,6 +795,7 @@ fn update_grammar_settings(
         s.grammar = grammar;
         s.clone()
     })
+    .map(Into::into)
 }
 
 /// The built-in grammar checker, built on first use (and again when
@@ -859,7 +885,7 @@ fn grammar_rules(
 }
 
 #[tauri::command]
-fn set_version_control(app: tauri::AppHandle, value: String) -> Result<settings::Settings, String> {
+fn set_version_control(app: tauri::AppHandle, value: String) -> Result<settings::Shown, String> {
     if value != "git" && value != "snapshots" {
         return Err("invalid version control setting".into());
     }
@@ -867,6 +893,7 @@ fn set_version_control(app: tauri::AppHandle, value: String) -> Result<settings:
         s.version_control = Some(value.clone());
         s.clone()
     })
+    .map(Into::into)
 }
 
 #[tauri::command]
@@ -1031,7 +1058,7 @@ fn set_pinned_project(
     app: tauri::AppHandle,
     path: String,
     pinned: bool,
-) -> Result<Settings, String> {
+) -> Result<settings::Shown, String> {
     settings::update(&app, |s| {
         s.pinned_projects.retain(|p| p != &path);
         if pinned {
@@ -1039,6 +1066,7 @@ fn set_pinned_project(
         }
         s.clone()
     })
+    .map(Into::into)
 }
 
 #[tauri::command]
@@ -1115,7 +1143,7 @@ fn rename_project(
 
 /// Move a project folder to the OS trash.
 #[tauri::command]
-fn delete_project(app: tauri::AppHandle, path: String) -> Result<Settings, String> {
+fn delete_project(app: tauri::AppHandle, path: String) -> Result<settings::Shown, String> {
     let dir = known_project(&app, &path)?;
     trash::delete(&dir).map_err(|_| {
         "Could not move the project to the trash. Close its files in other programs and try again."
@@ -1133,6 +1161,7 @@ fn delete_project(app: tauri::AppHandle, path: String) -> Result<Settings, Strin
         }
         s.clone()
     })
+    .map(Into::into)
 }
 
 // --- project files ---------------------------------------------------------
@@ -1208,12 +1237,57 @@ fn read_asset(project_dir: String, path: String) -> Result<tauri::ipc::Response,
     Ok(tauri::ipc::Response::new(bytes))
 }
 
+/// A file type the import dialog offers, as the webview names it.
+#[derive(Deserialize)]
+struct DialogFilter {
+    name: String,
+    extensions: Vec<String>,
+}
+
+/// Pick files to import in a native dialog; None when cancelled. The
+/// dialog runs here, so `import_assets` copies in only what the user
+/// chose (see `imports`).
+#[tauri::command]
+async fn pick_import_files(
+    app: tauri::AppHandle,
+    multiple: bool,
+    title: String,
+    filters: Vec<DialogFilter>,
+) -> Result<Option<Vec<String>>, String> {
+    use tauri_plugin_dialog::DialogExt;
+    let mut dialog = app.dialog().file().set_title(&title);
+    for filter in &filters {
+        let extensions: Vec<&str> = filter.extensions.iter().map(String::as_str).collect();
+        dialog = dialog.add_filter(&filter.name, &extensions);
+    }
+    let picked = if multiple {
+        dialog.blocking_pick_files()
+    } else {
+        dialog.blocking_pick_file().map(|file| vec![file])
+    };
+    let Some(picked) = picked else {
+        return Ok(None);
+    };
+    let paths = picked
+        .into_iter()
+        .map(|file| file.into_path().map_err(|e| e.to_string()))
+        .collect::<Result<Vec<_>, _>>()?;
+    Ok(Some(
+        imports::admit(paths)
+            .into_iter()
+            .map(|path| path.to_string_lossy().to_string())
+            .collect(),
+    ))
+}
+
 /// Copy files into the project's assets/ folder (copy-in imports).
 /// Sources already inside the project pass through untouched: their
 /// relative path is returned without copying. Other name collisions
 /// get a numeric suffix. An SVG, which LaTeX cannot embed, gets a PDF
 /// beside it, and the PDF is returned (the SVG stays as the source).
-/// Returns the relative paths of the results.
+/// Returns the relative paths of the results. Files from outside the
+/// project must have been picked (`pick_import_files`) or dropped on
+/// the window first (see `imports`).
 #[tauri::command]
 fn import_assets(project_dir: String, sources: Vec<String>) -> Result<Vec<String>, String> {
     let dir = canonical_project(&project_dir)?;
@@ -1238,6 +1312,13 @@ fn import_assets(project_dir: String, sources: Vec<String>) -> Result<Vec<String
                     .to_string(),
             );
             continue;
+        }
+        // From outside the project: only a file the user just picked or
+        // dropped, never one a script names.
+        if !imports::take(&from) {
+            return Err(format!(
+                "{source} wasn't picked or dropped here. Import it with Import… or drop it on the editor."
+            ));
         }
         let name = from
             .file_name()
@@ -1471,7 +1552,10 @@ fn cancel_compile() {
 }
 
 #[tauri::command]
-fn set_compile_provider(app: tauri::AppHandle, provider: String) -> Result<Settings, String> {
+fn set_compile_provider(
+    app: tauri::AppHandle,
+    provider: String,
+) -> Result<settings::Shown, String> {
     if provider != "local" && provider != "polemic" {
         return Err(format!("unknown compile provider: {provider}"));
     }
@@ -1479,6 +1563,7 @@ fn set_compile_provider(app: tauri::AppHandle, provider: String) -> Result<Setti
         s.compile_provider = Some(provider.clone());
         s.clone()
     })
+    .map(Into::into)
 }
 
 /// Whether the account can compile with Polemic, for Settings.
@@ -1515,19 +1600,39 @@ fn get_pdf(project_dir: String, main_tex: String) -> Result<tauri::ipc::Response
     Ok(tauri::ipc::Response::new(pdf))
 }
 
-/// Copy the built PDF to a location chosen by the user.
+/// Copy the built PDF to a place the user picks in a native save
+/// dialog. The dialog runs here, so a script can't name the place.
+/// Returns false when the dialog was cancelled.
 #[tauri::command]
-fn export_pdf(project_dir: String, main_tex: String, dest_path: String) -> Result<(), String> {
+async fn export_pdf(
+    app: tauri::AppHandle,
+    project_dir: String,
+    main_tex: String,
+    file_name: String,
+) -> Result<bool, String> {
+    use tauri_plugin_dialog::DialogExt;
     let dir = canonical_project(&project_dir)?;
     let pdf_path = dir.join("build").join(pdf_output_path(&main_tex));
-    fs::copy(&pdf_path, std::path::Path::new(&dest_path))
-        .map(|_| ())
-        .map_err(|e| {
-            format!(
-                "failed to copy PDF to {}: {e}",
-                std::path::Path::new(&dest_path).display()
-            )
-        })
+    if !pdf_path.is_file() {
+        return Err("No PDF yet. Compile the project first.".into());
+    }
+    let picked = app
+        .dialog()
+        .file()
+        .set_title("Export PDF")
+        .set_file_name(&file_name)
+        .add_filter("PDF", &["pdf"])
+        .blocking_save_file();
+    let Some(picked) = picked else {
+        return Ok(false);
+    };
+    let dest = picked.into_path().map_err(|e| e.to_string())?;
+    fs::copy(&pdf_path, &dest).map(|_| true).map_err(|e| {
+        errors::failed(
+            format_args!("Could not save the PDF to {}", dest.display()),
+            &e,
+        )
+    })
 }
 
 /// Open the built PDF in the system viewer.
@@ -2866,7 +2971,21 @@ pub fn run() {
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        // Files dropped on the window may be imported (see `imports`).
+        // A window with one webview reports drops as window events,
+        // others as webview events: admit both.
+        .on_window_event(|_window, event| {
+            if let tauri::WindowEvent::DragDrop(tauri::DragDropEvent::Drop { paths, .. }) = event {
+                imports::admit(paths);
+            }
+        })
+        .on_webview_event(|_webview, event| {
+            if let tauri::WebviewEvent::DragDrop(tauri::DragDropEvent::Drop { paths, .. }) = event {
+                imports::admit(paths);
+            }
+        })
         .setup(|app| {
+            crash::install(app.handle());
             create_main_window(app)?;
             {
                 // polemic://open?project=<id>, from "Open in the desktop
@@ -2909,6 +3028,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            crash::take_last_crash,
             share::share_status,
             share::share_folder,
             share::share_create,
@@ -2956,6 +3076,7 @@ pub fn run() {
             list_bib_files,
             pick_bib_source,
             zotero_local_fetch,
+            zotero_cloud_fetch,
             lookup_bibtex,
             create_project,
             list_templates,
@@ -2988,6 +3109,7 @@ pub fn run() {
             delete_entry,
             read_asset,
             import_assets,
+            pick_import_files,
             list_asset_meta,
             save_asset_meta,
             tex_package_info,

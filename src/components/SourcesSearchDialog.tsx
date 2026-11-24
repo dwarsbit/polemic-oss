@@ -99,12 +99,7 @@ export function SourcesSearchDialog({
           zoteroSources.map((source) =>
             source.kind === "zotero-app"
               ? zoteroLocalSearch(trimmed, null)
-              : zoteroWebSearch(
-                  trimmed,
-                  null,
-                  source.userId ?? "",
-                  source.apiKey ?? "",
-                ),
+              : zoteroWebSearch(trimmed, null, source),
           ),
         );
         if (cancelled) return;

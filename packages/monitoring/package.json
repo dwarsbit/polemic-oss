@@ -1,0 +1,37 @@
+{
+  "name": "@scholarkit/monitoring",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./scrub": "./src/scrub.ts",
+    "./browser": "./src/browser.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sentry/browser": "^11.11.0",
+    "@sentry/node": "^11.11.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@scholarkit/eslint-config": "workspace:*",
+    "@scholarkit/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "fastify": "^5.12.7",
+    "happy-dom": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

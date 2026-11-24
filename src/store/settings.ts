@@ -14,6 +14,7 @@ import {
   type Settings,
 } from "@/lib/tauri";
 import { features } from "@/lib/target";
+import { setErrorReports } from "@/lib/monitoring";
 import { applyTheme, type ThemePreference } from "@/lib/theme";
 import { usePreviewStore } from "@/store/preview";
 
@@ -53,6 +54,7 @@ interface SettingsState {
   autoIncludeNewFiles: boolean;
   /** Opt-in: DOI/arXiv import may contact doi.org. */
   onlineLookup: boolean;
+  errorReports: boolean;
   /** The name on suggestions; empty until set. */
   authorName: string;
   /** The initials set by the user; empty means derived from the name. */
@@ -91,6 +93,7 @@ interface SettingsState {
   setReopenLastProject: (enabled: boolean) => Promise<void>;
   setAutoIncludeNewFiles: (enabled: boolean) => Promise<void>;
   setOnlineLookup: (enabled: boolean) => Promise<void>;
+  setErrorReports: (enabled: boolean) => Promise<void>;
   setAuthor: (author: { name?: string; initials?: string }) => Promise<void>;
   setVersionControl: (value: "git" | "snapshots") => Promise<void>;
   setCompileProvider: (provider: CompileProvider) => Promise<void>;
@@ -136,6 +139,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   reopenLastProject: true,
   autoIncludeNewFiles: true,
   onlineLookup: false,
+  errorReports: true,
   authorName: "",
   authorInitials: "",
   versionControl: null,
@@ -174,6 +178,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       reopenLastProject: settings.reopenLastProject ?? true,
       autoIncludeNewFiles: settings.autoIncludeNewFiles ?? true,
       onlineLookup: settings.onlineLookup ?? false,
+      errorReports: settings.errorReports ?? true,
       authorName: settings.authorName ?? "",
       authorInitials: settings.authorInitials ?? "",
       versionControl:
@@ -248,6 +253,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setOnlineLookup: async (enabled) => {
     set({ onlineLookup: enabled });
     await updatePreferences({ onlineLookup: enabled });
+  },
+  setErrorReports: async (enabled) => {
+    set({ errorReports: enabled });
+    await updatePreferences({ errorReports: enabled });
+    await setErrorReports(enabled);
   },
   setAuthor: async ({ name, initials }) => {
     set({

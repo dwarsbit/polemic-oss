@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { readFileSync } from "node:fs";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -9,6 +10,20 @@ const host = process.env.TAURI_DEV_HOST;
 const { version } = JSON.parse(
   readFileSync(new URL("./package.json", import.meta.url), "utf8"),
 ) as { version: string };
+
+// Release builds with SENTRY_AUTH_TOKEN (plus SENTRY_ORG and SENTRY_PROJECT) send their source maps
+// to Sentry, so error reports show our code, and leave no map in what ships.
+const sentryToken = process.env.SENTRY_AUTH_TOKEN;
+const sourceMaps = sentryToken
+  ? [
+      sentryVitePlugin({
+        authToken: sentryToken,
+        release: { name: `polemic@${version}`, inject: true },
+        sourcemaps: { filesToDeleteAfterUpload: ["./dist*/**/*.map"] },
+        telemetry: false,
+      }),
+    ]
+  : [];
 
 const src = (path: string) => fileURLToPath(new URL(`./src/${path}`, import.meta.url));
 
@@ -34,7 +49,7 @@ const apiProxy = {
 };
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), ...sourceMaps],
 
   // The browser build is served at /projects on the services app.
   base: mode === "web" ? "/projects/" : "/",
@@ -54,6 +69,7 @@ export default defineConfig(({ mode }) => ({
     // The desktop app bundles dist (tauri.conf.json); the browser build
     // goes next to it.
     outDir: mode === "web" ? "dist-web" : "dist",
+    sourcemap: sentryToken ? "hidden" : false,
   },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`

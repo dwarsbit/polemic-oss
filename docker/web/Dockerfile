@@ -14,12 +14,22 @@ COPY packages/tsconfig packages/tsconfig
 COPY packages/eslint-config/package.json packages/eslint-config/
 COPY packages/i18n/package.json packages/i18n/
 COPY packages/updates/package.json packages/updates/
+COPY packages/monitoring/package.json packages/monitoring/
 COPY apps/polemic/package.json apps/polemic/
 RUN pnpm install --frozen-lockfile --ignore-scripts --filter @scholarkit/polemic...
 COPY packages/i18n packages/i18n
 COPY packages/updates packages/updates
+COPY packages/monitoring packages/monitoring
 COPY apps/polemic apps/polemic
-RUN pnpm --filter @scholarkit/polemic build:web
+# Error reports (src/lib/monitoring.ts); without it the build sends none.
+ARG VITE_SENTRY_DSN=""
+ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
+# Source maps go to Sentry when the build gets the sentry_auth_token secret, and stay out of
+# the image either way.
+ARG SENTRY_ORG=""
+ARG SENTRY_PROJECT=""
+RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    pnpm --filter @scholarkit/polemic build:web
 
 FROM caddy:2-alpine
 COPY apps/polemic/docker/web/Caddyfile /etc/caddy/Caddyfile

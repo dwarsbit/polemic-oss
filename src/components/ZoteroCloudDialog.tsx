@@ -43,7 +43,7 @@ export function ZoteroCloudDialog({
     setError(null);
     setInfo(null);
     setValidating(true);
-    const result = await zoteroWebValidateKey(apiKey);
+    const result = await zoteroWebValidateKey(apiKey, source?.id);
     setValidating(false);
     if (result === null) {
       setError(t("The key could not be validated. Check it and your connection."));

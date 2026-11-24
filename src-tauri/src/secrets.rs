@@ -58,6 +58,56 @@ pub fn inject(settings: &mut Settings, secrets: &Secrets) {
     }
 }
 
+/// What the webview gets in place of a key that is set. Keys never
+/// reach it: a script there could send them anywhere. It sends this
+/// back unchanged to mean "keep the key".
+pub const KEPT: &str = "\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}";
+
+fn hide(value: &mut Option<String>) {
+    if value.as_deref().is_some_and(|v| !v.is_empty()) {
+        *value = Some(KEPT.into());
+    }
+}
+
+/// A copy of the settings for the webview: each key set is KEPT.
+pub fn redact(settings: &Settings) -> Settings {
+    let mut shown = settings.clone();
+    if let Some(ai) = shown.ai.as_mut() {
+        hide(&mut ai.api_key);
+    }
+    for source in shown.sources.iter_mut() {
+        hide(&mut source.api_key);
+    }
+    shown
+}
+
+/// A key the webview sent back: KEPT means the one stored, anything
+/// else is a key the user typed (or none).
+pub fn restore(sent: Option<String>, stored: Option<&String>) -> Option<String> {
+    match sent {
+        Some(key) if key == KEPT => stored.cloned(),
+        other => other,
+    }
+}
+
+/// Sources the webview sent back, with KEPT keys put back from the
+/// stored sources of the same id.
+pub fn restore_sources(
+    sent: Vec<crate::settings::SourceDef>,
+    stored: &[crate::settings::SourceDef],
+) -> Vec<crate::settings::SourceDef> {
+    sent.into_iter()
+        .map(|mut source| {
+            let kept = stored
+                .iter()
+                .find(|s| s.id == source.id)
+                .and_then(|s| s.api_key.as_ref());
+            source.api_key = restore(source.api_key.take(), kept);
+            source
+        })
+        .collect()
+}
+
 /// Does the settings file still hold keys in plain text?
 pub fn has_plaintext(settings: &Settings) -> bool {
     !extract(settings).1.is_empty()
@@ -183,6 +233,40 @@ pub static VAULT: Vault<OsStore> = Vault::new(OsStore::new("api-keys"));
 mod tests {
     use super::*;
     use crate::settings::{AiSettings, SourceDef};
+
+    #[test]
+    fn the_webview_never_sees_a_key() {
+        let settings = with_keys();
+        let shown = redact(&settings);
+        assert_eq!(shown.ai.as_ref().unwrap().api_key.as_deref(), Some(KEPT));
+        assert_eq!(shown.sources[0].api_key.as_deref(), Some(KEPT));
+        let json = serde_json::to_string(&crate::settings::Shown::from(settings.clone())).unwrap();
+        assert!(!json.contains("sk-ai"));
+        assert!(!json.contains("zot-key"));
+        assert!(json.contains(KEPT));
+    }
+
+    #[test]
+    fn kept_keys_come_back_from_the_store() {
+        let settings = with_keys();
+        let stored = settings.ai.as_ref().unwrap().api_key.as_ref();
+        assert_eq!(restore(Some(KEPT.into()), stored).as_deref(), Some("sk-ai"));
+        assert_eq!(
+            restore(Some("sk-new".into()), stored).as_deref(),
+            Some("sk-new")
+        );
+        assert_eq!(restore(None, stored), None);
+
+        let shown = redact(&settings);
+        let back = restore_sources(shown.sources.clone(), &settings.sources);
+        assert_eq!(back[0].api_key.as_deref(), Some("zot-key"));
+        let mut other = shown.sources[0].clone();
+        other.id = "someone-else".into();
+        assert_eq!(
+            restore_sources(vec![other], &settings.sources)[0].api_key,
+            None
+        );
+    }
 
     #[derive(Default)]
     struct MemoryStore {

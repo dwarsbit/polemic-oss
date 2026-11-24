@@ -20,7 +20,7 @@
         "style-src": "'self' 'unsafe-inline'",
         "img-src": "'self' data: blob:",
         "font-src": "'self' data:",
-        "connect-src": "'self' ipc: http://ipc.localhost https://ctan.org https://api.zotero.org https://raw.githubusercontent.com",
+        "connect-src": "'self' ipc: http://ipc.localhost https://ctan.org https://api.zotero.org https://raw.githubusercontent.com https://app.scholarkit.app",
         "object-src": "'none'",
         "frame-src": "'none'",
         "base-uri": "'none'",

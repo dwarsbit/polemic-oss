@@ -2,6 +2,7 @@ import { Channel, invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type { FolderEntry } from "@/lib/project-doc";
 import type { PublishedSnapshot } from "@/lib/share";
 import { t } from "@scholarkit/i18n";
+import { isWeb } from "@/lib/target";
 
 /**
  * Commands that change a project's files. A linked project syncs after
@@ -88,7 +89,8 @@ export interface SourceDef {
   /** Absolute path of a .bib file or a folder containing them.
    *  Bib sources only. */
   path: string | null;
-  /** Zotero cloud credentials; zotero-cloud sources only. */
+  /** Zotero cloud credentials; zotero-cloud sources only. In the
+   *  desktop app a key that is set reads as KEPT_KEY. */
   userId: string | null;
   apiKey: string | null;
 }
@@ -128,6 +130,8 @@ export interface Settings {
   bibEditorMode: string | null;
   /** Opt-in: DOI/arXiv import may contact doi.org. */
   onlineLookup: boolean | null;
+  /** Error reports to Scholarkit; null = on. */
+  errorReports: boolean | null;
   /** The AI provider (quickfix and assistant); null until configured. */
   ai: AiSettings | null;
   /** Projects (paths) where the assistant may compile on its own. */
@@ -464,6 +468,21 @@ export function getSettings(): Promise<Settings> {
   return invoke<Settings>("get_settings");
 }
 
+/** A panic in the desktop app's Rust side, kept until the next start (crash.rs). */
+export interface NativeCrash {
+  message: string;
+  /** The source file and line, e.g. src/files.rs:120. */
+  location: string | null;
+  thread: string | null;
+  /** The version that panicked. */
+  version: string;
+}
+
+/** The last panic since this was last asked; null if there was none. */
+export function takeLastCrash(): Promise<NativeCrash | null> {
+  return invoke<NativeCrash | null>("take_last_crash");
+}
+
 export function setProjectsRoot(path: string): Promise<Settings> {
   return invoke<Settings>("set_projects_root", { path });
 }
@@ -508,6 +527,7 @@ export interface EditorPreferences {
   texEditorMode?: string;
   bibEditorMode?: string;
   onlineLookup?: boolean;
+  errorReports?: boolean;
   /** The user's reference sources (see SourceDef). */
   sources?: SourceDef[];
   /** Empty clears it. */
@@ -607,12 +627,14 @@ export function setSpellcheckLanguage(lang: string): Promise<void> {
   return invoke<void>("set_spellcheck_language", { lang });
 }
 
+/** Save the built PDF where the user picks in the system's save
+ *  dialog, which the desktop app shows itself. False when cancelled. */
 export function exportPdf(
   projectDir: string,
   mainTex: string,
-  destPath: string,
-): Promise<void> {
-  return invoke<void>("export_pdf", { projectDir, mainTex, destPath });
+  fileName: string,
+): Promise<boolean> {
+  return invoke<boolean>("export_pdf", { projectDir, mainTex, fileName });
 }
 
 export function openPdf(projectDir: string, mainTex: string): Promise<void> {
@@ -704,6 +726,27 @@ export function zoteroLocalFetch(path: string, query: string): Promise<string> {
 }
 
 /**
+ * What the desktop app sends in place of an API key that is set (the AI
+ * provider's, a Zotero cloud key). Keys stay in the app's Rust side: a
+ * script in the webview could send them anywhere. Sending it back
+ * unchanged keeps the key.
+ */
+export const KEPT_KEY = "\u2022".repeat(8);
+
+/**
+ * GET one path of the Zotero web API for a cloud source whose key is
+ * kept (KEPT_KEY), through Rust, which adds the key. Paths: "items",
+ * "collections", "collections/<key>/items" and "keys/current".
+ */
+export function zoteroCloudFetch(
+  sourceId: string,
+  path: string,
+  query: string,
+): Promise<string> {
+  return invoke<string>("zotero_cloud_fetch", { sourceId, path, query });
+}
+
+/**
  * The BibTeX record of one DOI, fetched Rust-side from doi.org.
  * Rejects unless online lookup is enabled in settings.
  */
@@ -764,6 +807,30 @@ export async function readAsset(projectDir: string, path: string): Promise<Uint8
 /** Copy files into the project's assets/ folder; returns the relative paths. */
 export function importAssets(projectDir: string, sources: string[]): Promise<string[]> {
   return invoke<string[]>("import_assets", { projectDir, sources });
+}
+
+export interface ImportPick {
+  multiple: boolean;
+  title: string;
+  filters?: { name: string; extensions: string[] }[];
+}
+
+/** Pick files to import (copy into the project): their paths, or null
+ *  when cancelled. On the desktop the app shows the dialog itself, and
+ *  importAssets copies in only files picked here or dropped on the
+ *  window. */
+export async function pickImportFiles(pick: ImportPick): Promise<string[] | null> {
+  if (isWeb) {
+    const { open } = await import("@tauri-apps/plugin-dialog");
+    const picked = await open(pick);
+    if (picked === null) return null;
+    return Array.isArray(picked) ? picked : [picked];
+  }
+  return invoke<string[] | null>("pick_import_files", {
+    multiple: pick.multiple,
+    title: pick.title,
+    filters: pick.filters ?? [],
+  });
 }
 
 /** Asset tags per project-relative path (`.polemic/assets.json`). */

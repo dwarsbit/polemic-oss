@@ -45,6 +45,38 @@ pub fn check_service_url(base_url: &str, what: &str) -> Result<(), String> {
 
 /// The key travels as a bearer token; a model on this machine (Ollama,
 /// LM Studio) has none, and gets no header.
+/// The AI settings as saved, keys included (Rust side only).
+fn saved_ai(app: &tauri::AppHandle) -> Result<crate::settings::AiSettings, String> {
+    Ok(crate::settings::snapshot(app)?.ai.unwrap_or_default())
+}
+
+/// An address as compared: no surrounding space or trailing slash.
+pub fn same_address(a: &str, b: &str) -> bool {
+    a.trim().trim_end_matches('/') == b.trim().trim_end_matches('/')
+}
+
+/// The key to send to `base_url`. The webview never has the saved key,
+/// only `secrets::KEPT` in its place, and the saved key only goes to the
+/// saved address: a script can't send it elsewhere. A key typed in the
+/// webview goes as it is.
+fn key_for(
+    saved: &crate::settings::AiSettings,
+    base_url: &str,
+    api_key: String,
+) -> Result<String, String> {
+    if api_key != crate::secrets::KEPT {
+        return Ok(api_key);
+    }
+    let same = saved
+        .base_url
+        .as_deref()
+        .is_some_and(|saved| same_address(saved, base_url));
+    match saved.api_key.as_deref() {
+        Some(key) if same && !key.is_empty() && key != crate::secrets::KEPT => Ok(key.to_string()),
+        _ => Err("The saved API key only goes to the saved address. Save the AI settings, then try again.".into()),
+    }
+}
+
 fn authorized(request: reqwest::RequestBuilder, api_key: &str) -> reqwest::RequestBuilder {
     if api_key.trim().is_empty() {
         request
@@ -71,8 +103,13 @@ fn provider_error(status: reqwest::StatusCode, text: &str) -> String {
 /// model picker lists them. Doubles as the connection check in
 /// settings: an unreachable server or a refused key fails here.
 #[tauri::command]
-pub async fn ai_list_models(base_url: String, api_key: String) -> Result<Vec<String>, String> {
+pub async fn ai_list_models(
+    app: tauri::AppHandle,
+    base_url: String,
+    api_key: String,
+) -> Result<Vec<String>, String> {
     check_base_url(&base_url)?;
+    let api_key = key_for(&saved_ai(&app)?, &base_url, api_key)?;
     let url = format!("{}/models", base_url.trim().trim_end_matches('/'));
     let response = authorized(reqwest::Client::new().get(&url), &api_key)
         .send()
@@ -247,11 +284,17 @@ fn message_from_completion(body: &Value) -> Result<Value, String> {
 /// returns the complete assistant message (content and tool calls).
 #[tauri::command]
 pub async fn ai_agent_turn(
-    args: AiAgentArgs,
+    app: tauri::AppHandle,
+    mut args: AiAgentArgs,
     on_event: Channel<AgentEvent>,
     requests: tauri::State<'_, AiRequests>,
 ) -> Result<Value, String> {
     check_base_url(&args.base_url)?;
+    args.api_key = key_for(
+        &saved_ai(&app)?,
+        &args.base_url,
+        std::mem::take(&mut args.api_key),
+    )?;
     let stop = Arc::new(Notify::new());
     requests
         .0
@@ -341,6 +384,28 @@ pub fn ai_cancel(request_id: u32, requests: tauri::State<'_, AiRequests>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_saved_key_only_goes_to_the_saved_address() {
+        use crate::secrets::KEPT;
+        let saved = crate::settings::AiSettings {
+            provider: None,
+            base_url: Some("https://api.mistral.ai/v1/".into()),
+            api_key: Some("sk-saved".into()),
+            model: None,
+        };
+        assert_eq!(
+            key_for(&saved, "https://api.mistral.ai/v1", KEPT.into()).unwrap(),
+            "sk-saved"
+        );
+        assert!(key_for(&saved, "https://evil.example/v1", KEPT.into()).is_err());
+        assert_eq!(
+            key_for(&saved, "https://evil.example/v1", "typed".into()).unwrap(),
+            "typed"
+        );
+        let none = crate::settings::AiSettings::default();
+        assert!(key_for(&none, "https://api.mistral.ai/v1", KEPT.into()).is_err());
+    }
 
     #[test]
     fn requires_https_except_on_localhost() {

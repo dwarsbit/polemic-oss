@@ -10,6 +10,7 @@ export const ignores = globalIgnores([
   "**/node_modules/",
   "**/dist/",
   "**/dist-web/",
+  "**/dist-clipper*/",
   "**/.next/",
   "**/out/",
   "**/coverage/",

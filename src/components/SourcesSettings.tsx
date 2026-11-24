@@ -122,7 +122,9 @@ async function checkZotero(source: SourceDef): Promise<ZoteroStatus> {
   if ((source.userId ?? "").length === 0 || (source.apiKey ?? "").length === 0) {
     return "error";
   }
-  return (await zoteroWebValidateKey(source.apiKey ?? "")) !== null ? "ok" : "error";
+  return (await zoteroWebValidateKey(source.apiKey ?? "", source.id)) !== null
+    ? "ok"
+    : "error";
 }
 
 /**

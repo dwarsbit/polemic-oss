@@ -40,6 +40,7 @@ export function defaultSettings(): Settings {
     texEditorMode: null,
     bibEditorMode: null,
     onlineLookup: null,
+    errorReports: null,
     ai: null,
     assistantCompileProjects: [],
     assistantMode: null,

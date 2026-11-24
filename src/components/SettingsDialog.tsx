@@ -61,7 +61,8 @@ import { EDITOR_FONTS } from "@/lib/editor-fonts";
 import { SYNTAX_THEMES } from "@/lib/editor-themes";
 import { fuzzyMatch } from "@/lib/fuzzy";
 import { initialsOf, resolveVersionControl, useSettingsStore } from "@/store/settings";
-import { features } from "@/lib/target";
+import { features, isWeb } from "@/lib/target";
+import { reportsBuiltIn } from "@/lib/monitoring";
 import { languageCodes } from "@/lib/languages";
 import { cn } from "cn";
 import { t } from "@scholarkit/i18n";
@@ -262,6 +263,8 @@ export function SettingsDialog({
   const setGrammar = useSettingsStore((s) => s.setGrammar);
   const onlineLookup = useSettingsStore((s) => s.onlineLookup);
   const setOnlineLookup = useSettingsStore((s) => s.setOnlineLookup);
+  const errorReports = useSettingsStore((s) => s.errorReports);
+  const setErrorReports = useSettingsStore((s) => s.setErrorReports);
   const setAutoIncludeNewFiles = useSettingsStore((s) => s.setAutoIncludeNewFiles);
   const authorName = useSettingsStore((s) => s.authorName);
   const authorInitials = useSettingsStore((s) => s.authorInitials);
@@ -489,6 +492,27 @@ export function SettingsDialog({
                     {t("Snapshots")}
                   </ToggleButton>
                 </ToggleButtonGroup>
+              ),
+            },
+          ],
+        },
+        {
+          title: t("Error reports"),
+          // The browser always reports; a build without reports has nothing to turn off.
+          hidden: isWeb || !reportsBuiltIn,
+          rows: [
+            {
+              id: "error-reports",
+              label: t("Send error reports"),
+              description: t(
+                "When something goes wrong, Polemic sends what failed and where in its code, so we can fix it. Never your text, file names or email address.",
+              ),
+              keywords: t("error crash reports privacy diagnostics"),
+              control: (
+                <Switch
+                  checked={errorReports}
+                  onCheckedChange={(v) => void setErrorReports(v)}
+                />
               ),
             },
           ],

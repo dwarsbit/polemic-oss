@@ -129,6 +129,8 @@ pub struct Settings {
     pub bib_editor_mode: Option<String>,
     /// Opt-in: DOI/arXiv import may contact doi.org. Off unless true.
     pub online_lookup: Option<bool>,
+    /// Error reports to Scholarkit (Sentry, through the API). On unless false.
+    pub error_reports: Option<bool>,
     /// The AI provider (quickfix and assistant), configured in settings.
     pub ai: Option<AiSettings>,
     /// Projects (paths) where the assistant may compile on its own.
@@ -150,6 +152,22 @@ pub struct Settings {
     /// Where compiles run: "local" or "polemic" (the account's server).
     /// None means on this computer.
     pub compile_provider: Option<String>,
+}
+
+/// The settings as the webview gets them: with every key replaced by
+/// `secrets::KEPT`. Commands return this, never `Settings`.
+pub struct Shown(Settings);
+
+impl From<Settings> for Shown {
+    fn from(settings: Settings) -> Self {
+        Shown(settings)
+    }
+}
+
+impl Serialize for Shown {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        crate::secrets::redact(&self.0).serialize(serializer)
+    }
 }
 
 /// Managed state holding the in-memory settings.

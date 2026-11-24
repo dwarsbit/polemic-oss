@@ -9,7 +9,7 @@
  */
 
 import type { ZoteroItemData } from "./zotero-convert";
-import { zoteroLocalFetch } from "./tauri";
+import { KEPT_KEY, zoteroCloudFetch, zoteroLocalFetch, type SourceDef } from "./tauri";
 import { t } from "@scholarkit/i18n";
 
 const WEB_BASE = "https://api.zotero.org";
@@ -109,29 +109,46 @@ export async function zoteroLocalCollections(): Promise<ZoteroCollection[]> {
 
 // --- Web (cloud) -----------------------------------------------------------
 
+/** The parts of a cloud source a request needs. */
+type CloudSource = Pick<SourceDef, "id" | "userId" | "apiKey">;
+
+/**
+ * One GET against the Zotero web API. A kept key (desktop) never
+ * reaches the webview, so those requests go through Rust, which adds
+ * it; a key typed in, or the browser build's, is sent from here.
+ */
+async function cloudJson(
+  source: CloudSource,
+  path: string,
+  query: string,
+): Promise<unknown> {
+  const apiKey = source.apiKey ?? "";
+  if (apiKey === KEPT_KEY) {
+    return JSON.parse(await zoteroCloudFetch(source.id, path, query));
+  }
+  const url =
+    path === "keys/current"
+      ? `${WEB_BASE}/keys/current`
+      : `${WEB_BASE}/users/${source.userId ?? ""}/${path}?${query}`;
+  return fetchJson(url, {
+    headers: { "Zotero-API-Key": apiKey, "Zotero-API-Version": "3" },
+  });
+}
+
 export async function zoteroWebSearch(
   query: string,
   collection: string | null,
-  userId: string,
-  apiKey: string,
+  source: CloudSource,
 ): Promise<ZoteroItemData[]> {
   const { params, collection: collectionKey } = itemParams(query, collection, 50);
-  const headers = { "Zotero-API-Key": apiKey, "Zotero-API-Version": "3" };
-  const url =
-    collectionKey === null
-      ? `${WEB_BASE}/users/${userId}/items?${params}`
-      : `${WEB_BASE}/users/${userId}/collections/${collectionKey}/items?${params}`;
-  return toItems(await fetchJson(url, { headers }));
+  const path = collectionKey === null ? "items" : `collections/${collectionKey}/items`;
+  return toItems(await cloudJson(source, path, params));
 }
 
 export async function zoteroWebCollections(
-  userId: string,
-  apiKey: string,
+  source: CloudSource,
 ): Promise<ZoteroCollection[]> {
-  const headers = { "Zotero-API-Key": apiKey, "Zotero-API-Version": "3" };
-  const payload = await fetchJson(`${WEB_BASE}/users/${userId}/collections?v=3`, {
-    headers,
-  });
+  const payload = await cloudJson(source, "collections", "v=3");
   if (!Array.isArray(payload)) return [];
   return payload
     .filter(
@@ -147,14 +164,21 @@ export async function zoteroWebCollections(
 
 /**
  * Validate an API key: the keys endpoint reports the key's user ID,
- * which is also how we fill in the user ID automatically. Returns
- * null when the key is invalid or the network is unavailable.
+ * which is also how we fill in the user ID automatically. A kept key
+ * (KEPT_KEY) is the one saved for `sourceId`. Returns null when the
+ * key is invalid or the network is unavailable.
  */
 export async function zoteroWebValidateKey(
   apiKey: string,
+  sourceId?: string,
 ): Promise<{ userID: string; username: string } | null> {
   try {
-    const payload = (await fetchJson(`${WEB_BASE}/keys/${apiKey.trim()}`)) as {
+    const key = apiKey.trim();
+    const payload = (await cloudJson(
+      { id: sourceId ?? "", userId: null, apiKey: key },
+      "keys/current",
+      "",
+    )) as {
       userID?: number;
       username?: string;
     };

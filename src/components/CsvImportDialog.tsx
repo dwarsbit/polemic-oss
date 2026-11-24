@@ -1,6 +1,5 @@
 import { errorText } from "@/lib/error-text";
 import { useEffect, useMemo, useState } from "react";
-import { open as openFileDialog } from "@tauri-apps/plugin-dialog";
 import { FileUp } from "lucide-react";
 import { features } from "@/lib/target";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,7 @@ import {
 } from "@/lib/csv";
 import { ensurePackages } from "@/lib/editor-figure";
 import { insertAtCursor } from "@/lib/editor-insert";
-import { importAssets, readProjectFile } from "@/lib/tauri";
+import { importAssets, pickImportFiles, readProjectFile } from "@/lib/tauri";
 import { useDialogsStore } from "@/store/dialogs";
 import { useProjectStore } from "@/store/project";
 import { cn } from "cn";
@@ -118,12 +117,13 @@ function CsvImport({ initialPath }: { initialPath: string | null }) {
   async function importFile() {
     if (project === null) return;
     setError(null);
-    const picked = await openFileDialog({
-      multiple: false,
-      title: t("Import data (copied into the project)"),
-      filters: [{ name: t("Data"), extensions: ["csv", "tsv", "txt", "dat"] }],
-    });
-    if (typeof picked !== "string") return;
+    const [picked] =
+      (await pickImportFiles({
+        multiple: false,
+        title: t("Import data (copied into the project)"),
+        filters: [{ name: t("Data"), extensions: ["csv", "tsv", "txt", "dat"] }],
+      })) ?? [];
+    if (picked === undefined) return;
     try {
       const [imported] = await importAssets(project.path, [picked]);
       await useProjectStore.getState().refreshFiles();
