@@ -1,0 +1,239 @@
+/* The account menu. The page's own tokens give the colors, so each app shows it in its own
+   color and in dark mode, and the Scholarkit home page in ink. The fallbacks cover pages
+   without the apps' popover, fill and warning tokens. Plain CSS, so every app's Tailwind
+   setup takes it as it is. */
+
+.account-menu {
+  position: relative;
+  flex: none;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.account-menu[data-place="row"] {
+  flex: auto;
+}
+.account-menu p {
+  margin: 0;
+}
+
+.account-menu-trigger {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.account-menu-trigger:focus-visible,
+.account-menu-row:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* At the foot of a list (Binder's binders on the desktop): a 28px row with the name. */
+.account-menu-row {
+  display: flex;
+  width: 100%;
+  height: 28px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.account-menu-row:hover,
+.account-menu-row[aria-expanded="true"] {
+  background: var(--accent);
+}
+
+.account-menu-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--primary-fill, var(--primary));
+  color: var(--primary-foreground);
+  font-weight: 600;
+  line-height: 1;
+  object-fit: cover;
+}
+.account-menu-avatar[data-empty] {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.account-menu-avatar[data-size="xs"] {
+  width: 20px;
+  height: 20px;
+  font-size: 9px;
+}
+.account-menu-avatar[data-size="sm"] {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+.account-menu-avatar[data-size="md"] {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+.account-menu-avatar[data-size="xs"] svg {
+  width: 12px;
+  height: 12px;
+}
+.account-menu-avatar[data-size="sm"] svg,
+.account-menu-avatar[data-size="md"] svg {
+  width: 16px;
+  height: 16px;
+}
+
+.account-menu-card {
+  position: absolute;
+  z-index: 40;
+  width: 18rem;
+  max-width: calc(100vw - 1rem);
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--popover, var(--card));
+  color: var(--popover-foreground, var(--card-foreground));
+  box-shadow: var(--pop-shadow, 0 8px 24px oklch(0 0 0 / 12%), 0 0 0 1px var(--border));
+  text-align: left;
+}
+.account-menu[data-place="header"] .account-menu-card {
+  top: calc(100% + 6px);
+  right: 0;
+}
+.account-menu[data-place="row"] .account-menu-card {
+  bottom: calc(100% + 6px);
+  left: 0;
+}
+
+.account-menu-grow {
+  min-width: 0;
+  flex: 1;
+}
+.account-menu-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 12px;
+}
+.account-menu-name {
+  font-weight: 500;
+}
+.account-menu-email {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.account-menu-plan {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary-fill, var(--primary)) 10%, transparent);
+  color: var(--tint-foreground, var(--primary));
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.account-menu-sep {
+  margin: 4px 0;
+  border-top: 1px solid var(--border);
+}
+.account-menu-sep[data-first] {
+  margin-top: 0;
+}
+
+.account-menu-usage {
+  display: grid;
+  gap: 10px;
+  padding: 8px 8px 10px;
+}
+.account-menu-meter-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.account-menu-meter-label,
+.account-menu-note,
+.account-menu-hint {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.account-menu-meter-value {
+  font-variant-numeric: tabular-nums;
+}
+.account-menu-meter[data-full] .account-menu-meter-value {
+  color: var(--warning, oklch(66.6% 0.179 58.318));
+}
+.account-menu-track {
+  height: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--muted);
+}
+.account-menu-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary-fill, var(--primary));
+}
+.account-menu-meter[data-full] .account-menu-fill {
+  background: var(--warning, oklch(66.6% 0.179 58.318));
+}
+.account-menu-meter .account-menu-note {
+  margin-top: 4px;
+}
+.account-menu-hint {
+  padding: 4px 8px;
+}
+.account-menu-problem {
+  padding: 4px 8px;
+  color: var(--destructive);
+  font-size: 12px;
+}
+
+.account-menu-item {
+  display: flex;
+  width: 100%;
+  height: 28px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.account-menu-item:hover,
+.account-menu-item:focus-visible {
+  background: var(--accent);
+  outline: none;
+}
+.account-menu-item:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.account-menu-item svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--muted-foreground);
+}

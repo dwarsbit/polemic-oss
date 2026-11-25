@@ -14,11 +14,13 @@ COPY packages/tsconfig packages/tsconfig
 COPY packages/eslint-config/package.json packages/eslint-config/
 COPY packages/i18n/package.json packages/i18n/
 COPY packages/updates/package.json packages/updates/
+COPY packages/account-menu/package.json packages/account-menu/
 COPY packages/monitoring/package.json packages/monitoring/
 COPY apps/polemic/package.json apps/polemic/
 RUN pnpm install --frozen-lockfile --ignore-scripts --filter @scholarkit/polemic...
 COPY packages/i18n packages/i18n
 COPY packages/updates packages/updates
+COPY packages/account-menu packages/account-menu
 COPY packages/monitoring packages/monitoring
 COPY apps/polemic apps/polemic
 # Error reports (src/lib/monitoring.ts); without it the build sends none.

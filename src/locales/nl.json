@@ -3,15 +3,6 @@
   "Unsaved changes": "Niet-opgeslagen wijzigingen",
   "Close without saving": "Sluiten zonder opslaan",
   "Keep open": "Open laten",
-  "Scholarkit account": "Scholarkit-account",
-  "Signed in": "Ingelogd",
-  "Unlimited review links": "Onbeperkt reviewlinks",
-  "{active} of {count} active review links": {
-    "one": "{active} van {count} actieve reviewlink",
-    "other": "{active} van {count} actieve reviewlinks"
-  },
-  "Manage account": "Account beheren",
-  "Sign out": "Uitloggen",
   "Free": "Free",
   "Plus": "Plus",
   "Pro": "Pro",
@@ -34,17 +25,26 @@
   "Open": "Openen",
   "Open…": "Openen…",
   "{plan} plan": "{plan}-abonnement",
+  "Unlimited review links": "Onbeperkt reviewlinks",
+  "{active} of {count} active review links": {
+    "one": "{active} van {count} actieve reviewlink",
+    "other": "{active} van {count} actieve reviewlinks"
+  },
   "Change plan": "Abonnement wijzigen",
   "Checking your account…": "Je account controleren…",
   "Waiting for the browser…": "Wachten op de browser…",
   "Create your account there and choose Allow. Then come back here.": "Maak daar je account en kies Toestaan. Kom dan hier terug.",
   "Sign in there and choose Allow. Then come back here.": "Log daar in en kies Toestaan. Kom dan hier terug.",
   "Cancel": "Annuleren",
+  "Signed in": "Ingelogd",
+  "Manage account": "Account beheren",
   "More account actions": "Meer accountacties",
+  "Sign out": "Uitloggen",
   "Not signed in": "Niet ingelogd",
   "Sign in for review links, grammar checking and cloud compile.": "Log in voor reviewlinks, grammaticacontrole en cloudcompilatie.",
   "Create account": "Account maken",
   "Sign in": "Inloggen",
+  "Scholarkit account": "Scholarkit-account",
   "On your account page you can change your plan, see your signed-in devices, download your data or delete your account.": "Op je accountpagina kun je je abonnement wijzigen, je ingelogde apparaten zien, je gegevens downloaden of je account verwijderen.",
   "Privacy policy": "Privacybeleid",
   "Server": "Server",
@@ -1807,5 +1807,9 @@
   "You have the latest version. Checked {when}.": "Je hebt de nieuwste versie. Gezocht {when}.",
   "today at {time}": "vandaag om {time}",
   "yesterday at {time}": "gisteren om {time}",
-  "on {date} at {time}": "op {date} om {time}"
+  "on {date} at {time}": "op {date} om {time}",
+  "{used} of {limit}": "{used} van {limit}",
+  "{percent}% used": "{percent}% gebruikt",
+  "Upgrade to Plus": "Upgraden naar Plus",
+  "Upgrade to Pro": "Upgraden naar Pro"
 }

@@ -48,9 +48,7 @@ const trigger = () =>
 
 async function openMenu() {
   await act(async () => {
-    trigger()!.dispatchEvent(
-      new PointerEvent("pointerdown", { button: 0, bubbles: true, pointerId: 1 }),
-    );
+    trigger()!.click();
   });
 }
 
@@ -115,6 +113,13 @@ describe("AccountMenu", () => {
     await openMenu();
     await choose("Manage account");
     expect(openUrl).toHaveBeenCalledWith("https://app.scholarkit.app/account");
+  });
+
+  it("offers Plus on Free, on the account page's plan", async () => {
+    await render();
+    await openMenu();
+    await choose("Upgrade to Plus");
+    expect(openUrl).toHaveBeenCalledWith("https://app.scholarkit.app/account#plan");
   });
 
   it("signs out and hides the avatar", async () => {

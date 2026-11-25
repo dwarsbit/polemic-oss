@@ -3,15 +3,6 @@
   "Unsaved changes": "Ungespeicherte Änderungen",
   "Close without saving": "Ohne Speichern schließen",
   "Keep open": "Offen lassen",
-  "Scholarkit account": "Scholarkit-Konto",
-  "Signed in": "Angemeldet",
-  "Unlimited review links": "Unbegrenzt Review-Links",
-  "{active} of {count} active review links": {
-    "one": "{active} von {count} aktiven Review-Link",
-    "other": "{active} von {count} aktiven Review-Links"
-  },
-  "Manage account": "Konto verwalten",
-  "Sign out": "Abmelden",
   "Free": "Free",
   "Plus": "Plus",
   "Pro": "Pro",
@@ -34,17 +25,26 @@
   "Open": "Öffnen",
   "Open…": "Öffnen…",
   "{plan} plan": "{plan}-Tarif",
+  "Unlimited review links": "Unbegrenzt Review-Links",
+  "{active} of {count} active review links": {
+    "one": "{active} von {count} aktiven Review-Link",
+    "other": "{active} von {count} aktiven Review-Links"
+  },
   "Change plan": "Tarif wechseln",
   "Checking your account…": "Dein Konto wird geprüft…",
   "Waiting for the browser…": "Warten auf den Browser…",
   "Create your account there and choose Allow. Then come back here.": "Erstelle dort dein Konto und wähle Erlauben. Komm dann hierher zurück.",
   "Sign in there and choose Allow. Then come back here.": "Melde dich dort an und wähle Erlauben. Komm dann hierher zurück.",
   "Cancel": "Abbrechen",
+  "Signed in": "Angemeldet",
+  "Manage account": "Konto verwalten",
   "More account actions": "Weitere Kontoaktionen",
+  "Sign out": "Abmelden",
   "Not signed in": "Nicht angemeldet",
   "Sign in for review links, grammar checking and cloud compile.": "Melde dich für Review-Links, Grammatikprüfung und Cloud-Kompilierung an.",
   "Create account": "Konto erstellen",
   "Sign in": "Anmelden",
+  "Scholarkit account": "Scholarkit-Konto",
   "On your account page you can change your plan, see your signed-in devices, download your data or delete your account.": "Auf deiner Kontoseite kannst du deinen Tarif wechseln, deine angemeldeten Geräte sehen, deine Daten herunterladen oder dein Konto löschen.",
   "Privacy policy": "Datenschutzerklärung",
   "Server": "Server",
@@ -1807,5 +1807,9 @@
   "You have the latest version. Checked {when}.": "Du hast die neueste Version. Zuletzt gesucht {when}.",
   "today at {time}": "heute um {time}",
   "yesterday at {time}": "gestern um {time}",
-  "on {date} at {time}": "am {date} um {time}"
+  "on {date} at {time}": "am {date} um {time}",
+  "{used} of {limit}": "{used} von {limit}",
+  "{percent}% used": "{percent} % verbraucht",
+  "Upgrade to Plus": "Auf Plus upgraden",
+  "Upgrade to Pro": "Auf Pro upgraden"
 }

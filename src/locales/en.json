@@ -3,15 +3,6 @@
   "Unsaved changes": "Unsaved changes",
   "Close without saving": "Close without saving",
   "Keep open": "Keep open",
-  "Scholarkit account": "Scholarkit account",
-  "Signed in": "Signed in",
-  "Unlimited review links": "Unlimited review links",
-  "{active} of {count} active review links": {
-    "one": "{active} of {count} active review link",
-    "other": "{active} of {count} active review links"
-  },
-  "Manage account": "Manage account",
-  "Sign out": "Sign out",
   "Free": "Free",
   "Plus": "Plus",
   "Pro": "Pro",
@@ -34,17 +25,26 @@
   "Open": "Open",
   "Open…": "Open…",
   "{plan} plan": "{plan} plan",
+  "Unlimited review links": "Unlimited review links",
+  "{active} of {count} active review links": {
+    "one": "{active} of {count} active review link",
+    "other": "{active} of {count} active review links"
+  },
   "Change plan": "Change plan",
   "Checking your account…": "Checking your account…",
   "Waiting for the browser…": "Waiting for the browser…",
   "Create your account there and choose Allow. Then come back here.": "Create your account there and choose Allow. Then come back here.",
   "Sign in there and choose Allow. Then come back here.": "Sign in there and choose Allow. Then come back here.",
   "Cancel": "Cancel",
+  "Signed in": "Signed in",
+  "Manage account": "Manage account",
   "More account actions": "More account actions",
+  "Sign out": "Sign out",
   "Not signed in": "Not signed in",
   "Sign in for review links, grammar checking and cloud compile.": "Sign in for review links, grammar checking and cloud compile.",
   "Create account": "Create account",
   "Sign in": "Sign in",
+  "Scholarkit account": "Scholarkit account",
   "On your account page you can change your plan, see your signed-in devices, download your data or delete your account.": "On your account page you can change your plan, see your signed-in devices, download your data or delete your account.",
   "Privacy policy": "Privacy policy",
   "Server": "Server",
@@ -1807,5 +1807,9 @@
   "You have the latest version. Checked {when}.": "You have the latest version. Checked {when}.",
   "today at {time}": "today at {time}",
   "yesterday at {time}": "yesterday at {time}",
-  "on {date} at {time}": "on {date} at {time}"
+  "on {date} at {time}": "on {date} at {time}",
+  "{used} of {limit}": "{used} of {limit}",
+  "{percent}% used": "{percent}% used",
+  "Upgrade to Plus": "Upgrade to Plus",
+  "Upgrade to Pro": "Upgrade to Pro"
 }
