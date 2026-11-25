@@ -69,6 +69,11 @@ Plain, precise and calm, for researchers and students who write papers.
 | comment | note, annotation | |
 | sign in, sign out (verbs), sign-in (noun) | log in, login | |
 | email | e-mail | |
+| two-step verification | 2FA, two-factor authentication, MFA | The code after the password; "turn on two-step verification" |
+| authenticator app | OTP app, TOTP | The phone app that shows the 6-digit code |
+| recovery code | backup code | One of the ten codes that sign you in once without your phone |
+| passkey | WebAuthn, security key, FIDO | Signs in with a fingerprint, face or device PIN, without a password |
+| trusted browser | remembered device | A browser that skips the code for 30 days |
 | PDF, DOI, arXiv | pdf, Arxiv | |
 | Cmd/Ctrl + S | ⌘S, Command-S | Mac and Windows/Linux together, in `<kbd>` on the web |
 
@@ -169,6 +174,9 @@ What stays English in every language: the names Scholarkit, Polemic, Binder and 
 | learner | lerende | |
 | Settings | Instellingen | |
 | owner, editor, commenter, viewer | eigenaar, bewerker, commentator, lezer | |
+| two-step verification | verificatie in twee stappen | |
+| authenticator app, recovery code | authenticator-app, herstelcode | |
+| passkey | toegangssleutel | |
 
 ### German (Deutsch)
 
@@ -211,6 +219,9 @@ What stays English in every language: the names Scholarkit, Polemic, Binder and 
 | package (LaTeX), float | Paket, Gleitobjekt | |
 | Settings | Einstellungen | |
 | owner, editor, commenter, viewer | Eigentümer:in, Bearbeiten, Kommentieren, Lesen | roles name what the person can do |
+| two-step verification | Bestätigung in zwei Schritten | |
+| authenticator app, recovery code | Authenticator-App, Wiederherstellungscode | |
+| passkey | Passkey | "der Passkey" |
 | commit, push, pull, stage | Committen, Push, Pull, Stagen | Git verbs stay as Git shows them |
 
 ### French (Français)
@@ -253,6 +264,9 @@ What stays English in every language: the names Scholarkit, Polemic, Binder and 
 | binder (the noun) | binder | "ce binder" |
 | Settings | Paramètres | |
 | owner, editor, commenter, viewer | Propriétaire, Peut modifier, Peut commenter, Peut lire | roles name what the person can do |
+| two-step verification | validation en deux étapes | |
+| authenticator app, recovery code | application d’authentification, code de récupération | |
+| passkey | clé d’accès | |
 | commit, push, pull, stage | Commit, Push, Pull, Indexer | Git verbs stay as Git shows them |
 
 ### Spanish (Español)
@@ -297,6 +311,9 @@ What stays English in every language: the names Scholarkit, Polemic, Binder and 
 | binder (the noun) | binder | "este binder" |
 | Settings | Ajustes | |
 | owner, editor, commenter, viewer | propietario, editor, comentador, lector | |
+| two-step verification | verificación en dos pasos | |
+| authenticator app, recovery code | aplicación de autenticación, código de recuperación | |
+| passkey | llave de acceso | |
 | commit, push, pull, stage | commit, push, pull, preparar | Git verbs stay as Git shows them |
 
 ## Checklist
