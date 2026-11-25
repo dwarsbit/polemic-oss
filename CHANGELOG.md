@@ -4,7 +4,9 @@
 
 ### Changed
 
-- In the browser, the Scholarkit icon next to the menu opens your Scholarkit home page. It replaces the **Scholarkit home** link on the list of projects.
+- Polemic's icon at the top left takes you back to your projects, as in Cursive and Binder: in the browser to your Scholarkit home page, in the desktop app to the list of projects. In the browser it replaces the Scholarkit icon and the **Scholarkit home** link on the list of projects.
+- **Settings** is also at the bottom of the bar on the left, as in Cursive and Binder.
+- While Polemic opens, you see its layout with a spinner where your project appears, as in Cursive and Binder. It no longer waits two seconds before your project shows.
 - In the browser, Polemic has its own address: your projects are at `app.scholarkit.app/polemic/projects`. Links and bookmarks to the old address keep working.
 
 ## 0.26.0 (2026-11-24)

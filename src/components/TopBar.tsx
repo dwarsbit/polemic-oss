@@ -16,7 +16,7 @@ import { AccountMenu } from "@/components/AccountMenu";
 import { EditorFaceToggle } from "@/components/EditorFaceToggle";
 import { PresenceAvatars } from "@/components/PresenceAvatars";
 import { SharePopover } from "@/components/SharePopover";
-import { ScholarkitHome } from "@/components/ScholarkitHome";
+import { HomeIcon } from "@/components/HomeIcon";
 import { WebAppMenu } from "@/components/WebAppMenu";
 import {
   STOPLIGHT_WIDTH,
@@ -39,8 +39,8 @@ const REVEAL_LABEL = isMac
     : t("Show in file manager");
 
 /**
- * The persistent window header: the project menu (rename, reveal,
- * switch) on the left, the Visual/Code switch in the center, and the
+ * The persistent window header: Polemic's icon (back to the projects
+ * overview) and the project menu (rename, reveal, switch) on the left, the Visual/Code switch in the center, and the
  * preview, auto-compile and Compile controls on the right, then Share
  * and the account's avatar when signed in.
  */
@@ -108,12 +108,10 @@ export function TopBar() {
       }}
     >
       <div className="flex min-w-0 items-center gap-3 pl-3">
-        {isWeb && (
-          <div className="flex flex-none items-center gap-1">
-            <ScholarkitHome />
-            <WebAppMenu />
-          </div>
-        )}
+        <div className="flex flex-none items-center gap-1">
+          <HomeIcon onClose={project ? switchProject : undefined} />
+          {isWeb && <WebAppMenu />}
+        </div>
         {showProjectControls && (
           <div className="flex min-w-0 items-center gap-1.5">
             {renaming ? (

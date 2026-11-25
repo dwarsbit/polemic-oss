@@ -629,22 +629,6 @@ html.caret-style-block .cm-editor .cm-focused > .cm-scroller > .cm-cursorLayer {
   animation: none !important;
 }
 
-/* Loading screen: indeterminate progress bar fill sliding through the
-   track (positioned absolutely within the rounded track). */
-@keyframes loading-bar {
-  0% {
-    left: -33%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-.loading-bar-fill {
-  position: absolute;
-  animation: loading-bar 1.4s ease-in-out infinite;
-}
-
 /* ------------------------------------------------------------------ */
 /* Visual (.tex) editor — the rich text face */
 

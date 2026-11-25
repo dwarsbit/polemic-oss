@@ -619,6 +619,7 @@
   "{days} d ago": "{days} d ago",
   "Refresh history": "Refresh history",
   "No commits yet.": "No commits yet.",
+  "Scholarkit home": "Scholarkit home",
   "The registry's answer contained no entry.": "The registry's answer contained no entry.",
   "The lookup failed.": "The lookup failed.",
   "Added {key} to {target}.": "Added {key} to {target}.",
@@ -715,6 +716,7 @@
   "This folder is in {drive}, which syncs it too. Two syncs on the same files can get in each other's way, so use one or the other: move the project out of {drive2}, or stop sharing it.": "This folder is in {drive}, which syncs it too. Two syncs on the same files can get in each other's way, so use one or the other: move the project out of {drive2}, or stop sharing it.",
   "This folder has a Git remote, and other people work on this project too. Their changes already arrive here, so pulling them through Git adds nothing. If a Git merge leaves conflict markers, they reach everyone, so let one person push to the remote.": "This folder has a Git remote, and other people work on this project too. Their changes already arrive here, so pulling them through Git adds nothing. If a Git merge leaves conflict markers, they reach everyone, so let one person push to the remote.",
   "Got it": "Got it",
+  "Opening Polemic…": "Opening Polemic…",
   "The environment name may only use letters.": "The environment name may only use letters.",
   "\"{name}\" is already declared.": "\"{name}\" is already declared.",
   "New theorem environment": "New theorem environment",
@@ -835,7 +837,6 @@
   "Document": "Document",
   "Before the first heading": "Before the first heading",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.",
-  "Scholarkit home": "Scholarkit home",
   "Replace {count} matches": {
     "one": "Replace {count} match",
     "other": "Replace {count} matches"

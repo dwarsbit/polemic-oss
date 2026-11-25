@@ -632,6 +632,7 @@
   "{days} d ago": "il y a {days} j",
   "Refresh history": "Actualiser l’historique",
   "No commits yet.": "Pas encore de commits.",
+  "Scholarkit home": "Accueil Scholarkit",
   "The registry's answer contained no entry.": "La réponse du registre ne contenait aucune entrée.",
   "The lookup failed.": "La recherche a échoué.",
   "Added {key} to {target}.": "{key} ajoutée à {target}.",
@@ -734,6 +735,7 @@
   "This folder is in {drive}, which syncs it too. Two syncs on the same files can get in each other's way, so use one or the other: move the project out of {drive2}, or stop sharing it.": "Ce dossier est dans {drive}, qui le synchronise aussi. Deux synchronisations sur les mêmes fichiers peuvent se gêner, utilisez donc l’une ou l’autre : sortez le projet de {drive2}, ou arrêtez de le partager.",
   "This folder has a Git remote, and other people work on this project too. Their changes already arrive here, so pulling them through Git adds nothing. If a Git merge leaves conflict markers, they reach everyone, so let one person push to the remote.": "Ce dossier a un dépôt distant git, et d’autres personnes travaillent aussi sur ce projet. Leurs modifications arrivent déjà ici, les récupérer par git n’apporte donc rien. Si une fusion git laisse des marqueurs de conflit, ils atteignent tout le monde : laissez une seule personne pousser vers le dépôt distant.",
   "Got it": "Compris",
+  "Opening Polemic…": "Ouverture de Polemic…",
   "The environment name may only use letters.": "Le nom de l’environnement ne peut contenir que des lettres.",
   "\"{name}\" is already declared.": "\"{name}\" est déjà déclaré.",
   "New theorem environment": "Nouvel environnement de théorème",
@@ -854,7 +856,6 @@
   "Document": "Document",
   "Before the first heading": "Avant le premier titre",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Compté comme texcount : les mots du corps du document (texte, titres, légendes, notes de bas de page) ; les commandes, les maths, les commentaires et la bibliographie sont exclus. Le compte d’une section inclut ses sous-sections.",
-  "Scholarkit home": "Accueil Scholarkit",
   "Replace {count} matches": {
     "many": "Remplacer {count} résultats",
     "one": "Remplacer {count} résultat",

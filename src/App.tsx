@@ -72,8 +72,6 @@ function App() {
   const hasProject = useProjectStore((s) => s.project !== null);
   const openProject = useProjectStore((s) => s.openProject);
   const [startupDone, setStartupDone] = useState(false);
-  // Keep the splash up for at least 2s so it never flashes on fast startups.
-  const [splashMinElapsed, setSplashMinElapsed] = useState(false);
   // macOS fullscreen ignores the custom traffic-light position: the
   // lights sit in the auto-hiding menu bar zone above the app, so the
   // layout shifts down by that zone's height while fullscreen.
@@ -142,11 +140,6 @@ function App() {
       cancelled = true;
     };
   }, [openProject]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setSplashMinElapsed(true), 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Track macOS fullscreen for the traffic-light padding (all modes).
   useEffect(() => {
@@ -467,7 +460,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {!startupDone || !splashMinElapsed ? (
+      {!startupDone ? (
         <LoadingScreen />
       ) : (
         <div

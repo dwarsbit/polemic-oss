@@ -632,6 +632,7 @@
   "{days} d ago": "hace {days} d",
   "Refresh history": "Actualizar historial",
   "No commits yet.": "Aún no hay commits.",
+  "Scholarkit home": "Inicio de Scholarkit",
   "The registry's answer contained no entry.": "La respuesta del registro no contenía ninguna entrada.",
   "The lookup failed.": "La búsqueda ha fallado.",
   "Added {key} to {target}.": "Se ha añadido {key} a {target}.",
@@ -734,6 +735,7 @@
   "This folder is in {drive}, which syncs it too. Two syncs on the same files can get in each other's way, so use one or the other: move the project out of {drive2}, or stop sharing it.": "Esta carpeta está en {drive}, que también la sincroniza. Dos sincronizaciones sobre los mismos archivos pueden estorbarse, así que usa una u otra: saca el proyecto de {drive2} o deja de compartirlo.",
   "This folder has a Git remote, and other people work on this project too. Their changes already arrive here, so pulling them through Git adds nothing. If a Git merge leaves conflict markers, they reach everyone, so let one person push to the remote.": "Esta carpeta tiene un remoto de Git, y otras personas también trabajan en este proyecto. Sus cambios ya llegan aquí, así que traerlos con Git no añade nada. Si una fusión de Git deja marcadores de conflicto, llegan a todos, así que deja que solo una persona haga push al remoto.",
   "Got it": "Entendido",
+  "Opening Polemic…": "Abriendo Polemic…",
   "The environment name may only use letters.": "El nombre del entorno solo puede usar letras.",
   "\"{name}\" is already declared.": "\"{name}\" ya está declarado.",
   "New theorem environment": "Entorno de teorema nuevo",
@@ -854,7 +856,6 @@
   "Document": "Documento",
   "Before the first heading": "Antes del primer encabezado",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Contado como texcount: palabras del cuerpo del documento (texto, encabezados, pies, notas al pie); se excluyen los comandos, las matemáticas, los comentarios y la bibliografía. Los recuentos de las secciones incluyen sus subsecciones.",
-  "Scholarkit home": "Inicio de Scholarkit",
   "Replace {count} matches": {
     "many": "¿Reemplazar {count} coincidencias",
     "one": "¿Reemplazar {count} coincidencia",

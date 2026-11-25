@@ -619,6 +619,7 @@
   "{days} d ago": "vor {days} d",
   "Refresh history": "Verlauf aktualisieren",
   "No commits yet.": "Noch keine Commits.",
+  "Scholarkit home": "Scholarkit-Startseite",
   "The registry's answer contained no entry.": "Die Antwort des Registers enthielt keinen Eintrag.",
   "The lookup failed.": "Die Suche ist fehlgeschlagen.",
   "Added {key} to {target}.": "{key} zu {target} hinzugefügt.",
@@ -715,6 +716,7 @@
   "This folder is in {drive}, which syncs it too. Two syncs on the same files can get in each other's way, so use one or the other: move the project out of {drive2}, or stop sharing it.": "Dieser Ordner liegt in {drive}, das ihn ebenfalls synchronisiert. Zwei Synchronisierungen auf denselben Dateien können sich in die Quere kommen, verwende also nur eine: verschieb das Projekt aus {drive2} heraus, oder hör auf, es zu teilen.",
   "This folder has a Git remote, and other people work on this project too. Their changes already arrive here, so pulling them through Git adds nothing. If a Git merge leaves conflict markers, they reach everyone, so let one person push to the remote.": "Dieser Ordner hat ein Git-Remote, und andere arbeiten auch an diesem Projekt. Ihre Änderungen kommen schon hier an, sie über Git zu pullen bringt also nichts. Wenn ein Git-Merge Konfliktmarkierungen hinterlässt, erreichen sie alle, lass also nur eine Person zum Remote pushen.",
   "Got it": "Verstanden",
+  "Opening Polemic…": "Polemic wird geöffnet…",
   "The environment name may only use letters.": "Der Name der Umgebung darf nur Buchstaben enthalten.",
   "\"{name}\" is already declared.": "\"{name}\" ist bereits deklariert.",
   "New theorem environment": "Neue Theorem-Umgebung",
@@ -835,7 +837,6 @@
   "Document": "Dokument",
   "Before the first heading": "Vor der ersten Überschrift",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Gezählt wie texcount: Wörter im Hauptteil des Dokuments (Text, Überschriften, Beschriftungen, Fußnoten); Befehle, Mathematik, Kommentare und das Literaturverzeichnis zählen nicht. Abschnittszahlen enthalten ihre Unterabschnitte.",
-  "Scholarkit home": "Scholarkit-Startseite",
   "Replace {count} matches": {
     "one": "{count} Treffer ersetzen",
     "other": "{count} Treffer ersetzen"

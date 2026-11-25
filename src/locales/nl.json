@@ -619,6 +619,7 @@
   "{days} d ago": "{days} d geleden",
   "Refresh history": "Geschiedenis vernieuwen",
   "No commits yet.": "Nog geen commits.",
+  "Scholarkit home": "Scholarkit-startpagina",
   "The registry's answer contained no entry.": "Het antwoord van het register bevatte geen entry.",
   "The lookup failed.": "Het opzoeken is mislukt.",
   "Added {key} to {target}.": "{key} toegevoegd aan {target}.",
@@ -715,6 +716,7 @@
   "This folder is in {drive}, which syncs it too. Two syncs on the same files can get in each other's way, so use one or the other: move the project out of {drive2}, or stop sharing it.": "Deze map staat in {drive}, die hem ook synchroniseert. Twee synchronisaties op dezelfde bestanden kunnen elkaar in de weg zitten, dus gebruik de een of de ander: verplaats het project uit {drive2}, of stop met delen.",
   "This folder has a Git remote, and other people work on this project too. Their changes already arrive here, so pulling them through Git adds nothing. If a Git merge leaves conflict markers, they reach everyone, so let one person push to the remote.": "Deze map heeft een Git-remote en er werken ook anderen aan dit project. Hun wijzigingen komen hier al binnen, dus ze via Git pullen voegt niets toe. Als een Git-merge conflictmarkeringen achterlaat, krijgt iedereen die, dus laat één persoon naar de remote pushen.",
   "Got it": "Begrepen",
+  "Opening Polemic…": "Polemic openen…",
   "The environment name may only use letters.": "De naam van de omgeving mag alleen letters bevatten.",
   "\"{name}\" is already declared.": "\"{name}\" is al gedeclareerd.",
   "New theorem environment": "Nieuwe stellingomgeving",
@@ -835,7 +837,6 @@
   "Document": "Document",
   "Before the first heading": "Voor de eerste kop",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Geteld zoals texcount: woorden in de hoofdtekst van het document (tekst, koppen, bijschriften, voetnoten); commando’s, wiskunde, commentaar en de literatuurlijst tellen niet mee. Sectietellingen bevatten hun subsecties.",
-  "Scholarkit home": "Scholarkit-startpagina",
   "Replace {count} matches": {
     "one": "{count} treffer vervangen",
     "other": "{count} treffers vervangen"

@@ -10,12 +10,14 @@ import {
   Package,
   ScrollText,
   Search,
+  Settings,
   Sigma,
   Tags,
 } from "lucide-react";
 import type { IssuesTool } from "@/components/IssuesPanel";
 import type { LeftTab } from "@/components/Sidebar";
 import { useDialogsStore } from "@/store/dialogs";
+import { useSettingsStore } from "@/store/settings";
 import { formatShortcut } from "@/lib/platform";
 import { cn } from "cn";
 import { t } from "@scholarkit/i18n";
@@ -74,7 +76,7 @@ export function RailButton({
 }
 
 /** The icon strip on the left window edge: navigator tabs above, bottom-dock
- *  tools below. Both act JetBrains-style: clicking the active icon of an
+ *  tools and Settings below. Both act JetBrains-style: clicking the active icon of an
  *  open dock hides it; clicking another icon switches and shows it. */
 export function LeftRail({
   navigatorTab,
@@ -139,6 +141,15 @@ export function LeftRail({
             </RailButton>
           );
         })}
+        {/* Settings at the foot, as in Cursive and Binder. */}
+        <div className="my-1 w-5 border-t" />
+        <RailButton
+          label={t("Settings")}
+          active={false}
+          onClick={() => useSettingsStore.getState().setSettingsDialogOpen(true)}
+        >
+          <Settings className="size-4" />
+        </RailButton>
       </div>
     </nav>
   );

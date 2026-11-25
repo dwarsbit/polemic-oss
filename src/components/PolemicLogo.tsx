@@ -1,4 +1,36 @@
 import { t } from "@scholarkit/i18n";
+
+/** Polemic's app icon alone: the white page with a slash on the plum tile. */
+export function PolemicMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="63.833 0 255.333 255.333" aria-hidden className={className}>
+      <rect
+        x={63.833}
+        y={0}
+        width={255.333}
+        height={255.333}
+        rx={57.45}
+        fill="#623E64"
+      />
+      <rect
+        x={112.347}
+        y={48.513}
+        width={158.307}
+        height={158.307}
+        rx={26.596}
+        fill="#FAFAFA"
+      />
+      <path
+        d="M166.22 85.54 L216.78 169.8"
+        stroke="#623E64"
+        strokeWidth={17.873}
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
 /**
  * App icon + name, vertical: the Sheet app icon (a white page with a slash on
  * the primary tile) centred above "Polemic" in DM Sans Bold (outlined). The
