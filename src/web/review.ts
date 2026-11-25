@@ -146,6 +146,31 @@ function checkedUrl(url: unknown): string {
   return parsed.href;
 }
 
+/**
+ * The link to hand out: the server's short address for it (on its sites host, such as
+ * scholark.it/<code>) when it sent one for this very link, else the review page.
+ */
+export function shortOr(long: string, shortUrl: unknown): string {
+  if (typeof shortUrl !== "string") return long;
+  try {
+    const short = new URL(shortUrl);
+    const code = new URL(long).pathname.slice("/r/".length);
+    if (
+      /^https?:$/.test(short.protocol) &&
+      /^[A-Za-z0-9]{10}$/.test(code) &&
+      short.pathname === `/${code}` &&
+      !short.search &&
+      !short.hash &&
+      !short.username &&
+      !short.password
+    )
+      return short.href;
+  } catch {
+    // Not an address: hand out the review page.
+  }
+  return long;
+}
+
 export const reviewCommands: Record<string, (args: Args) => unknown> = {
   share_status: (args): ShareStatus => {
     const open = project(args);
@@ -179,11 +204,15 @@ export const reviewCommands: Record<string, (args: Args) => unknown> = {
 
   share_create_link: async (args) => {
     const open = project(args);
-    const made = await call<ReviewLink>(`/api/projects/${open.id}/links`, {
-      method: "POST",
-      json: { role: args.role, expiresInDays: args.expiresInDays ?? undefined },
-    });
-    return { ...made, url: checkedUrl(made.url) };
+    const made = await call<ReviewLink & { shortUrl?: string }>(
+      `/api/projects/${open.id}/links`,
+      {
+        method: "POST",
+        json: { role: args.role, expiresInDays: args.expiresInDays ?? undefined },
+      },
+    );
+    const { shortUrl, ...link } = made;
+    return { ...link, url: shortOr(checkedUrl(made.url), shortUrl) };
   },
 
   share_delete_link: (args) =>

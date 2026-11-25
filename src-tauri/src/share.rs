@@ -471,6 +471,26 @@ pub struct ReviewLink {
     /// Only when the link was just made: the server keeps the token's hash.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+    /// The same link at the server's short address (scholark.it/<code>), when it has one.
+    /// create_link hands it out as `url` instead; it never reaches the interface itself.
+    #[serde(default, skip_serializing)]
+    pub short_url: Option<String>,
+}
+
+/// The short address for a review link when it is the server's short form of that very link:
+/// http(s), its path the link's 10-character code and nothing else.
+fn short_link(long: &url::Url, short: &str) -> Option<String> {
+    let code = long.path().strip_prefix("/r/")?;
+    if code.len() != 10 || !code.chars().all(|c| c.is_ascii_alphanumeric()) {
+        return None;
+    }
+    let short = url::Url::parse(short).ok()?;
+    let plain = matches!(short.scheme(), "https" | "http")
+        && short.username().is_empty()
+        && short.password().is_none()
+        && short.query().is_none()
+        && short.fragment().is_none();
+    (plain && short.path() == format!("/{code}")).then(|| short.to_string())
 }
 
 fn active_by_default() -> bool {
@@ -926,7 +946,7 @@ impl<'a> Session<'a> {
         if let Some(days) = expires_in_days {
             body["expiresInDays"] = days.into();
         }
-        let link: ReviewLink = self
+        let mut link: ReviewLink = self
             .json(
                 self.client
                     .post(self.url(&format!("/api/projects/{id}/links")))
@@ -945,6 +965,13 @@ impl<'a> Session<'a> {
         let link_url = url::Url::parse(url).map_err(|_| format!("unexpected link: {url}"))?;
         if link_url.origin() != server_origin || !link_url.path().starts_with("/r/") {
             return Err(format!("unexpected link: {url}").into());
+        }
+        if let Some(short) = link
+            .short_url
+            .take()
+            .and_then(|s| short_link(&link_url, &s))
+        {
+            link.url = Some(short);
         }
         Ok(link)
     }
@@ -1554,6 +1581,26 @@ mod tests {
             .chunks(2)
             .map(|pair| u8::from_str_radix(&pair.iter().collect::<String>(), 16).unwrap())
             .collect()
+    }
+
+    #[test]
+    fn hands_out_the_short_address_of_the_same_link_only() {
+        let long = url::Url::parse("https://app.scholarkit.app/r/Xk7f3q2Pzm").unwrap();
+        assert_eq!(
+            short_link(&long, "https://scholark.it/Xk7f3q2Pzm").as_deref(),
+            Some("https://scholark.it/Xk7f3q2Pzm")
+        );
+        for other in [
+            "https://scholark.it/Ab3dE5gH7j",
+            "https://scholark.it/Xk7f3q2Pzm?x=1",
+            "https://user@scholark.it/Xk7f3q2Pzm",
+            "file:///Xk7f3q2Pzm",
+            "not a url",
+        ] {
+            assert_eq!(short_link(&long, other), None, "{other}");
+        }
+        let older = url::Url::parse(&format!("https://app.test/r/{}", "x".repeat(43))).unwrap();
+        assert_eq!(short_link(&older, "https://scholark.it/x"), None);
     }
 
     #[test]

@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Review links are short, such as `scholark.it/k3Rq8ZtW2m`. Links you made before keep working.
 - Polemic's icon at the top left takes you back to your projects, as in Cursive and Binder: in the browser to your Scholarkit home page, in the desktop app to the list of projects. In the browser it replaces the Scholarkit icon and the **Scholarkit home** link on the list of projects.
 - **Settings** is also at the bottom of the bar on the left, as in Cursive and Binder.
 - While Polemic opens, you see its layout with a spinner where your project appears, as in Cursive and Binder. It no longer waits two seconds before your project shows.
