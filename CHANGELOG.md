@@ -10,6 +10,7 @@
 - While Polemic opens, you see its layout with a spinner where your project appears, as in Cursive and Binder. It no longer waits two seconds before your project shows.
 - In the browser, Polemic has its own address: your projects are at `app.scholarkit.app/polemic/projects`. Links and bookmarks to the old address keep working.
 - The menu under your avatar is the same in Polemic, Cursive, Binder and on your Scholarkit home page, with **Upgrade to Plus** on Free and **Upgrade to Pro** on Plus. In the browser, **Manage account** opens your account page in the same tab.
+- Starting a project looks the same in Polemic, Cursive and Binder: one card with the name, templates as tiles and **Create**. In the browser the page only makes projects; your projects are on your Scholarkit home page, where you can also rename and delete them. In the desktop app, your recent projects stay under the card. Your storage and cloud compile use are in the menu under your avatar.
 
 ## 0.26.0 (2026-11-24)
 
