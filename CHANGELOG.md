@@ -8,6 +8,8 @@
 
 ### Changed
 
+- Inviting people to a project comes with Pro. The people you invite can be on any plan, Free included. When you move to Plus or Free, the people in your projects keep their access, but you can't invite anyone new; **Share** shows **See plans** instead.
+- Plus has unlimited active review links, as Pro does.
 - The symbol categories in **Symbols** and the host in **Publish…** open Polemic's own list instead of your system's, like the other dropdowns.
 
 ## 0.26.1 (2026-11-26)

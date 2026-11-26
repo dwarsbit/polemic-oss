@@ -51,9 +51,11 @@ export function SharePeople({ share }: { share: Share }) {
       <h3 className="text-sm font-medium">{t("People")}</h3>
       <InviteForm share={share} />
       {empty ? (
-        <p className="text-xs text-muted-foreground">
-          {t("Invite co-authors to edit, or a supervisor to comment.")}
-        </p>
+        people.canInvite !== false && (
+          <p className="text-xs text-muted-foreground">
+            {t("Invite co-authors to edit, or a supervisor to comment.")}
+          </p>
+        )
       ) : (
         <ul className="space-y-2.5 pt-1">
           {me && (

@@ -1345,6 +1345,8 @@ export interface ProjectInvite {
 export interface ProjectMembers {
   members: ProjectMember[];
   invites: ProjectInvite[];
+  /** For the owner: whether their plan lets them invite people (Pro). Missing: yes. */
+  canInvite?: boolean;
 }
 
 /** The shared project as the account sees it: its role and owner. */

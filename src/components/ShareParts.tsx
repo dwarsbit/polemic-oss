@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/select";
 import { STEP_LABELS, formatShareDate, type Share } from "@/hooks/useShare";
 import { shareInvite, shareMembers, type InviteRole } from "@/lib/tauri";
-import { features } from "@/lib/target";
+import { features, isWeb } from "@/lib/target";
+import { useAccountStore } from "@/store/account";
 import { useLinkStore } from "@/store/link";
 import { useSettingsStore } from "@/store/settings";
 import { cn } from "cn";
@@ -51,7 +52,38 @@ export function useCopied<T = true>(): [T | null, (what: T) => void] {
 }
 
 /** Invites someone by email, to edit or to comment. */
+/** On Free the owner can't invite anyone new: the plans instead of the form. Members already in stay. */
+function InviteLocked({ share }: { share: Share }) {
+  const account = useAccountStore((s) => s.status);
+  const openPlans = () => {
+    if (isWeb) window.location.assign("/account#plan");
+    else if (account) void openUrl(`${account.server}/account#plan`);
+  };
+  return (
+    <button
+      type="button"
+      className="flex w-full items-start gap-1.5 rounded-md border border-tint-edge bg-muted px-2 py-1.5 text-left text-xs text-tint-foreground"
+      onClick={openPlans}
+    >
+      <Sparkles className="mt-px size-3 shrink-0" aria-hidden />
+      <span>
+        {share.people && share.people.members.length > 0
+          ? t(
+              "The people in this project keep their access. To invite someone new, move to Pro.",
+            )
+          : t("Sharing comes with Pro. The people you invite can be on any plan.")}{" "}
+        <span className="font-medium">{t("See plans")}</span>
+      </span>
+    </button>
+  );
+}
+
 export function InviteForm({ share }: { share: Share }) {
+  if (share.people?.canInvite === false) return <InviteLocked share={share} />;
+  return <InviteFields share={share} />;
+}
+
+function InviteFields({ share }: { share: Share }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<InviteRole>("editor");
   const [busy, setBusy] = useState(false);

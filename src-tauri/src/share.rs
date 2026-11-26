@@ -535,6 +535,9 @@ pub struct ProjectInvite {
 pub struct Members {
     pub members: Vec<ProjectMember>,
     pub invites: Vec<ProjectInvite>,
+    /// For the owner: whether their plan lets them invite people (Pro). Missing from older servers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub can_invite: Option<bool>,
 }
 
 /// A snapshot of the project's history (contracts' `historySnapshot`):
