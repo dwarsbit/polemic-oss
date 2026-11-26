@@ -2,6 +2,7 @@ import { Channel, invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type { FolderEntry } from "@/lib/project-doc";
 import type { PublishedSnapshot } from "@/lib/share";
 import { t } from "@scholarkit/i18n";
+import { errorFromServer } from "@scholarkit/assistant";
 import { isWeb } from "@/lib/target";
 
 /**
@@ -136,9 +137,13 @@ export interface Settings {
   ai: AiSettings | null;
   /** Projects (paths) where the assistant may compile on its own. */
   assistantCompileProjects: string[];
-  /** "syntax" or "prose"; null means "syntax". Older versions saved
-   *  "latex" (read as "syntax") and "both" (read as "prose"). */
+  /** "latex" or "writing"; null means "latex". Older versions saved
+   *  "syntax" (read as "latex"), "prose" and "both" (read as "writing"). */
   assistantMode: string | null;
+  /** "scholarkit" or "own"; null: the own provider once set up. */
+  assistantSource?: string | null;
+  /** "floating" or "docked"; null means "floating". */
+  assistantLayout?: string | null;
   grammar: GrammarSettings;
   /** The Scholarkit server for the account; null means app.scholarkit.app. */
   accountServer: string | null;
@@ -263,6 +268,30 @@ export function aiAgentTurn(
     if (event.kind === "text") onText(event.delta);
   };
   return invoke("ai_agent_turn", { args, onEvent });
+}
+
+/** One assistant turn on Scholarkit's model (Plus and Pro), through the
+ *  account's server. Rejects with an AssistantError that says why, such
+ *  as signed out or the month used up; "cancelled" after `aiCancel`. */
+export async function assistantTurn(
+  args: { messages: AgentMessage[]; tools: AgentToolSpec[]; requestId: number },
+  onText: (delta: string) => void,
+): Promise<Extract<AgentMessage, { role: "assistant" }>> {
+  const onEvent = new Channel<AgentEvent>();
+  onEvent.onmessage = (event) => {
+    if (event.kind === "text") onText(event.delta);
+  };
+  try {
+    return await invoke("assistant_turn", { args, onEvent });
+  } catch (e) {
+    throw assistantNotice(e);
+  }
+}
+
+/** The shell's "assistant:<code>:<message>" as the error the panel says. */
+export function assistantNotice(e: unknown): unknown {
+  const notice = typeof e === "string" ? /^assistant:([a-z_]+):(.*)$/s.exec(e) : null;
+  return notice ? errorFromServer(notice[1], notice[2]) : e;
 }
 
 export function aiCancel(requestId: number): Promise<void> {
@@ -534,7 +563,9 @@ export interface EditorPreferences {
   authorName?: string;
   /** Empty clears it. */
   authorInitials?: string;
-  assistantMode?: "syntax" | "prose";
+  assistantMode?: "latex" | "writing";
+  assistantSource?: "scholarkit" | "own";
+  assistantLayout?: "floating" | "docked";
 }
 
 export function updatePreferences(prefs: EditorPreferences): Promise<Settings> {
@@ -1168,6 +1199,11 @@ export interface AccountUsage {
   compile: { usedPercent: number; resetsAt: string };
   /** limit is null: unlimited. */
   reviewLinks: { count: number; limit: number | null };
+  /** Left out by servers from before plans had names. */
+  plan?: "free" | "plus" | "pro";
+  /** The assistant on our model this month; null on Free. Left out by
+   *  servers from before the assistant. */
+  assistant?: { usedPercent: number; resetsAt: string } | null;
 }
 
 /** null when signed out, or from a server without plans. */

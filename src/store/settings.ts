@@ -14,17 +14,34 @@ import {
   type Settings,
 } from "@/lib/tauri";
 import { features } from "@/lib/target";
+import { aiConfigured } from "@/lib/ai-providers";
+import { DEFAULT_LAYOUT, type AssistantLayout } from "@scholarkit/assistant";
 import { setErrorReports } from "@/lib/monitoring";
 import { applyTheme, type ThemePreference } from "@/lib/theme";
 import { usePreviewStore } from "@/store/preview";
 
-/** What the assistant helps with: LaTeX only (prose changes are
- *  flagged), prose only, or both. */
-export type AssistantMode = "syntax" | "prose";
+/** What the assistant helps with: the LaTeX (changes to the text are
+ *  flagged), or the writing (changes may only reword). */
+export type AssistantMode = "latex" | "writing";
 
-/** The saved mode; older versions saved "latex" and "both". */
+/** The saved mode; older versions saved "syntax", "prose" and "both". */
 export function readAssistantMode(saved: string | null): AssistantMode {
-  return saved === "prose" || saved === "both" ? "prose" : "syntax";
+  return saved === "writing" || saved === "prose" || saved === "both"
+    ? "writing"
+    : "latex";
+}
+
+/** Where the answers come from: our model (Plus and Pro) or the provider set up in settings. */
+export type AssistantSource = "scholarkit" | "own";
+
+/** The saved source; with none chosen, the own provider once one is set up. */
+export function readAssistantSource(
+  saved: string | null | undefined,
+  ai: AiSettings | null,
+): AssistantSource {
+  if (!features.ownAiProvider) return "scholarkit";
+  if (saved === "scholarkit" || saved === "own") return saved;
+  return aiConfigured(ai) ? "own" : "scholarkit";
 }
 
 const DEFAULT_GRAMMAR: GrammarSettings = {
@@ -75,6 +92,9 @@ interface SettingsState {
   /** Projects (paths) where the assistant may compile on its own. */
   assistantCompileProjects: string[];
   assistantMode: AssistantMode;
+  /** As saved: null until the user picks one (see readAssistantSource). */
+  assistantSource: AssistantSource | null;
+  assistantLayout: AssistantLayout;
   grammar: GrammarSettings;
   hydrate: (settings: Settings) => void;
   setTheme: (theme: ThemePreference) => Promise<void>;
@@ -108,6 +128,8 @@ interface SettingsState {
   /** Save the AI provider settings. */
   setAi: (ai: AiSettings) => Promise<void>;
   setAssistantMode: (mode: AssistantMode) => Promise<void>;
+  setAssistantSource: (source: AssistantSource) => Promise<void>;
+  setAssistantLayout: (layout: AssistantLayout) => Promise<void>;
   /** Allow or revoke the assistant compiling on its own in a project. */
   setAssistantCompile: (projectPath: string, allowed: boolean) => Promise<void>;
   /** Persist first: the backend rejects unsafe LanguageTool URLs. */
@@ -151,7 +173,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   panelLayout: null,
   ai: null,
   assistantCompileProjects: [],
-  assistantMode: "syntax",
+  assistantMode: "latex",
+  assistantSource: null,
+  assistantLayout: DEFAULT_LAYOUT,
   grammar: DEFAULT_GRAMMAR,
   hydrate: (settings) =>
     set({
@@ -191,6 +215,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       ai: settings.ai,
       assistantCompileProjects: settings.assistantCompileProjects ?? [],
       assistantMode: readAssistantMode(settings.assistantMode),
+      assistantSource:
+        settings.assistantSource === "scholarkit" || settings.assistantSource === "own"
+          ? settings.assistantSource
+          : null,
+      assistantLayout: settings.assistantLayout === "docked" ? "docked" : "floating",
       grammar: { ...DEFAULT_GRAMMAR, ...settings.grammar },
     }),
   setTheme: async (theme) => {
@@ -307,6 +336,14 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   setAssistantMode: async (mode) => {
     set({ assistantMode: mode });
     await updatePreferences({ assistantMode: mode });
+  },
+  setAssistantSource: async (source) => {
+    set({ assistantSource: source });
+    await updatePreferences({ assistantSource: source });
+  },
+  setAssistantLayout: async (layout) => {
+    set({ assistantLayout: layout });
+    await updatePreferences({ assistantLayout: layout });
   },
   setAssistantCompile: async (projectPath, allowed) => {
     const saved = await setAssistantCompile(projectPath, allowed);

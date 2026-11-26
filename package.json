@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "typecheck": "tsc",
     "test": "vitest run",
-    "i18n": "scholarkit-i18n extract src node_modules/@scholarkit/updates/src node_modules/@scholarkit/account-menu/src node_modules/@scholarkit/collab/src src/locales",
+    "i18n": "scholarkit-i18n extract src node_modules/@scholarkit/updates/src node_modules/@scholarkit/account-menu/src node_modules/@scholarkit/collab/src node_modules/@scholarkit/assistant/src src/locales",
     "lint:rust": "cargo fmt --check --manifest-path src-tauri/Cargo.toml && cargo fmt --check --manifest-path tools/corpus/probe/Cargo.toml && cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets --locked -- -D warnings",
     "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --locked && cargo test --manifest-path tools/corpus/probe/Cargo.toml --locked",
     "prepare": "pnpm --filter @scholarkit/i18n --filter @scholarkit/monitoring build"
@@ -42,6 +42,7 @@
     "@scholarkit/i18n": "workspace:*",
     "@scholarkit/monitoring": "workspace:*",
     "@scholarkit/account-menu": "workspace:*",
+    "@scholarkit/assistant": "workspace:*",
     "@scholarkit/collab": "workspace:*",
     "@scholarkit/updates": "workspace:*",
     "@tanstack/react-query": "^5.104.0",

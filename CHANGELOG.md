@@ -2,7 +2,15 @@
 
 ## 0.28.0 (unreleased)
 
+### Added
+
+- The assistant works in the browser too. With Plus and Pro it answers on our model, hosted in the EU and not trained on what you send. In the desktop app you can still use your own provider or a model on your computer, on any plan.
+- **Ask** next to your avatar opens the assistant as a bar over the editor, with its latest answer above it. **Open in the side panel** shows the whole conversation on the right instead. Cmd+J (Ctrl+J on Windows and Linux) opens it too.
+- With text selected, Cmd+J opens the Ask menu next to it: ready actions such as **Fix the LaTeX** or **Make it shorter**, or a question of your own.
+
 ### Changed
+
+- The assistant's modes are now called LaTeX and Writing, and look the same as in Cursive and Binder.
 
 - In the browser, the people in a shared project see your typing as you type, instead of after a pause.
 - In the browser, the Visual face brings in other people's changes where they made them, so your place stays, and a bar with their name shows which paragraph each of them is in.

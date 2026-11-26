@@ -4,8 +4,11 @@
  * project; `propose_change` never writes, it hands a change card to the
  * user. Each tool returns plain text for the model. The app is reached
  * through `AssistantHost`, so the tools run against fakes in tests.
+ * `polemicKit` puts them in the shared package's shape.
  */
 
+import { t } from "@scholarkit/i18n";
+import { toolkit, type Tool, type ToolKind, type Toolkit } from "@scholarkit/assistant";
 import type { CompileIssue, AgentToolSpec, TexPackageInfo } from "@/lib/tauri";
 import {
   describeProseChange,
@@ -29,7 +32,7 @@ export interface ProposedChange {
   after: string;
   /** True when the file does not exist yet. */
   creates: boolean;
-  /** Set in Syntax mode when the change edits the prose. */
+  /** Set in LaTeX mode when the change edits the text. */
   prose: ProseChange | null;
 }
 
@@ -52,9 +55,9 @@ export interface AssistantHost {
    *  run (no TeX distribution). */
   compile(): Promise<CompileResult | null>;
   packageInfo(names: string[]): Promise<TexPackageInfo[]>;
-  /** Shows a change card; returns its number. */
+  /** The number of the next change card. */
   propose(change: Omit<ProposedChange, "id">): number;
-  /** The mode: Syntax flags changes to the text, Prose turns down
+  /** The mode: LaTeX flags changes to the text, Writing turns down
    *  changes that go beyond rewording. */
   mode(): AssistantMode;
 }
@@ -179,26 +182,99 @@ export function describeCall(
   const path = typeof args.path === "string" ? args.path : "";
   switch (name) {
     case "list_files":
-      return "Listed the project files";
+      return t("Listed the project files");
     case "read_file":
-      return `Read ${path}`;
+      return t("Read {path}", { path });
     case "search_project":
-      return `Searched for “${String(args.query ?? "")}”`;
+      return t("Searched for “{query}”", { query: String(args.query ?? "") });
     case "get_compile_issues":
-      return "Read the compile issues";
+      return t("Read the compile issues");
     case "compile":
-      return "Compiled the project";
+      return t("Compiled the project");
     case "package_info":
-      return `Looked up ${Array.isArray(args.names) ? args.names.join(", ") : "packages"}`;
+      return Array.isArray(args.names)
+        ? t("Looked up {names}", { names: args.names.join(", ") })
+        : t("Looked up packages");
     case "propose_change": {
       const turnedDown = /^Turned down: this change (.+?)\. /.exec(result);
       return turnedDown
-        ? `Held back a change to ${path} that ${turnedDown[1]}`
-        : `Proposed a change to ${path}`;
+        ? t("Held back a change to {path} that {reason}", {
+            path,
+            reason: turnedDown[1],
+          })
+        : result.startsWith("Error:")
+          ? t("Couldn't propose a change to {path}", { path })
+          : t("Proposed a change to {path}", { path });
     }
     default:
-      return `Called ${name}`;
+      return t("Called {name}", { name });
   }
+}
+
+/** The step running now, as the floating sheet shows it. */
+export function describeStart(name: string): string {
+  switch (name) {
+    case "list_files":
+      return t("Looking at the project…");
+    case "read_file":
+      return t("Reading…");
+    case "search_project":
+      return t("Searching the project…");
+    case "get_compile_issues":
+      return t("Reading the compile issues…");
+    case "compile":
+      return t("Compiling…");
+    case "package_info":
+      return t("Looking up packages…");
+    case "propose_change":
+      return t("Writing a change…");
+    default:
+      return t("Working…");
+  }
+}
+
+const KIND: Record<string, ToolKind> = {
+  compile: "ask",
+  propose_change: "propose",
+};
+
+/**
+ * The tools in the shared package's shape: a proposed change comes back
+ * as the turn's card. `localTex` false leaves out package_info, which
+ * needs TeX on this computer.
+ */
+export function polemicKit(
+  host: AssistantHost,
+  localTex = true,
+): Toolkit<ProposedChange> {
+  const specs = TOOL_SPECS.filter(
+    (spec) => localTex || spec.function.name !== "package_info",
+  );
+  return toolkit(
+    specs.map(({ function: spec }): Tool<ProposedChange> => ({
+      name: spec.name,
+      description: spec.description,
+      parameters: spec.parameters,
+      kind: KIND[spec.name] ?? "read",
+      run: async (args) => {
+        let proposed: ProposedChange | undefined;
+        const result = await runTool(
+          {
+            ...host,
+            propose: (change) => {
+              const id = host.propose(change);
+              proposed = { ...change, id };
+              return id;
+            },
+          },
+          spec.name,
+          args,
+        );
+        return proposed ? { result, attachment: proposed } : result;
+      },
+      describe: (args, result) => describeCall(spec.name, args, result),
+    })),
+  );
 }
 
 function cut(text: string): string {
@@ -336,7 +412,7 @@ export async function runTool(
       if ("error" in planned) return `Error: ${planned.error} Nothing was proposed.`;
       if (planned.after === before) return "Error: the change does not alter the file.";
       const mode = host.mode();
-      if (mode === "prose") {
+      if (mode === "writing") {
         const violation = proseViolation(
           path,
           existing ?? "",
@@ -344,11 +420,11 @@ export async function runTool(
           planned.edits,
         );
         if (violation !== null) {
-          return `Turned down: this change ${violation}. Nothing was proposed. In Prose mode a change may only reword: keep commands, citations, references, labels, math, numbers and negations exactly as they are, stay within one paragraph, and try again.`;
+          return `Turned down: this change ${violation}. Nothing was proposed. In Writing mode a change may only reword: keep commands, citations, references, labels, math, numbers and negations exactly as they are, stay within one paragraph, and try again.`;
         }
       }
       const prose =
-        mode === "syntax" && path.toLowerCase().endsWith(".tex")
+        mode === "latex" && path.toLowerCase().endsWith(".tex")
           ? proseChange(before, planned.after)
           : null;
       const id = host.propose({

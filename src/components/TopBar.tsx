@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { AccountMenu } from "@/components/AccountMenu";
+import { AskAssistantButton } from "@/components/Assistant";
 import { EditorFaceToggle } from "@/components/EditorFaceToggle";
 import { PresenceAvatars } from "@/components/PresenceAvatars";
 import { SharePopover } from "@/components/SharePopover";
@@ -251,6 +252,7 @@ export function TopBar() {
           </ButtonGroup>
         )}
         {showProjectControls && <SharePopover />}
+        {showProjectControls && <AskAssistantButton />}
         <AccountMenu />
       </div>
     </header>

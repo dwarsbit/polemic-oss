@@ -2,6 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
+import { errorFromServer } from "@scholarkit/assistant";
 import type { AgentMessage } from "@/lib/tauri";
 
 const disk: Record<string, string> = {};
@@ -10,6 +11,15 @@ let script: ((
   messages: AgentMessage[],
 ) => Extract<AgentMessage, { role: "assistant" }>)[] = [];
 const compiled = vi.fn(async () => {});
+
+async function answer(messages: AgentMessage[], onText: (delta: string) => void) {
+  const next = script.shift();
+  const reply = next
+    ? next(messages)
+    : { role: "assistant" as const, content: "Done." };
+  if (reply.content) onText(reply.content);
+  return reply;
+}
 
 vi.mock("@/lib/query-client", () => ({ invalidateGitState: vi.fn(async () => {}) }));
 vi.mock("@/lib/tauri", async (importOriginal) => ({
@@ -24,19 +34,31 @@ vi.mock("@/lib/tauri", async (importOriginal) => ({
   setAssistantCompile: vi.fn(async (projectPath: string, allowed: boolean) => ({
     assistantCompileProjects: allowed ? [projectPath] : [],
   })),
+  updatePreferences: vi.fn(async () => ({})),
+  accountUsage: vi.fn(async () => ({
+    plan: "plus",
+    storage: { usedBytes: 0, limitBytes: 1 },
+    compile: { usedPercent: 0, resetsAt: "2026-11-27T00:00:00.000Z" },
+    reviewLinks: { count: 0, limit: null },
+    assistant: { usedPercent: 12, resetsAt: "2026-12-01T00:00:00.000Z" },
+  })),
   aiAgentTurn: vi.fn(
+    async (args: { messages: AgentMessage[] }, onText: (delta: string) => void) =>
+      answer(args.messages, onText),
+  ),
+  assistantTurn: vi.fn(
     async (args: { messages: AgentMessage[] }, onText: (delta: string) => void) => {
-      const next = script.shift();
-      const reply = next
-        ? next(args.messages)
-        : { role: "assistant", content: "Done." };
-      if (reply.content) onText(reply.content);
-      return reply;
+      if (script.length === 0) throw errorFromServer("assistant_used_up", "Used up.");
+      return answer(args.messages, onText);
     },
   ),
 }));
 
-import { AssistantPanel } from "@/components/AssistantPanel";
+import {
+  AskAssistantButton,
+  AssistantDock,
+  AssistantFloatingLayer,
+} from "@/components/Assistant";
 import { useAssistantStore } from "@/store/assistant";
 import { useEditorStore } from "@/store/editor";
 import { usePreviewStore } from "@/store/preview";
@@ -72,19 +94,19 @@ async function settle() {
   });
 }
 
-async function render() {
+async function render(node: React.ReactNode = <AssistantDock />) {
   const host = document.createElement("div");
   document.body.append(host);
   root = createRoot(host);
   await act(async () => {
-    root!.render(<AssistantPanel />);
+    root!.render(node);
   });
   return host;
 }
 
 function button(host: HTMLElement, label: string): HTMLButtonElement {
   const found = [...host.querySelectorAll("button")].find(
-    (b) => b.textContent?.trim() === label,
+    (b) => b.textContent?.trim() === label || b.getAttribute("aria-label") === label,
   );
   if (!found) throw new Error(`no button ${label}`);
   return found;
@@ -111,11 +133,14 @@ beforeEach(() => {
       apiKey: "k",
       model: "m",
     },
-    assistantMode: "syntax",
+    assistantSource: null,
+    assistantLayout: "floating",
+    assistantMode: "latex",
     assistantCompileProjects: [],
   });
+  useAssistantStore.getState().syncProject(null);
   useAssistantStore.getState().syncProject("/p");
-  useAssistantStore.setState({ items: [], history: [] });
+  useAssistantStore.setState({ barOpen: false, sheetOpen: false, usage: null });
 });
 
 afterEach(() => {
@@ -124,7 +149,7 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
-describe("AssistantPanel", () => {
+describe("the docked assistant", () => {
   it("shows a proposed change and applies it to the file", async () => {
     script = [
       call("read_file", { path: "table.tex" }),
@@ -133,16 +158,16 @@ describe("AssistantPanel", () => {
         explanation: "Right-aligns the second column.",
         replacements: [{ find: "{ll}", replace: "{lr}" }],
       }),
-      () => ({ role: "assistant", content: "Review the change above." }),
+      () => ({ role: "assistant", content: "Review the change below." }),
     ];
     const host = await render();
     await act(async () => {
       await useAssistantStore.getState().ask("Align the numbers right.");
     });
     await settle();
-    expect(host.textContent).toContain("Read table.tex");
-    expect(host.textContent).toContain("Right-aligns the second column.");
-    expect(host.textContent).toContain("Review the change above.");
+    expect(host.textContent).toContain("2 steps");
+    expect(host.textContent).toContain("Review the change below.");
+    expect(host.textContent).toContain("\\begin{tabular}{lr}");
     expect(disk["table.tex"]).toContain("{ll}");
 
     await act(async () => {
@@ -150,17 +175,22 @@ describe("AssistantPanel", () => {
     });
     await settle();
     expect(disk["table.tex"]).toContain("{lr}");
-    expect(host.textContent).toContain("Applied");
+    expect(host.textContent).toContain("Applied.");
 
-    // The model hears about it with the next question.
+    // The model hears about it, and about the new mode, with the next question.
+    await act(async () => {
+      await useSettingsStore.getState().setAssistantMode("writing");
+    });
     script = [
       (messages) => {
         const last = messages[messages.length - 1];
         return {
           role: "assistant",
-          content: last.content.startsWith("(The user applied change 1.)")
-            ? "Noted."
-            : "?",
+          content:
+            last.content.startsWith("The user applied change 1.") &&
+            last.content.includes("switched the assistant to Writing mode")
+              ? "Noted."
+              : "?",
         };
       },
     ];
@@ -214,9 +244,48 @@ describe("AssistantPanel", () => {
     expect(host.textContent).toContain("It compiles.");
   });
 
-  it("asks for a provider when none is set up", async () => {
-    useSettingsStore.setState({ ai: null });
+  it("asks for a provider when the own one isn't set up", async () => {
+    useSettingsStore.setState({ ai: null, assistantSource: "own" });
     const host = await render();
-    expect(host.textContent).toContain("Set up an AI provider to use the assistant.");
+    expect(host.textContent).toContain(
+      "Set up an AI provider in the assistant settings to ask.",
+    );
+  });
+
+  it("shows the month used on our model, and says when it is used up", async () => {
+    useSettingsStore.setState({ assistantSource: "scholarkit" });
+    const host = await render();
+    await settle();
+    expect(host.textContent).toContain("12% used this month");
+    await act(async () => {
+      await useAssistantStore.getState().ask("Why?");
+    });
+    expect(host.textContent).toContain("You've used all of this month's assistant");
+  });
+});
+
+describe("the floating assistant", () => {
+  it("opens from the Ask button and answers above the bar", async () => {
+    script = [() => ({ role: "assistant", content: "Use booktabs." })];
+    const host = await render(
+      <>
+        <AskAssistantButton />
+        <AssistantFloatingLayer />
+      </>,
+    );
+    expect(host.querySelector("textarea")).toBeNull();
+    await act(async () => {
+      button(host, "Ask").click();
+    });
+    expect(host.querySelector("textarea")).not.toBeNull();
+    await act(async () => {
+      await useAssistantStore.getState().ask("Nicer tables?");
+    });
+    expect(host.textContent).toContain("Nicer tables?");
+    expect(host.textContent).toContain("Use booktabs.");
+    await act(async () => {
+      button(host, "Ask").click();
+    });
+    expect(host.querySelector("textarea")).toBeNull();
   });
 });

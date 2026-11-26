@@ -1,6 +1,7 @@
 mod account;
 mod ai;
 mod assets;
+mod assistant;
 mod bib_lookup;
 mod cloud_compile;
 mod comments;
@@ -592,11 +593,23 @@ fn update_preferences(
     author_name: Option<String>,
     author_initials: Option<String>,
     assistant_mode: Option<String>,
+    assistant_source: Option<String>,
+    assistant_layout: Option<String>,
 ) -> Result<settings::Shown, String> {
     settings::update(&app, |s| {
         if let Some(mode) = assistant_mode {
-            if matches!(mode.as_str(), "syntax" | "prose") {
+            if matches!(mode.as_str(), "latex" | "writing") {
                 s.assistant_mode = Some(mode);
+            }
+        }
+        if let Some(source) = assistant_source {
+            if matches!(source.as_str(), "scholarkit" | "own") {
+                s.assistant_source = Some(source);
+            }
+        }
+        if let Some(layout) = assistant_layout {
+            if matches!(layout.as_str(), "floating" | "docked") {
+                s.assistant_layout = Some(layout);
             }
         }
         if let Some(name) = author_name {
@@ -3163,6 +3176,7 @@ pub fn run() {
             save_comments,
             ai::ai_agent_turn,
             ai::ai_cancel,
+            assistant::assistant_turn,
             ai::ai_list_models,
             set_assistant_compile,
             update_ai_settings,

@@ -44,6 +44,8 @@ export function defaultSettings(): Settings {
     ai: null,
     assistantCompileProjects: [],
     assistantMode: null,
+    assistantSource: null,
+    assistantLayout: null,
     // Online, grammar is checked by the server's LanguageTool.
     grammar: {
       enabled: null,
@@ -137,6 +139,7 @@ const PREFERENCE_KEYS = [
   "onlineLookup",
   "sources",
   "assistantMode",
+  "assistantLayout",
 ] as const;
 
 type Args = Record<string, unknown>;

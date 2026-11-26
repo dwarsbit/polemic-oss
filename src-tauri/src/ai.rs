@@ -149,6 +149,19 @@ pub fn model_ids(body: &Value) -> Vec<String> {
 #[derive(Default)]
 pub struct AiRequests(Mutex<HashMap<u32, Arc<Notify>>>);
 
+impl AiRequests {
+    pub fn insert(&self, id: u32, stop: Arc<Notify>) -> Result<(), String> {
+        self.0.lock().map_err(|e| e.to_string())?.insert(id, stop);
+        Ok(())
+    }
+
+    pub fn remove(&self, id: u32) {
+        if let Ok(mut map) = self.0.lock() {
+            map.remove(&id);
+        }
+    }
+}
+
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AiAgentArgs {

@@ -135,9 +135,16 @@ pub struct Settings {
     pub ai: Option<AiSettings>,
     /// Projects (paths) where the assistant may compile on its own.
     pub assistant_compile_projects: Vec<String>,
-    /// The assistant's mode: "syntax" (default) or "prose". Older
-    /// versions saved "latex" (now "syntax") and "both" (now "prose").
+    /// The assistant's mode: "latex" (default) or "writing". Older
+    /// versions saved "syntax" (now "latex"), "prose" and "both" (now
+    /// "writing"); the webview reads them so.
     pub assistant_mode: Option<String>,
+    /// Where the assistant's answers come from: "scholarkit" (our model,
+    /// Plus and Pro) or "own" (the provider in `ai`). None: the own
+    /// provider once one is set up, ours otherwise.
+    pub assistant_source: Option<String>,
+    /// "floating" (default) or "docked".
+    pub assistant_layout: Option<String>,
     pub grammar: GrammarSettings,
     pub user_words: Vec<String>,
     /// The Scholarkit server of the account; None means

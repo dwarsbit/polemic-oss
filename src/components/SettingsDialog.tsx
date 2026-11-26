@@ -60,7 +60,12 @@ import type { ThemePreference } from "@/lib/theme";
 import { EDITOR_FONTS } from "@/lib/editor-fonts";
 import { SYNTAX_THEMES } from "@/lib/editor-themes";
 import { fuzzyMatch } from "@/lib/fuzzy";
-import { initialsOf, resolveVersionControl, useSettingsStore } from "@/store/settings";
+import {
+  initialsOf,
+  readAssistantSource,
+  resolveVersionControl,
+  useSettingsStore,
+} from "@/store/settings";
 import { features, isWeb } from "@/lib/target";
 import { reportsBuiltIn } from "@/lib/monitoring";
 import { languageCodes } from "@/lib/languages";
@@ -263,6 +268,12 @@ export function SettingsDialog({
   const setGrammar = useSettingsStore((s) => s.setGrammar);
   const onlineLookup = useSettingsStore((s) => s.onlineLookup);
   const setOnlineLookup = useSettingsStore((s) => s.setOnlineLookup);
+  const assistantSource = useSettingsStore((s) =>
+    readAssistantSource(s.assistantSource, s.ai),
+  );
+  const setAssistantSource = useSettingsStore((s) => s.setAssistantSource);
+  const assistantLayout = useSettingsStore((s) => s.assistantLayout);
+  const setAssistantLayout = useSettingsStore((s) => s.setAssistantLayout);
   const errorReports = useSettingsStore((s) => s.errorReports);
   const setErrorReports = useSettingsStore((s) => s.setErrorReports);
   const setAutoIncludeNewFiles = useSettingsStore((s) => s.setAutoIncludeNewFiles);
@@ -1044,15 +1055,75 @@ export function SettingsDialog({
     },
     {
       id: "ai",
-      hidden: !features.assistant,
       label: t("Assistant"),
       icon: Sparkles,
-      intro: t(
-        "An optional AI model for the assistant: help with LaTeX errors, packages, tables and layout. Use your own account with a provider, or a model on this computer.",
-      ),
+      intro: features.ownAiProvider
+        ? t(
+            "Help with LaTeX errors, packages, tables and your writing. It answers on our model with Plus and Pro, or on your own provider or a model on this computer.",
+          )
+        : t(
+            "Help with LaTeX errors, packages, tables and your writing, on our model with Plus and Pro.",
+          ),
       cards: [
         {
+          title: t("Answers"),
+          rows: [
+            {
+              id: "ai-source",
+              hidden: !features.ownAiProvider,
+              label: t("Answers from"),
+              description: t(
+                "Our model comes with Plus and Pro and isn't trained on what you send. Your own provider works on every plan.",
+              ),
+              keywords: t(
+                "ai model scholarkit mistral plus pro own key provider local",
+              ),
+              control: (
+                <Select
+                  value={assistantSource}
+                  onValueChange={(v) =>
+                    void setAssistantSource(v === "own" ? "own" : "scholarkit")
+                  }
+                >
+                  <SelectTrigger className="w-44" aria-label={t("Answers from")}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="scholarkit">{"Scholarkit AI"}</SelectItem>
+                    <SelectItem value="own">{t("Your own provider")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              ),
+            },
+            {
+              id: "ai-layout",
+              label: t("Layout"),
+              description: t(
+                "Floating over the editor, or docked in the side panel with the whole conversation.",
+              ),
+              keywords: t("assistant floating bar docked side panel layout"),
+              control: (
+                <Select
+                  value={assistantLayout}
+                  onValueChange={(v) =>
+                    void setAssistantLayout(v === "docked" ? "docked" : "floating")
+                  }
+                >
+                  <SelectTrigger className="w-44" aria-label={t("Layout")}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="floating">{t("Floating")}</SelectItem>
+                    <SelectItem value="docked">{t("Docked")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              ),
+            },
+          ],
+        },
+        {
           title: t("Provider and model"),
+          hidden: !features.ownAiProvider,
           rows: [
             {
               id: "ai-provider",

@@ -20,8 +20,9 @@ export const features = {
   localTex: !isWeb,
   /** Signing the desktop app in; the browser uses the site's session. */
   desktopAccount: !isWeb,
-  /** The assistant, until it runs through the server. */
-  assistant: !isWeb,
+  /** An own AI provider for the assistant: the key and the model's
+   *  server stay on this computer. The browser asks our model. */
+  ownAiProvider: !isWeb,
   /** The built-in grammar checker, and with it the choice of checker:
    *  the browser checks with the server's. */
   grammarChoice: !isWeb,

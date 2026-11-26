@@ -4,6 +4,7 @@
 @import "@scholarkit/updates/updates.css";
 @import "@scholarkit/account-menu/account-menu.css";
 @import "@scholarkit/collab/collab.css";
+@import "@scholarkit/assistant/assistant.css";
 /* Bundled fonts, so they render identically on every machine: DM Sans for the
    interface (with its optical size axis), the monospace faces for the editor. */
 @import "@fontsource-variable/dm-sans/opsz.css";

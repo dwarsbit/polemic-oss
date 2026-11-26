@@ -7,6 +7,7 @@
  */
 
 import { accountCommands } from "@/web/account";
+import { assistantCommands } from "@/web/assistant";
 import { projectCommands } from "@/web/projects";
 import { reviewCommands } from "@/web/review";
 import { settingsCommands } from "@/web/settings";
@@ -35,6 +36,7 @@ const commands: Record<string, Handler> = {
   ...reviewCommands,
   ...writingCommands,
   ...sourceCommands,
+  ...assistantCommands,
   ...nothing,
 };
 

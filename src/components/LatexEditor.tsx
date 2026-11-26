@@ -1170,12 +1170,15 @@ export function LatexEditor({ visible = true }: { visible?: boolean }) {
       const main = selection.main;
       const line = doc.lineAt(main.head).number;
       if (main.empty) return { line, selection: null };
+      const start = view.coordsAtPos(main.from);
+      const end = view.coordsAtPos(main.to);
       return {
         line,
         selection: {
           fromLine: doc.lineAt(main.from).number,
           toLine: doc.lineAt(main.to).number,
           text: doc.sliceString(main.from, main.to),
+          anchor: start && end ? { left: start.left, top: end.bottom + 6 } : undefined,
         },
       };
     });

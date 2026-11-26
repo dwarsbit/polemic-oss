@@ -13,7 +13,8 @@ export type PanelCommand =
   | "toggle-log"
   | "show-bibliography"
   | "show-version-control"
-  | "show-assistant";
+  | "show-assistant"
+  | "hide-assistant";
 
 const handlers = new Map<PanelCommand, () => void>();
 

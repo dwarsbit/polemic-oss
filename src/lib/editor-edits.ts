@@ -113,7 +113,13 @@ export function runEditorHistory(direction: "undo" | "redo"): boolean {
 export interface CursorInfo {
   /** 1-based line of the cursor. */
   line: number;
-  selection: { fromLine: number; toLine: number; text: string } | null;
+  selection: {
+    fromLine: number;
+    toLine: number;
+    text: string;
+    /** Under the selection's end, in window coordinates, when it is on screen. */
+    anchor?: { left: number; top: number };
+  } | null;
 }
 
 let cursorReader: (() => CursorInfo | null) | null = null;

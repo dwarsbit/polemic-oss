@@ -3,6 +3,7 @@ import type { CompileIssue } from "@/lib/tauri";
 import {
   describeCall,
   numberLines,
+  polemicKit,
   runTool,
   type AssistantHost,
   type ProposedChange,
@@ -37,7 +38,7 @@ function fakeHost(overrides: Partial<AssistantHost> = {}) {
       proposed.push(change);
       return proposed.length;
     },
-    mode: () => "syntax",
+    mode: () => "latex",
     ...overrides,
   };
   return { host, proposed };
@@ -106,8 +107,8 @@ describe("runTool", () => {
     expect(proposed[0].prose).toEqual({ removed: ["world"], added: ["reader"] });
   });
 
-  it("does not flag prose outside Syntax mode", async () => {
-    const { host, proposed } = fakeHost({ mode: () => "prose" });
+  it("does not flag prose outside LaTeX mode", async () => {
+    const { host, proposed } = fakeHost({ mode: () => "writing" });
     await runTool(host, "propose_change", {
       path: "main.tex",
       explanation: "",
@@ -116,9 +117,9 @@ describe("runTool", () => {
     expect(proposed[0].prose).toBeNull();
   });
 
-  it("turns down a Prose mode change that alters a number", async () => {
+  it("turns down a Writing mode change that alters a number", async () => {
     const { host, proposed } = fakeHost({
-      mode: () => "prose",
+      mode: () => "writing",
       readFile: async (path) =>
         path === "main.tex" ? "\\section{Intro}\nWe measured 3 streets." : null,
     });
@@ -169,5 +170,33 @@ describe("runTool", () => {
       }),
     ).toMatch(/inside the project/);
     expect(proposed).toHaveLength(0);
+  });
+});
+
+describe("polemicKit", () => {
+  it("gives each tool its kind and hands a proposed change to the panel", async () => {
+    const { host } = fakeHost();
+    const kit = polemicKit(host);
+    expect(kit.get("read_file")?.kind).toBe("read");
+    expect(kit.get("compile")?.kind).toBe("ask");
+    const propose = kit.get("propose_change")!;
+    expect(propose.kind).toBe("propose");
+    const outcome = await propose.run({
+      path: "main.tex",
+      explanation: "Greets the reader.",
+      replacements: [{ find: "Hello world.", replace: "Hello reader." }],
+    });
+    expect(typeof outcome).toBe("object");
+    if (typeof outcome === "object") {
+      expect(outcome.result).toMatch(/^Proposed as change 1\./);
+      expect(outcome.attachment?.id).toBe(1);
+      expect(outcome.attachment?.after).toContain("Hello reader.");
+    }
+  });
+
+  it("leaves out package_info without TeX on this computer", () => {
+    const { host } = fakeHost();
+    expect(polemicKit(host, false).get("package_info")).toBeUndefined();
+    expect(polemicKit(host).get("package_info")).toBeDefined();
   });
 });

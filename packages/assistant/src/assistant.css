@@ -1,0 +1,1029 @@
+/* The assistant, the same in every app. The page's own tokens give the colors (the
+   Polemic UI kit's names, which all three apps use), so each app shows it in its own
+   tint and in dark mode. Plain CSS, so every app's Tailwind setup takes it as it is.
+   An app may set --assistant-glow, the mark's second color; it is a lighter tint
+   otherwise. */
+
+.assistant-panel,
+.assistant-menu,
+.assistant-ask {
+  --assistant-on-tint: var(--primary-foreground, #fff);
+  --assistant-glow-color: var(
+    --assistant-glow,
+    color-mix(in oklch, var(--tint) 70%, oklch(85% 0.12 350))
+  );
+  --assistant-card: var(--card, var(--background));
+  --assistant-add: color-mix(in oklch, var(--success) 11%, transparent);
+  --assistant-del: color-mix(in oklch, var(--destructive) 9%, transparent);
+  --assistant-mono: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.assistant-panel button,
+.assistant-menu button,
+.assistant-ask {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.assistant-panel button:focus-visible,
+.assistant-menu :focus-visible,
+.assistant-ask:focus-visible,
+.assistant-composer textarea:focus-visible {
+  outline: 2px solid var(--ring, var(--tint));
+  outline-offset: 2px;
+}
+.assistant-panel button:disabled {
+  cursor: default;
+}
+.assistant-grow {
+  flex: 1;
+  min-width: 0;
+}
+.assistant-muted {
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+}
+.assistant-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--success);
+}
+.assistant-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: color-mix(in oklch, var(--warning) 80%, var(--foreground));
+}
+
+/* ---------- the mark and the Ask button ---------- */
+
+.assistant-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: radial-gradient(
+    120% 120% at 20% 10%,
+    var(--assistant-glow-color),
+    var(--tint) 60%
+  );
+  color: #fff;
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 18%),
+    0 1px 2px oklch(0 0 0 / 15%);
+}
+.assistant-mark svg {
+  width: 14px;
+  height: 14px;
+}
+.assistant-mark[data-size="sm"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+}
+.assistant-mark[data-size="sm"] svg {
+  width: 11px;
+  height: 11px;
+}
+.assistant-mark[data-size="lg"] {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.assistant-mark[data-size="lg"] svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* A quiet outline like the other header buttons; only the spark carries the app's color.
+   It tints while the panel is open. The shortcut is in its tooltip. */
+.assistant-ask {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 11px 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px oklch(0 0 0 / 5%);
+}
+.assistant-ask .assistant-spark {
+  color: var(--tint);
+}
+.assistant-ask:hover {
+  background: var(--accent, var(--muted));
+}
+.assistant-ask[data-on] {
+  border-color: var(--tint-edge);
+  background: var(--tint-soft);
+  color: var(--tint-foreground);
+}
+
+/* ---------- the panel ---------- */
+
+.assistant-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  background: var(--background);
+  color: var(--foreground);
+}
+.assistant-panel-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 9px;
+  height: 42px;
+  padding: 0 8px 0 12px;
+  border-bottom: 1px solid var(--border);
+}
+.assistant-panel-head h2 {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.assistant-icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted-foreground);
+}
+.assistant-icon:hover {
+  background: var(--accent, var(--muted));
+  color: var(--foreground);
+}
+
+.assistant-modes {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.assistant-segmented {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 7px;
+  background: var(--muted);
+}
+.assistant-segmented button {
+  height: 22px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+}
+.assistant-segmented button[aria-checked="true"] {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 8%);
+}
+.assistant-modes-hint {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assistant-panel-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.assistant-conversation {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 16px 8px;
+}
+.assistant-panel-foot {
+  flex: none;
+  padding: 8px 12px 10px;
+}
+
+.assistant-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto 0;
+  padding: 24px 8px;
+  text-align: center;
+}
+.assistant-empty h3 {
+  margin: 12px 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.assistant-empty p {
+  max-width: 280px;
+  margin: 0 0 14px;
+  color: var(--muted-foreground);
+}
+.assistant-empty .assistant-suggestions {
+  justify-content: center;
+}
+
+/* ---------- the conversation ---------- */
+
+.assistant-question {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.assistant-user {
+  max-width: 86%;
+  padding: 8px 12px;
+  border-radius: 14px 14px 4px 14px;
+  background: var(--muted);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.assistant-turn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.assistant-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12.5px;
+}
+.assistant-note[data-tone="error"] {
+  color: var(--destructive);
+}
+
+.assistant-text {
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+.assistant-text > :first-child {
+  margin-top: 0;
+}
+.assistant-text > :last-child {
+  margin-bottom: 0;
+}
+.assistant-text p,
+.assistant-text ul,
+.assistant-text ol {
+  margin: 0 0 8px;
+}
+.assistant-text ul,
+.assistant-text ol {
+  padding-left: 20px;
+}
+.assistant-text code,
+.assistant-file,
+.assistant-lines[data-mono] {
+  font-family: var(--assistant-mono);
+}
+.assistant-text code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--muted);
+  font-size: 12px;
+}
+.assistant-text pre {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--code-bg, var(--muted));
+  font-size: 12px;
+  line-height: 1.5;
+}
+.assistant-text pre code {
+  padding: 0;
+  background: none;
+}
+.assistant-cite {
+  display: inline-grid;
+  place-items: center;
+  min-width: 17px;
+  height: 17px;
+  margin-left: 1px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--tint-soft);
+  color: var(--tint-foreground);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: 1px;
+}
+
+/* ---------- chips, steps and suggestions ---------- */
+
+.assistant-chips,
+.assistant-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.assistant-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  height: 24px;
+  padding: 0 8px 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.assistant-chip > svg {
+  flex: none;
+  color: var(--muted-foreground);
+}
+.assistant-chip[data-tone="error"] > svg {
+  color: var(--destructive);
+}
+.assistant-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.assistant-chip button {
+  display: grid;
+  margin: 0 -3px 0 1px;
+  padding: 1px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--muted-foreground);
+}
+button.assistant-chip:hover {
+  background: var(--accent, var(--muted));
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.assistant-steps {
+  display: grid;
+  gap: 5px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.assistant-steps[data-open] {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--muted);
+}
+.assistant-steps-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.assistant-steps-summary > svg:first-child {
+  color: var(--success);
+}
+.assistant-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.assistant-step > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--success);
+}
+.assistant-step[data-failed] > svg {
+  color: var(--destructive);
+}
+.assistant-step > .assistant-spin {
+  color: var(--tint);
+}
+.assistant-spin {
+  animation: assistant-spin 0.9s linear infinite;
+}
+.assistant-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted-foreground) 0%,
+    var(--foreground) 45%,
+    var(--muted-foreground) 90%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: assistant-shimmer 1.8s linear infinite;
+}
+@keyframes assistant-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes assistant-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-spin,
+  .assistant-shimmer {
+    animation: none;
+  }
+}
+
+/* ---------- the composer ---------- */
+
+.assistant-composer {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 6px 20px oklch(14.5% 0.008 326 / 5%);
+}
+.assistant-composer:focus-within {
+  border-color: var(--tint-edge);
+}
+.assistant-composer > .assistant-chips {
+  padding: 8px 8px 0;
+}
+.assistant-composer textarea {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px 4px;
+  border: 0;
+  background: none;
+  color: var(--foreground);
+  font: inherit;
+  resize: none;
+}
+.assistant-composer textarea:focus-visible {
+  outline: none;
+}
+.assistant-composer textarea::placeholder {
+  color: var(--muted-foreground);
+}
+.assistant-composer-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px 6px;
+}
+.assistant-model {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 6px 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+}
+button.assistant-model:hover {
+  background: var(--accent, var(--muted));
+}
+.assistant-send {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--tint);
+  color: var(--assistant-on-tint);
+}
+.assistant-send:disabled {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.assistant-send[data-stop] {
+  background: var(--foreground);
+  color: var(--background);
+}
+.assistant-send[data-stop] i {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.assistant-usage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.assistant-usage-key,
+.assistant-usage-privacy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.assistant-meter {
+  width: 64px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--muted);
+}
+.assistant-meter i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--tint);
+}
+.assistant-meter[data-full] i {
+  background: var(--warning);
+}
+
+/* ---------- cards ---------- */
+
+.assistant-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--assistant-card);
+}
+.assistant-card-head,
+.assistant-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  font-size: 12.5px;
+}
+.assistant-card-head {
+  border-bottom: 1px solid var(--border);
+}
+.assistant-card-head > svg {
+  color: var(--muted-foreground);
+}
+.assistant-file {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.assistant-card-foot {
+  gap: 6px;
+  padding: 7px 8px 7px 10px;
+  border-top: 1px solid var(--border);
+}
+.assistant-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.assistant-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.assistant-pill[data-tone="add"] {
+  background: color-mix(in oklch, var(--success) 12%, transparent);
+  color: var(--success);
+}
+.assistant-pill[data-tone="del"] {
+  background: color-mix(in oklch, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+}
+.assistant-lines {
+  padding: 4px 0;
+  overflow-x: auto;
+  background: var(--code-bg, var(--muted));
+  font-size: 11.5px;
+  line-height: 19px;
+}
+.assistant-lines:not([data-mono]) {
+  font-size: 12.5px;
+  line-height: 20px;
+}
+.assistant-hunk + .assistant-hunk {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border);
+}
+.assistant-line {
+  display: flex;
+  padding: 0 10px;
+  white-space: pre;
+}
+.assistant-lines:not([data-mono]) .assistant-line {
+  white-space: pre-wrap;
+}
+.assistant-line-n {
+  flex: none;
+  width: 26px;
+  color: var(--muted-foreground);
+  opacity: 0.7;
+}
+.assistant-line-sign {
+  flex: none;
+  width: 14px;
+  color: var(--muted-foreground);
+}
+.assistant-line[data-kind="add"] {
+  background: var(--assistant-add);
+}
+.assistant-line[data-kind="add"] .assistant-line-sign {
+  color: var(--success);
+}
+.assistant-line[data-kind="del"] {
+  background: var(--assistant-del);
+}
+.assistant-line[data-kind="del"] .assistant-line-sign {
+  color: var(--destructive);
+}
+.assistant-diff[data-state="discarded"] .assistant-lines {
+  opacity: 0.5;
+}
+
+.assistant-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.assistant-button:hover {
+  background: var(--accent, var(--muted));
+}
+.assistant-button[data-variant="ghost"] {
+  border-color: transparent;
+  background: none;
+}
+.assistant-button[data-variant="ghost"]:hover {
+  background: var(--accent, var(--muted));
+}
+.assistant-button[data-variant="primary"] {
+  border-color: var(--tint);
+  background: var(--tint);
+  color: var(--assistant-on-tint);
+}
+.assistant-button[data-variant="primary"]:hover {
+  background: color-mix(in oklch, var(--tint) 88%, var(--foreground));
+}
+
+.assistant-paper {
+  padding: 10px 12px;
+}
+.assistant-paper[data-best] {
+  border-color: var(--tint-edge);
+  box-shadow: 0 0 0 3px var(--tint-soft);
+}
+.assistant-paper-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.assistant-paper .assistant-muted {
+  margin-top: 2px;
+  font-size: 12px;
+}
+.assistant-quote {
+  margin: 8px 0 9px;
+  padding: 1px 0 1px 10px;
+  border-left: 2px solid var(--tint-edge);
+  font-size: 12.5px;
+}
+
+.assistant-source {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+.assistant-source > .assistant-cite {
+  margin-top: 2px;
+}
+.assistant-source-body {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.assistant-source-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.assistant-source-quote {
+  font-size: 12.5px;
+  font-style: italic;
+}
+
+/* ---------- the selection menu ---------- */
+
+.assistant-menu {
+  width: 384px;
+  max-width: calc(100vw - 16px);
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--popover, var(--background));
+  color: var(--popover-foreground, var(--foreground));
+  box-shadow: var(
+    --pop-shadow,
+    0 24px 60px oklch(14.5% 0.008 326 / 16%),
+    0 0 0 1px var(--border)
+  );
+}
+.assistant-menu-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.assistant-menu-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+.assistant-menu-input input:focus-visible {
+  outline: none;
+}
+.assistant-menu-input input::placeholder {
+  color: var(--muted-foreground);
+}
+.assistant-menu-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 5px;
+}
+.assistant-menu-label {
+  padding: 7px 8px 3px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.assistant-menu-list > div:first-child .assistant-menu-label {
+  padding-top: 5px;
+}
+.assistant-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.assistant-menu-item > svg {
+  flex: none;
+  color: var(--muted-foreground);
+}
+.assistant-menu-item[aria-selected="true"] {
+  background: var(--accent, var(--muted));
+}
+.assistant-menu-item .assistant-grow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.assistant-menu-hint {
+  margin-left: 8px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+/* ---------- the floating layout: the bar and the sheet above it ---------- */
+
+.assistant-floating {
+  --assistant-on-tint: var(--primary-foreground, #fff);
+  --assistant-glow-color: var(
+    --assistant-glow,
+    color-mix(in oklch, var(--tint) 70%, oklch(85% 0.12 350))
+  );
+  --assistant-card: var(--card, var(--background));
+  --assistant-add: color-mix(in oklch, var(--success) 11%, transparent);
+  --assistant-del: color-mix(in oklch, var(--destructive) 9%, transparent);
+  --assistant-mono: var(--font-mono, ui-monospace, "SF Mono", Menlo, monospace);
+  --assistant-glass: color-mix(
+    in oklch,
+    var(--popover, var(--background)) 86%,
+    transparent
+  );
+  --assistant-float-shadow:
+    0 24px 60px oklch(14.5% 0.008 326 / 16%), 0 6px 16px oklch(14.5% 0.008 326 / 8%),
+    0 0 0 1px var(--border);
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: min(620px, calc(100% - 32px));
+  transform: translateX(-50%);
+  color: var(--foreground);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+:where(.assistant-floating) button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+:where(.assistant-floating) button:disabled {
+  cursor: default;
+}
+.assistant-floating :focus-visible {
+  outline: 2px solid var(--ring, var(--tint));
+  outline-offset: 2px;
+}
+
+.assistant-bar,
+.assistant-sheet {
+  background: var(--assistant-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: var(--assistant-float-shadow);
+}
+.assistant-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 8px 8px 8px 10px;
+  border-radius: 18px;
+}
+.assistant-bar textarea {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 2px;
+  border: 0;
+  background: none;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  resize: none;
+}
+.assistant-bar textarea:focus-visible {
+  outline: none;
+}
+.assistant-bar textarea::placeholder {
+  color: var(--muted-foreground);
+}
+.assistant-bar:focus-within {
+  box-shadow:
+    var(--assistant-float-shadow),
+    0 0 0 3px var(--tint-soft);
+}
+.assistant-bar .assistant-send {
+  margin-left: 0;
+}
+/* While it works, a ring of the app's colors turns around the bar. */
+.assistant-bar[data-working]::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--assistant-angle, 210deg),
+    var(--tint),
+    var(--assistant-glow-color),
+    color-mix(in oklch, var(--tint) 20%, transparent),
+    var(--assistant-glow-color),
+    var(--tint)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: assistant-ring 3s linear infinite;
+  pointer-events: none;
+}
+@property --assistant-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 210deg;
+}
+@keyframes assistant-ring {
+  to {
+    --assistant-angle: 570deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-bar[data-working]::before {
+    animation: none;
+  }
+}
+
+.assistant-sheet {
+  display: flex;
+  flex-direction: column;
+  max-height: min(60vh, 560px);
+  overflow: hidden;
+  border-radius: 16px;
+}
+.assistant-sheet-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 0 16px;
+}
+.assistant-sheet-question {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.assistant-sheet-earlier {
+  height: 24px;
+  margin-right: 2px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.assistant-sheet-earlier:hover {
+  background: var(--accent, var(--muted));
+}
+.assistant-sheet-body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 16px 14px;
+}
+.assistant-floating .assistant-steps[data-open] {
+  background: color-mix(in oklch, var(--muted) 80%, transparent);
+}

@@ -10,7 +10,11 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Group, Panel, Separator, usePanelRef } from "react-resizable-panels";
-import { AssistantPanel } from "@/components/AssistantPanel";
+import {
+  AssistantDock,
+  AssistantFloatingLayer,
+  AssistantMenuLayer,
+} from "@/components/Assistant";
 import { CommentDialog } from "@/components/CommentDialog";
 import { CommentsPanel } from "@/components/CommentsPanel";
 import { IncludeBreadcrumbs } from "@/components/IncludeBreadcrumbs";
@@ -36,7 +40,7 @@ import { TabsBar } from "@/components/TabsBar";
 import { EditorToolbar } from "@/components/EditorToolbar";
 import { VisualTexEditor } from "@/components/VisualTexEditor";
 import { setMenuCheckSource, syncMenuChecks } from "@/lib/menu-checks";
-import { setPanelCommandHandler } from "@/lib/panel-commands";
+import { runPanelCommand, setPanelCommandHandler } from "@/lib/panel-commands";
 import { setCommentDialogHandler, type CommentTarget } from "@/lib/editor-comments";
 import { useAssistantStore } from "@/store/assistant";
 import { useCommentsStore } from "@/store/comments";
@@ -110,6 +114,7 @@ export function EditorView() {
   useEffect(() => {
     useAssistantStore.getState().syncProject(projectPath);
   }, [projectPath]);
+  const assistantLayout = useSettingsStore((s) => s.assistantLayout);
   // .bib files edit through their own two-faced editor.
   const activeFileIsBib = activeFile !== null && activeFile.endsWith(".bib");
   const activeFileIsTex = activeFile !== null && activeFile.endsWith(".tex");
@@ -130,6 +135,13 @@ export function EditorView() {
     : projectPath !== null && linkedDir === projectPath
       ? t("Online snapshots")
       : null;
+  // Floating, the assistant has no tab: the panel shows the first one.
+  const shownRightTab: RightTab =
+    rightTab === "assistant" && assistantLayout !== "docked"
+      ? features.versionControl
+        ? "version-control"
+        : "comments"
+      : rightTab;
   const rightTabs = [
     ...(features.versionControl
       ? [
@@ -154,7 +166,8 @@ export function EditorView() {
       : []),
     { id: "comments" as const, label: t("Comments"), icon: MessageSquare },
     { id: "suggestions" as const, label: t("Suggestions"), icon: FileDiff },
-    ...(features.assistant
+    // Floating, the assistant sits over the editor; docked, it has its tab here.
+    ...(assistantLayout === "docked"
       ? [{ id: "assistant" as const, label: t("Assistant"), icon: Sparkles }]
       : []),
     { id: "properties" as const, label: t("Properties"), icon: Info },
@@ -182,8 +195,12 @@ export function EditorView() {
 
   function selectRightTab(tab: string) {
     const next = tab as RightTab;
-    if (propertiesOpen && next === rightTab) {
+    if (propertiesOpen && next === shownRightTab) {
       propertiesRef.current?.collapse();
+      return;
+    }
+    if (next === "assistant") {
+      runPanelCommand("show-assistant");
       return;
     }
     setRightTab(next);
@@ -281,9 +298,14 @@ export function EditorView() {
       if (!propertiesOpen) propertiesRef.current?.expand();
     });
     setPanelCommandHandler("show-assistant", () => {
-      if (!features.assistant) return;
       setRightTab("assistant");
-      if (!propertiesOpen) propertiesRef.current?.expand();
+      const panel = propertiesRef.current;
+      if (!propertiesOpen) panel?.expand();
+      // A conversation needs more room than the other panels.
+      if ((panel?.getSize().inPixels ?? 0) < 340) panel?.resize(360);
+    });
+    setPanelCommandHandler("hide-assistant", () => {
+      if (shownRightTab === "assistant") propertiesRef.current?.collapse();
     });
     return () => {
       setPanelCommandHandler("toggle-sidebar", null);
@@ -296,8 +318,15 @@ export function EditorView() {
       setPanelCommandHandler("show-bibliography", null);
       setPanelCommandHandler("show-version-control", null);
       setPanelCommandHandler("show-assistant", null);
+      setPanelCommandHandler("hide-assistant", null);
     };
   });
+
+  // The Ask button shows whether the docked assistant is open.
+  const dockShown = propertiesOpen && shownRightTab === "assistant";
+  useEffect(() => {
+    useAssistantStore.getState().setDockShown(dockShown);
+  }, [dockShown]);
 
   // Mirror what the window shows in the View menu's checkmarks.
   useEffect(() => {
@@ -363,7 +392,7 @@ export function EditorView() {
                   <div
                     // The editors read the project's read-only state when they mount.
                     key={projectPath ?? ""}
-                    className="flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm"
+                    className="relative flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm"
                   >
                     {readOnly && (
                       <p className="border-b bg-muted px-3 py-1.5 text-xs text-muted-foreground">
@@ -387,6 +416,7 @@ export function EditorView() {
                         </div>
                       )}
                     </div>
+                    <AssistantFloatingLayer />
                   </div>
                 </Panel>
                 {previewVisible && (
@@ -412,17 +442,17 @@ export function EditorView() {
                   <div className={cn(CARD, "flex")}>
                     {propertiesOpen && (
                       <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
-                        {rightTab === "online-snapshots" && onlineSnapshots ? (
+                        {shownRightTab === "online-snapshots" && onlineSnapshots ? (
                           <OnlineSnapshotsPanel label={onlineSnapshots} />
-                        ) : rightTab === "comments" ? (
+                        ) : shownRightTab === "comments" ? (
                           <CommentsPanel />
-                        ) : rightTab === "suggestions" ? (
+                        ) : shownRightTab === "suggestions" ? (
                           <SuggestionsPanel />
-                        ) : rightTab === "assistant" ? (
-                          <AssistantPanel />
-                        ) : rightTab === "properties" ? (
+                        ) : shownRightTab === "assistant" ? (
+                          <AssistantDock />
+                        ) : shownRightTab === "properties" ? (
                           <PropertiesPanel />
-                        ) : rightTab === "history" && versionControl === "git" ? (
+                        ) : shownRightTab === "history" && versionControl === "git" ? (
                           <HistoryPanel />
                         ) : versionControl === "git" ? (
                           <GitPanel />
@@ -455,13 +485,14 @@ export function EditorView() {
         </div>
         <RightRail
           tabs={rightTabs}
-          activeTab={rightTab}
+          activeTab={shownRightTab}
           panelOpen={propertiesOpen}
           onSelect={selectRightTab}
         />
       </div>
       <StatusBar />
       <CommentDialog target={commentTarget} onClose={() => setCommentTarget(null)} />
+      <AssistantMenuLayer />
     </div>
   );
 }
