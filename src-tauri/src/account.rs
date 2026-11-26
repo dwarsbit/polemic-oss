@@ -580,6 +580,40 @@ pub async fn usage_with(
     }
 }
 
+/// GET an /api/lookup/ path for the signed-in user: a work by its ID, or a
+/// paper search. Answers the status and the JSON body, so the app can read
+/// the server's error code (`plus_needed`, say). Signed out, a 401.
+pub async fn lookup_with(
+    server: &str,
+    store: &impl Store,
+    path: &str,
+) -> Result<serde_json::Value, String> {
+    if !path.starts_with("/api/lookup/") || path.contains("..") || path.contains('#') {
+        return Err("Only lookups go through here.".into());
+    }
+    let Some(token) = token_with(server, store) else {
+        return Ok(serde_json::json!({
+            "status": 401,
+            "body": { "error": "unauthorized", "message": "Sign in to your Scholarkit account." },
+        }));
+    };
+    let response = client()?
+        .get(format!("{server}{path}"))
+        .bearer_auth(&token)
+        .send()
+        .await
+        .map_err(|_| format!("Could not reach {server}."))?;
+    let status = response.status();
+    if status == reqwest::StatusCode::UNAUTHORIZED {
+        forget_rejected_with(server, &token, store);
+    }
+    let body = response
+        .json::<serde_json::Value>()
+        .await
+        .unwrap_or(serde_json::Value::Null);
+    Ok(serde_json::json!({ "status": status.as_u16(), "body": body }))
+}
+
 // --- commands ----------------------------------------------------------------
 
 pub fn server_of(app: &tauri::AppHandle) -> Result<String, String> {
@@ -614,6 +648,16 @@ pub async fn account_set_server(
 pub async fn account_usage(app: tauri::AppHandle) -> Result<Option<serde_json::Value>, String> {
     let server = server_of(&app)?;
     usage_with(&server, &STORE).await
+}
+
+/// Looks up through the account's server: papers by title or authors, a work by its ID.
+#[tauri::command]
+pub async fn account_lookup(
+    app: tauri::AppHandle,
+    path: String,
+) -> Result<serde_json::Value, String> {
+    let server = server_of(&app)?;
+    lookup_with(&server, &STORE, &path).await
 }
 
 /// Signs in through the browser; `create_account` opens the sign-up form.

@@ -6,7 +6,13 @@
  */
 
 import { errorText } from "@/lib/error-text";
-import type { AccountStatus, AccountUsage, AccountUser } from "@/lib/tauri";
+import type {
+  AccountStatus,
+  AccountUsage,
+  AccountUser,
+  LookupAnswer,
+} from "@/lib/tauri";
+import { t } from "@scholarkit/i18n";
 import { request, ServerError } from "@/web/server";
 
 async function status(): Promise<AccountStatus> {
@@ -31,6 +37,26 @@ async function usage(): Promise<AccountUsage | null> {
   }
 }
 
+/** An /api/lookup/ path, with the status and body as the desktop command answers them. */
+async function lookup(args: Record<string, unknown>): Promise<LookupAnswer> {
+  const path = String(args.path ?? "");
+  if (!path.startsWith("/api/lookup/"))
+    throw new Error("Only lookups go through here.");
+  let response: Response;
+  try {
+    response = await fetch(path, { credentials: "same-origin" });
+  } catch {
+    throw new ServerError(0, "unreachable", t("Could not reach Polemic."));
+  }
+  let body: unknown = null;
+  try {
+    body = await response.json();
+  } catch {
+    // Not JSON: a proxy's page.
+  }
+  return { status: response.status, body };
+}
+
 async function signOut(): Promise<void> {
   await request("/api/auth/sign-out", { method: "POST", json: {} });
   window.location.assign("/sign-in");
@@ -39,5 +65,6 @@ async function signOut(): Promise<void> {
 export const accountCommands = {
   account_status: status,
   account_usage: usage,
+  account_lookup: lookup,
   account_sign_out: signOut,
 };

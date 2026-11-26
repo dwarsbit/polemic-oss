@@ -1175,6 +1175,17 @@ export function accountUsage(): Promise<AccountUsage | null> {
   return invoke<AccountUsage | null>("account_usage");
 }
 
+/** The server's answer to an /api/lookup/ path: its status and JSON body. */
+export interface LookupAnswer {
+  status: number;
+  body: unknown;
+}
+
+/** GET an /api/lookup/ path through the account's server, signed in. */
+export function accountLookup(path: string): Promise<LookupAnswer> {
+  return invoke<LookupAnswer>("account_lookup", { path });
+}
+
 export function accountStatus(): Promise<AccountStatus> {
   return invoke<AccountStatus>("account_status");
 }

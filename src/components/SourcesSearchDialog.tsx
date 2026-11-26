@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Sparkles } from "lucide-react";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,6 +23,15 @@ import {
   type ZoteroItemData,
 } from "@/lib/zotero-convert";
 import { zoteroLocalSearch, zoteroWebSearch } from "@/lib/zotero";
+import {
+  paperDetails,
+  paperEntry,
+  PaperSearchError,
+  searchPapers,
+  type FoundPaper,
+} from "@/lib/paper-search";
+import { isWeb } from "@/lib/target";
+import { useAccountStore } from "@/store/account";
 import { sourceName, useSourcesStore, type SourceDef } from "@/store/sources";
 import { useSettingsStore } from "@/store/settings";
 import { cn } from "cn";
@@ -37,6 +47,18 @@ interface ZoteroHit {
   source: SourceDef;
   item: ZoteroItemData;
 }
+
+/** Papers from OpenAlex for these words, or why there are none. */
+interface PaperHits {
+  query: string;
+  works: FoundPaper[];
+  betterWithPro: boolean;
+  /** `plus_needed`, or a message to show; null when the search worked. */
+  stopped: { code: string; message: string } | null;
+}
+
+/** Papers are searched for once there are this many characters, and typing pauses. */
+const PAPER_MIN_CHARS = 3;
 
 /**
  * "Add from Sources…": search every enabled source and copy picked
@@ -61,6 +83,51 @@ export function SourcesSearchDialog({
   const [added, setAdded] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState<string | null>(null);
   const [zoteroHits, setZoteroHits] = useState<ZoteroHit[]>([]);
+  const [paperHits, setPaperHits] = useState<PaperHits | null>(null);
+  const account = useAccountStore((s) => s.status);
+  const signedIn = isWeb || account?.signedIn === true;
+
+  /** The plans on the account page: on this site in the browser, in the browser from the desktop app. */
+  const openPlans = () => {
+    if (isWeb) window.location.assign("/account#plan");
+    else if (account) void openUrl(`${account.server}/account#plan`);
+  };
+
+  // Papers from OpenAlex, through the Scholarkit server, once typing pauses.
+  const paperWords = query.trim();
+  const wantsPapers = open && signedIn && paperWords.length >= PAPER_MIN_CHARS;
+  useEffect(() => {
+    if (!wantsPapers) return;
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      searchPapers(paperWords)
+        .then((answer) => {
+          if (!cancelled)
+            setPaperHits({
+              query: paperWords,
+              works: answer.works,
+              betterWithPro: Boolean(answer.betterWithPro),
+              stopped: null,
+            });
+        })
+        .catch((e: unknown) => {
+          if (cancelled) return;
+          // Signed out or offline: no papers, and nothing to say about it.
+          const quiet = !(e instanceof PaperSearchError) || e.status === 401;
+          setPaperHits({
+            query: paperWords,
+            works: [],
+            betterWithPro: false,
+            stopped: quiet ? null : { code: e.code, message: e.message },
+          });
+        });
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [wantsPapers, paperWords]);
+  const papers = wantsPapers && paperHits?.query === paperWords ? paperHits : null;
 
   // Refresh the sources scan while the dialog is open.
   useEffect(() => {
@@ -163,6 +230,20 @@ export function SourcesSearchDialog({
     );
   }
 
+  async function addPaper(paper: FoundPaper) {
+    const work = await paperDetails(paper);
+    const taken = await projectBibKeys();
+    const entry = paperEntry(work, taken);
+    const result = await appendBibEntryToProject(entry.raw, entry.key);
+    if (result === null) return;
+    setAdded((prev) => new Set([...prev, paper.openAlexId || entry.key]));
+    setMessage(
+      result.alreadyPresent
+        ? t("{key} is already in the project.", { key: entry.key })
+        : t("Added {key} to {target}.", { key: entry.key, target: result.target }),
+    );
+  }
+
   /** One section per source, in the configured order. */
   const sections = useMemo(() => {
     const zoteroBySource = new Map<string, ZoteroHit[]>();
@@ -235,7 +316,7 @@ export function SourcesSearchDialog({
             </div>
           ) : (
             <>
-              {sections.length === 0 && (
+              {sections.length === 0 && !papers?.works.length && (
                 <p className="p-2 text-xs text-muted-foreground">
                   {trim.length > 0
                     ? t("No references match your search.")
@@ -281,6 +362,65 @@ export function SourcesSearchDialog({
                 </div>
               ))}
             </>
+          )}
+          {papers && (papers.works.length > 0 || papers.stopped) && (
+            <div>
+              <p className="px-2 pb-1 pt-2 text-2xs font-medium text-muted-foreground">
+                {t("Papers from OpenAlex")}
+              </p>
+              {papers.stopped?.code === "plus_needed" ? (
+                <button
+                  type="button"
+                  className="mx-1 flex w-[calc(100%-0.5rem)] items-start gap-1.5 rounded-md border border-tint-edge bg-muted px-2 py-1.5 text-left text-xs text-tint-foreground"
+                  onClick={() => {
+                    onOpenChange(false);
+                    openPlans();
+                  }}
+                >
+                  <Sparkles className="mt-px size-3 shrink-0" aria-hidden />
+                  <span>
+                    {t("Find papers by their title or authors with Plus and Pro.")}{" "}
+                    <span className="font-medium">{t("See plans")}</span>
+                  </span>
+                </button>
+              ) : papers.stopped ? (
+                <p className="p-2 text-xs text-muted-foreground">
+                  {papers.stopped.message}
+                </p>
+              ) : (
+                <ul className="space-y-0.5 p-1">
+                  {papers.works.map((paper) => {
+                    const id = paper.openAlexId || paper.doi || paper.title;
+                    return (
+                      <li key={id}>
+                        <HitRow
+                          label={[paper.author[0]?.split(",")[0] ?? "", paper.year]
+                            .filter(Boolean)
+                            .join(" ")}
+                          title={paper.title}
+                          tag={paper.container}
+                          present={added.has(id)}
+                          onClick={() => void addPaper(paper)}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+              {papers.betterWithPro && papers.works.length > 0 && (
+                <button
+                  type="button"
+                  className="mx-1 flex w-[calc(100%-0.5rem)] items-center gap-1.5 rounded-md bg-muted px-2 py-1.5 text-left text-xs font-medium text-tint-foreground hover:underline"
+                  onClick={() => {
+                    onOpenChange(false);
+                    openPlans();
+                  }}
+                >
+                  <Sparkles className="size-3 shrink-0" aria-hidden />
+                  {t("Get better results with Pro")}
+                </button>
+              )}
+            </div>
           )}
         </div>
         {message !== null && <p className="text-xs text-muted-foreground">{message}</p>}

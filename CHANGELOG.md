@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.27.0 (unreleased)
+
+### Added
+
+- **Add from Sources** also finds papers in OpenAlex's 480 million works by their title or authors, as you type, and adds one to your bibliography with its details. It comes with Plus and Pro and needs your Scholarkit account: Plus finds titles and authors and looks up the rest when you add a paper, Pro shows each paper's year and journal as you choose.
+
 ## 0.26.1 (2026-11-26)
 
 ### Changed
