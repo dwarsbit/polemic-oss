@@ -17,6 +17,13 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   gitAbortMerge,
   gitCommit,
   gitFetch,
@@ -497,21 +504,24 @@ function RemoteRow({
     };
     return (
       <div className="flex flex-col gap-1.5 px-2 pt-1">
-        <select
-          aria-label={t("Host")}
-          className="h-7 rounded-md border bg-background px-2 text-xs"
+        <Select
           value={publishing.provider}
           disabled={busy === "publish"}
-          onChange={(event) =>
-            setPublishing({ ...publishing, provider: event.target.value as Hosting })
+          onValueChange={(provider) =>
+            setPublishing({ ...publishing, provider: provider as Hosting })
           }
         >
-          {(Object.keys(HOSTING_NAMES) as Hosting[]).map((provider) => (
-            <option key={provider} value={provider}>
-              {HOSTING_NAMES[provider]}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-7 w-full px-2 text-xs" aria-label={t("Host")}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {(Object.keys(HOSTING_NAMES) as Hosting[]).map((provider) => (
+              <SelectItem key={provider} value={provider} className="text-xs">
+                {HOSTING_NAMES[provider]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Input
           autoFocus
           aria-label={t("Repository name")}

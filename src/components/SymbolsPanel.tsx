@@ -2,6 +2,13 @@ import { useState } from "react";
 import { MATH_SYMBOL_CATEGORIES } from "@/lib/math-symbols";
 import { insertAtCursor } from "@/lib/editor-insert";
 import { SectionHeader } from "@/components/SectionHeader";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { t } from "@scholarkit/i18n";
 
 export function SymbolsPanel({
@@ -22,17 +29,21 @@ export function SymbolsPanel({
       {collapsed === false && (
         <>
           <div className="px-3 py-2">
-            <select
-              className="h-7 w-full rounded-md border bg-background px-1.5 text-xs"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-            >
-              {MATH_SYMBOL_CATEGORIES.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+            <Select value={categoryId} onValueChange={setCategoryId}>
+              <SelectTrigger
+                className="h-7 w-full px-2 text-xs"
+                aria-label={t("Symbols")}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {MATH_SYMBOL_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id} className="text-xs">
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex-1 overflow-y-auto p-1.5">
             <div className="grid grid-cols-6 gap-1">

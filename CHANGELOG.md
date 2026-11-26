@@ -6,6 +6,10 @@
 
 - **Add from Sources** also finds papers in OpenAlex's 480 million works by their title or authors, as you type, and adds one to your bibliography with its details. It comes with Plus and Pro and needs your Scholarkit account: Plus finds titles and authors and looks up the rest when you add a paper, Pro shows each paper's year and journal as you choose.
 
+### Changed
+
+- The symbol categories in **Symbols** and the host in **Publish…** open Polemic's own list instead of your system's, like the other dropdowns.
+
 ## 0.26.1 (2026-11-26)
 
 ### Changed

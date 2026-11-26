@@ -329,10 +329,23 @@ describe("Publish", () => {
   it("publishes to GitLab when chosen", async () => {
     await render();
     await click("Publish…");
-    const select = host.querySelector<HTMLSelectElement>('select[aria-label="Host"]')!;
+    const trigger = host.querySelector<HTMLButtonElement>(
+      '[role="combobox"][aria-label="Host"]',
+    )!;
     await act(async () => {
-      select.value = "gitlab";
-      select.dispatchEvent(new Event("change", { bubbles: true }));
+      trigger.focus();
+      trigger.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
+      );
+    });
+    const gitlab = [...document.querySelectorAll<HTMLElement>('[role="option"]')].find(
+      (option) => option.textContent === "GitLab",
+    )!;
+    await act(async () => {
+      gitlab.focus();
+      gitlab.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
+      );
     });
     await click("Publish");
     expect(tauri.publishTo).toHaveBeenCalledWith("gitlab", "/tmp/paper", "paper", true);
