@@ -57,10 +57,11 @@ project, file, comment and compile commands from that document:
   folders exist through their files (an empty one lasts until the tab
   closes). `.polemic/` holds the comments, `project.json` and
   `assets.json`, as on disk.
-- Edits save after a short pause in typing. A save carries the text the
-  edit started from, and `applyTextMerge` moves the edit past changes
-  others made since, so both are kept. Changes from others reload the file
-  tree and reach the open file once it has no unsaved edits.
+- Edits save as you type, a short burst of keys at a time (one save at a
+  time, `src/web/session.ts`). A save carries the text the edit started
+  from, and `applyTextMerge` moves the edit past changes others made since,
+  so both are kept. Changes from others reload the file tree and are merged
+  into the open file, with any edits it has that aren't saved yet.
 - New projects start from the desktop app's templates: `src/lib/templates.ts`
   reads the table in `src-tauri/src/templates.rs` at build time, so there is
   one list.
@@ -88,11 +89,15 @@ project, file, comment and compile commands from that document:
   connection: each tab shares the file it has open and its cursor, as
   relative positions in that file's Y.Text. The server sets whose state it
   is from the connection's account, so names can't be faked. The top bar
-  shows who else is in the project, and the code editor shows their cursors
-  and selections (`src/lib/remote-cursors.ts`).
+  shows who else is in the project, the status bar says "Live with …" or
+  that the connection is coming back, the code editor shows their cursors
+  and selections, and the Visual face a bar by the block each one is in.
+  The faces, the status line and the cursors come from `@scholarkit/collab`,
+  shared with Cursive.
 - Edits from others come into the code editor as changes outside its undo
   history (`applyRemoteContent`), so your cursor, selection and undo stay;
-  behind the Visual face the file reloads.
+  the Visual face brings them in as one change over the part that differs
+  (`mergeDoc`), and reloads only when that doesn't fit.
 - Comments from others (collaborators, or reviewers on a review link) show
   up as they arrive: a remote change to a file in `.polemic/comments/`
   reloads the Comments panel. Suggestions carry the account's name unless

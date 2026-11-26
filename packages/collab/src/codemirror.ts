@@ -1,7 +1,7 @@
 /**
- * Other people's cursors and selections in the code editor (the
- * browser build's presence): a caret in their color with their name,
- * which shows when they move and on hover, and their selection
+ * Other people's carets and selections in a code editor (Polemic's
+ * source, Cursive's Markdown view): a caret in their color with their
+ * name, which shows when they move and on hover, and their selection
  * tinted. The editor hands in where they are with `setRemoteCursors`;
  * between updates the marks move with the text.
  */

@@ -40,8 +40,12 @@ export function projectFromAddress(): string | null {
   return projectPathIn(window.location.pathname);
 }
 
-/** How long typing pauses before the edits are saved. */
-const SAVE_DELAY_MS = 800;
+/**
+ * How long edits gather before they are saved: short enough that others
+ * see your typing as it happens, long enough to send a burst of keys at
+ * once.
+ */
+const SAVE_DELAY_MS = 100;
 
 export function startWebSession(): () => void {
   const stops: (() => void)[] = [];
@@ -62,11 +66,13 @@ export function startWebSession(): () => void {
     }),
   );
 
-  // Saving as you type: a background save after a pause, so the
-  // compile and everyone else see the edit.
+  // Saving as you type: a background save of each short burst of
+  // edits, so the compile and everyone else see them right away. One
+  // save at a time; edits made while one runs go in the next.
   let saveTimer: ReturnType<typeof setTimeout> | null = null;
-  const save = async () => {
-    saveTimer = null;
+  let saving: Promise<void> | null = null;
+  let again = false;
+  const saveOnce = async () => {
     const store = useProjectStore.getState();
     if (!store.project || store.project.readOnly) return;
     try {
@@ -75,6 +81,21 @@ export function startWebSession(): () => void {
     } catch {
       // Tried again after the next edit; the tab warns before closing.
     }
+  };
+  const save = async () => {
+    saveTimer = null;
+    if (saving) {
+      again = true;
+      return;
+    }
+    saving = (async () => {
+      do {
+        again = false;
+        await saveOnce();
+      } while (again);
+    })();
+    await saving;
+    saving = null;
   };
   stops.push(
     useEditorStore.subscribe((state, previous) => {
@@ -113,7 +134,8 @@ export function startWebSession(): () => void {
 
   // Edits still on their way to the server: ask before the tab closes.
   const onBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (saveTimer !== null || hasUnsyncedChanges()) event.preventDefault();
+    if (saveTimer !== null || saving !== null || hasUnsyncedChanges())
+      event.preventDefault();
   };
   window.addEventListener("beforeunload", onBeforeUnload);
   stops.push(() => window.removeEventListener("beforeunload", onBeforeUnload));

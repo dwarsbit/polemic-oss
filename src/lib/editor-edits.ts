@@ -64,20 +64,30 @@ export function flushQueuedEditsForView(): void {
 type RemoteContentHandler = (content: string) => boolean;
 
 let remoteContentHandler: RemoteContentHandler | null = null;
+let visualRemoteHandler: RemoteContentHandler | null = null;
 
 /** Called by the editor component to take in changes made elsewhere. */
 export function setRemoteContentHandler(h: RemoteContentHandler | null) {
   remoteContentHandler = h;
 }
 
+/** Called by the Visual face, which takes in changes made elsewhere while it shows. */
+export function setVisualRemoteHandler(h: RemoteContentHandler | null) {
+  visualRemoteHandler = h;
+}
+
 /**
  * Bring a change of the open file made elsewhere (someone else's edit,
- * another program) into the source editor as edits, so the cursor, the
- * selection and the undo history stay. False when the source editor
- * isn't showing; the caller reloads the file instead.
+ * another program) into the editor that shows, as edits, so the cursor,
+ * the selection and the undo history stay: the source editor, or the
+ * Visual face. False when neither can; the caller reloads the file
+ * instead.
  */
 export function applyRemoteContent(content: string): boolean {
-  return remoteContentHandler?.(content) ?? false;
+  return (
+    (remoteContentHandler?.(content) ?? false) ||
+    (visualRemoteHandler?.(content) ?? false)
+  );
 }
 
 type HistoryHandler = (direction: "undo" | "redo") => boolean;

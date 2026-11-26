@@ -772,7 +772,6 @@
   "Already in this document": "Al in dit document",
   "Add \\usepackage to the document": "\\usepackage aan het document toevoegen",
   "Added": "Toegevoegd",
-  "Also in this project": "Ook in dit project",
   "Show the error": "De fout tonen",
   "The PDF could not be shown. Compile again to make a new one.": "De pdf kon niet worden getoond. Compileer opnieuw om een nieuwe te maken.",
   "Preview": "Voorbeeld",
@@ -1816,5 +1815,16 @@
   "{used} of {limit}": "{used} van {limit}",
   "{percent}% used": "{percent}% gebruikt",
   "Upgrade to Plus": "Upgraden naar Plus",
-  "Upgrade to Pro": "Upgraden naar Pro"
+  "Upgrade to Pro": "Upgraden naar Pro",
+  "{name}, in {place}": "{name}, in {place}",
+  "Also in this project": "Ook in dit project",
+  "Live with {name}": "Live met {name}",
+  "Live with {first} and {second}": "Live met {first} en {second}",
+  "Live with {first}, {second} and {count} others": {
+    "one": "Live met {first}, {second} en {count} ander",
+    "other": "Live met {first}, {second} en {count} anderen"
+  },
+  "Reconnecting…": "Opnieuw verbinden…",
+  "Reconnecting… Your changes are kept.": "Opnieuw verbinden… Je wijzigingen blijven bewaard.",
+  "Read only · {live}": "Alleen lezen · {live}"
 }

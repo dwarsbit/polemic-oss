@@ -91,7 +91,7 @@ import {
   setRemoteContentHandler,
 } from "@/lib/editor-edits";
 import { carryOffset, textEdits } from "@/lib/project-doc";
-import { remoteCursors, setRemoteCursors } from "@/lib/remote-cursors";
+import { remoteCursors, setRemoteCursors } from "@scholarkit/collab/codemirror";
 import { reportPresence, usePresenceStore } from "@/store/presence";
 import { askAboutSelection } from "@/lib/assistant/entry";
 import { planUsepackageRemoval } from "@/lib/packages";

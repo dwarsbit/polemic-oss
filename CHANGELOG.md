@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.28.0 (unreleased)
+
+### Changed
+
+- In the browser, the people in a shared project see your typing as you type, instead of after a pause.
+- In the browser, the Visual face brings in other people's changes where they made them, so your place stays, and a bar with their name shows which paragraph each of them is in.
+- In the browser, the status bar says who is working with you, such as "Live with Anna and Tom", and says so when the connection drops: your changes are kept and sent when it's back.
+- The faces and cursors of the people in a project have the same colors as in Cursive.
+
 ## 0.27.0 (2026-11-26)
 
 ### Added

@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import * as Y from "yjs";
 import { applyFileChange } from "@/lib/project-doc";
 import type { OpenProject } from "@/web/projects";
-import { colorFor, peersOf } from "@/web/presence";
+import { colorFor } from "@scholarkit/collab";
+import { peersOf } from "@/web/presence";
 
 type Awareness = Parameters<typeof peersOf>[1];
 

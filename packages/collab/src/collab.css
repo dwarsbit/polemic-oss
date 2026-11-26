@@ -1,0 +1,128 @@
+/* Working together: faces, the live status line and other people's carets. Plain CSS on the
+   page's own tokens (--background, --muted, --muted-foreground, --foreground, --success,
+   --warning), so Polemic and Cursive show them in their own grays and in dark mode. */
+
+.collab-faces {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+.collab-faces > * + * {
+  margin-left: -4px;
+}
+
+.collab-face {
+  display: inline-grid;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--font-sans, inherit);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+}
+
+.collab-face-button {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  box-shadow: 0 0 0 2px var(--background, #fff);
+  cursor: pointer;
+}
+.collab-face-button:disabled {
+  cursor: default;
+}
+.collab-face-button:focus-visible {
+  outline: 2px solid var(--ring, currentColor);
+  outline-offset: 2px;
+}
+
+.collab-face-more {
+  background: var(--muted, #eee);
+  box-shadow: 0 0 0 2px var(--background, #fff);
+  color: var(--muted-foreground, #666);
+}
+
+.collab-status {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+.collab-status-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--success, #0ca678);
+}
+.collab-status[data-tone="warn"] {
+  color: var(--warning, #b7791f);
+}
+.collab-status[data-tone="warn"] .collab-status-dot {
+  background: var(--warning, #b7791f);
+}
+.collab-status[data-tone="muted"] .collab-status-dot {
+  background: color-mix(in srgb, var(--muted-foreground, #888) 50%, transparent);
+}
+.collab-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Someone else's place in the Visual face of a page: a bar in their color by the block,
+   with their name at its top. */
+.collab-block {
+  position: relative;
+}
+.collab-block::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -12px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--caret);
+  content: "";
+  pointer-events: none;
+}
+.collab-block::after {
+  position: absolute;
+  top: -1.4em;
+  left: -12px;
+  padding: 1px 4px;
+  border-radius: 3px 3px 3px 0;
+  background: var(--caret);
+  color: #fff;
+  content: attr(data-collab-name);
+  font-family: var(--font-sans, inherit);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.4;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: collab-name-fade 3s forwards;
+}
+.collab-block:hover::after {
+  animation: none;
+  opacity: 1;
+}
+
+/* A name shows when the person types or moves, then fades; hovering shows it again. */
+@keyframes collab-name-fade {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

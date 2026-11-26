@@ -1,0 +1,65 @@
+{
+  "name": "@scholarkit/collab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Working on a shared project together in Polemic and Cursive: faces, carets with names, the live status line.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./codemirror": "./src/codemirror.ts",
+    "./prosemirror": "./src/prosemirror.ts",
+    "./collab.css": "./src/collab.css"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@scholarkit/i18n": "workspace:*"
+  },
+  "peerDependencies": {
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.13",
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@codemirror/state": {
+      "optional": true
+    },
+    "@codemirror/view": {
+      "optional": true
+    },
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@scholarkit/eslint-config": "workspace:*",
+    "@scholarkit/tsconfig": "workspace:*",
+    "@tiptap/core": "^3.33.1",
+    "@tiptap/pm": "^3.33.0",
+    "@tiptap/starter-kit": "^3.33.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "catalog:",
+    "happy-dom": "catalog:",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "catalog:",
+    "vite": "^8.3.7",
+    "vitest": "catalog:"
+  }
+}

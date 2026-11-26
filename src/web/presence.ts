@@ -12,6 +12,7 @@ import * as Y from "yjs";
 import { carryOffset, textAt } from "@/lib/project-doc";
 import { setPresenceReporter, usePresenceStore, type Peer } from "@/store/presence";
 import { onProjectConnect, signedInAccount, type OpenProject } from "@/web/projects";
+import { colorFor } from "@scholarkit/collab";
 import { t } from "@scholarkit/i18n";
 
 type Awareness = NonNullable<HocuspocusProvider["awareness"]>;
@@ -20,24 +21,6 @@ type Awareness = NonNullable<HocuspocusProvider["awareness"]>;
 interface LocalPresence {
   file: string | null;
   cursor: { anchor: unknown; head: unknown } | null;
-}
-
-/** Cursor colors, picked by account so a person keeps theirs. */
-const COLORS = [
-  "#d6336c",
-  "#1c7ed6",
-  "#0ca678",
-  "#e8590c",
-  "#7048e8",
-  "#1098ad",
-  "#ae3ec9",
-  "#5c940d",
-];
-
-export function colorFor(id: string): string {
-  let hash = 0;
-  for (const c of id) hash = (hash * 31 + c.charCodeAt(0)) | 0;
-  return COLORS[Math.abs(hash) % COLORS.length];
 }
 
 function resolve(doc: Y.Doc, ytext: Y.Text, json: unknown): number | null {
@@ -120,12 +103,19 @@ export function startPresence(): () => void {
     // Their cursors move with the text as it changes.
     open.doc.on("update", refresh);
     refresh();
+    // Whether the connection is up, for the status line.
+    const onStatus = ({ status }: { status: string }) =>
+      usePresenceStore.setState({
+        connection: status === "connected" ? "connected" : "connecting",
+      });
+    open.provider.on("status", onStatus);
     return () => {
       awareness.off("change", refresh);
       open.doc.off("update", refresh);
+      open.provider.off("status", onStatus);
       cancelAnimationFrame(frame);
       target = null;
-      usePresenceStore.setState({ peers: [] });
+      usePresenceStore.setState({ peers: [], connection: "connected" });
     };
   };
 

@@ -10,6 +10,7 @@ describe("catalogs", () => {
         "src",
         "node_modules/@scholarkit/updates/src",
         "node_modules/@scholarkit/account-menu/src",
+        "node_modules/@scholarkit/collab/src",
       ],
       localesDir: "src/locales",
       check: true,

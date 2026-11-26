@@ -3,7 +3,7 @@ import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import type { Editor, JSONContent } from "@tiptap/core";
 import { Text } from "@codemirror/state";
-import { NodeSelection } from "@tiptap/pm/state";
+import { NodeSelection, type Transaction } from "@tiptap/pm/state";
 import {
   AlertTriangle,
   Bold,
@@ -19,6 +19,13 @@ import {
   Underline,
   Undo2,
 } from "lucide-react";
+import {
+  FROM_ELSEWHERE,
+  RemoteBlocks,
+  differingPart,
+  mergeDoc,
+  setRemoteBlocks,
+} from "@scholarkit/collab/prosemirror";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -72,6 +79,9 @@ import {
   setPendingSerializeFlush,
 } from "@/lib/visual/pending-serialize";
 import { stepCrossFileMoveFromEditor } from "@/lib/outline-move";
+import { setVisualRemoteHandler } from "@/lib/editor-edits";
+import { carryOffset } from "@/lib/project-doc";
+import { usePresenceStore } from "@/store/presence";
 import { parseTex } from "@/lib/visual/parse";
 import { serializeTex } from "@/lib/visual/serialize";
 import type { DocNode } from "@/lib/visual/doc-types";
@@ -442,6 +452,7 @@ export function VisualTexEditor() {
       ...visualTexExtensions,
       ...trackChangesExtensions,
       WritingChecks,
+      RemoteBlocks,
     ],
     content: docFromTex(entryContent),
     editable: !useProjectStore.getState().project?.readOnly,
@@ -508,7 +519,9 @@ export function VisualTexEditor() {
       useProjectStore.getState().noteActiveEdit(tex);
     };
     const previous = setPendingSerializeFlush(flush);
-    const schedule = () => {
+    const schedule = ({ transaction }: { transaction: Transaction }) => {
+      // A change from elsewhere is already in the store as its own TeX.
+      if (transaction.getMeta(FROM_ELSEWHERE)) return;
       if (timer !== null) clearTimeout(timer);
       timer = setTimeout(flush, 300);
     };
@@ -518,6 +531,56 @@ export function VisualTexEditor() {
       flush();
       setPendingSerializeFlush(previous);
     };
+  }, [editor]);
+
+  // Others' changes to this file come in where they changed it, so your
+  // place stays; a change that doesn't fit reloads (the effect below).
+  useEffect(() => {
+    if (editor === null) return;
+    setVisualRemoteHandler((content) => {
+      if (editor.isDestroyed) return false;
+      const store = useEditorStore.getState();
+      try {
+        const base = editor.schema.nodeFromJSON(docFromTex(store.content));
+        const next = editor.schema.nodeFromJSON(docFromTex(content));
+        // A change outside what the face shows (a comment, spacing) has nothing to bring in.
+        if (differingPart(base, next) !== null && !mergeDoc(editor, next, base))
+          return false;
+      } catch {
+        return false;
+      }
+      store.setContent(content);
+      useProjectStore.getState().noteActiveEdit(content);
+      return true;
+    });
+    return () => setVisualRemoteHandler(null);
+  }, [editor]);
+
+  // Where the others in this file are: a bar by the block each one is
+  // in (online). Their place in the TeX maps onto the blocks by line,
+  // the way the faces keep your place when you switch.
+  useEffect(() => {
+    if (editor === null) return;
+    let shown = false;
+    const show = () => {
+      if (editor.isDestroyed) return;
+      const file = useProjectStore.getState().activeFile;
+      const content = useEditorStore.getState().content;
+      const blocks = usePresenceStore.getState().peers.flatMap((peer) => {
+        if (peer.file !== file || !peer.selection || peer.text === null) return [];
+        const offset = carryOffset(peer.text, content, peer.selection.head);
+        const line = content.slice(0, offset).split("\n").length;
+        const pos = posForAnchor(editor.state.doc, anchorForLine(content, line));
+        return pos === null
+          ? []
+          : [{ id: String(peer.clientId), name: peer.name, color: peer.color, pos }];
+      });
+      if (blocks.length === 0 && !shown) return;
+      shown = blocks.length > 0;
+      setRemoteBlocks(editor, blocks);
+    };
+    show();
+    return usePresenceStore.subscribe(show);
   }, [editor]);
 
   // External reloads (file open, tab switch) reparse into the editor.

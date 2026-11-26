@@ -772,7 +772,6 @@
   "Already in this document": "Already in this document",
   "Add \\usepackage to the document": "Add \\usepackage to the document",
   "Added": "Added",
-  "Also in this project": "Also in this project",
   "Show the error": "Show the error",
   "The PDF could not be shown. Compile again to make a new one.": "The PDF could not be shown. Compile again to make a new one.",
   "Preview": "Preview",
@@ -1816,5 +1815,16 @@
   "{used} of {limit}": "{used} of {limit}",
   "{percent}% used": "{percent}% used",
   "Upgrade to Plus": "Upgrade to Plus",
-  "Upgrade to Pro": "Upgrade to Pro"
+  "Upgrade to Pro": "Upgrade to Pro",
+  "{name}, in {place}": "{name}, in {place}",
+  "Also in this project": "Also in this project",
+  "Live with {name}": "Live with {name}",
+  "Live with {first} and {second}": "Live with {first} and {second}",
+  "Live with {first}, {second} and {count} others": {
+    "one": "Live with {first}, {second} and {count} other",
+    "other": "Live with {first}, {second} and {count} others"
+  },
+  "Reconnecting…": "Reconnecting…",
+  "Reconnecting… Your changes are kept.": "Reconnecting… Your changes are kept.",
+  "Read only · {live}": "Read only · {live}"
 }

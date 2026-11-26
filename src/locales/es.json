@@ -791,7 +791,6 @@
   "Already in this document": "Ya está en este documento",
   "Add \\usepackage to the document": "Añadir \\usepackage al documento",
   "Added": "Añadido",
-  "Also in this project": "También en este proyecto",
   "Show the error": "Mostrar el error",
   "The PDF could not be shown. Compile again to make a new one.": "No se ha podido mostrar el PDF. Vuelve a compilar para crear uno nuevo.",
   "Preview": "Vista previa",
@@ -1846,5 +1845,17 @@
   "{used} of {limit}": "{used} de {limit}",
   "{percent}% used": "{percent} % usado",
   "Upgrade to Plus": "Pasar a Plus",
-  "Upgrade to Pro": "Pasar a Pro"
+  "Upgrade to Pro": "Pasar a Pro",
+  "{name}, in {place}": "{name}, en {place}",
+  "Also in this project": "También en este proyecto",
+  "Live with {name}": "En directo con {name}",
+  "Live with {first} and {second}": "En directo con {first} y {second}",
+  "Live with {first}, {second} and {count} others": {
+    "many": "En directo con {first}, {second} y {count} personas más",
+    "one": "En directo con {first}, {second} y {count} persona más",
+    "other": "En directo con {first}, {second} y {count} personas más"
+  },
+  "Reconnecting…": "Reconectando…",
+  "Reconnecting… Your changes are kept.": "Reconectando… Tus cambios se conservan.",
+  "Read only · {live}": "Solo lectura · {live}"
 }

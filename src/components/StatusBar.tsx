@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Check, Loader2 } from "lucide-react";
+import { LiveStatus, onePerPerson } from "@scholarkit/collab";
+import { useMemo } from "react";
 import { LinkNoticeDialog, LinkStatusIndicator } from "@/components/LinkStatus";
 import { SuggestToggle } from "@/components/SuggestToggle";
 import { useGrammarStatus } from "@/lib/grammar-check";
 import { detectTex, type GrammarError, type ToolInfo } from "@/lib/tauri";
 import { countWords, totalWords } from "@/lib/word-count";
 import { useEditorStore } from "@/store/editor";
+import { usePresenceStore } from "@/store/presence";
 import { usePreviewStore } from "@/store/preview";
 import { useProjectStore } from "@/store/project";
 import { useSettingsStore } from "@/store/settings";
@@ -95,6 +98,22 @@ function GrammarStatus() {
   );
 }
 
+/** Who else is in the shared project, or that the connection is coming back (online). */
+function ProjectLiveStatus() {
+  const peers = usePresenceStore((s) => s.peers);
+  const connection = usePresenceStore((s) => s.connection);
+  const readOnly = useProjectStore((s) => Boolean(s.project?.readOnly));
+  const names = useMemo(
+    () =>
+      onePerPerson(
+        peers.map((peer) => ({ id: peer.userId, name: peer.name, where: null })),
+        null,
+      ).map((person) => person.name),
+    [peers],
+  );
+  return <LiveStatus names={names} connection={connection} readOnly={readOnly} />;
+}
+
 /** The transparent strip along the bottom window edge. */
 export function StatusBar() {
   const activeFile = useProjectStore((s) => s.activeFile);
@@ -117,6 +136,7 @@ export function StatusBar() {
         {activeFile?.endsWith(".tex") && <SuggestToggle compact />}
       </div>
       <div className="flex shrink-0 items-center gap-3">
+        <ProjectLiveStatus />
         <LinkStatusIndicator />
         <LinkNoticeDialog />
         <GrammarStatus />

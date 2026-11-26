@@ -1,3 +1,4 @@
+import type { LiveConnection } from "@scholarkit/collab";
 import { create } from "zustand";
 
 /** Someone else in the open project (the browser build's live sync). */
@@ -18,10 +19,15 @@ export interface Peer {
 
 interface PresenceState {
   peers: Peer[];
+  /** Whether the live connection is up; always "connected" on the desktop. */
+  connection: LiveConnection;
 }
 
 /** Who else is in the open project. Empty on the desktop. */
-export const usePresenceStore = create<PresenceState>(() => ({ peers: [] }));
+export const usePresenceStore = create<PresenceState>(() => ({
+  peers: [],
+  connection: "connected",
+}));
 
 type Reporter = (
   file: string | null,
