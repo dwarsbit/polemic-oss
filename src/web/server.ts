@@ -1,8 +1,8 @@
 import { t } from "@scholarkit/i18n";
 /**
- * The browser build's way to polemic-server: the same origin, signed in
+ * The browser build's way to the Scholarkit server: the same origin, signed in
  * with the services app's session cookie. Request and answer shapes
- * follow packages/contracts in dwarsbit/polemic-server.
+ * follow packages/contracts in dwarsbit/scholarkit.
  */
 
 /** A project as GET /api/projects lists it. */

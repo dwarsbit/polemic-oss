@@ -456,7 +456,7 @@ if __name__ == "__main__":
 
 
 # ---------------------------------------------------------------- mauve icons
-# Tints from polemic-website/app/global.css (mauve scale) and the purple
+# Tints from apps/website/app/global.css in Scholarkit (mauve scale) and the purple
 # wallpaper gradient in components/elements/wallpaper.tsx, with the same
 # feTurbulence grain the site uses.
 

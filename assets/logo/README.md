@@ -47,7 +47,7 @@ Treatments
 Icon backgrounds (`icon-*.svg`, `icon-mauve-sheet.html`)
 
 1024px icons in the macOS layout of `assets/app-icon.svg`, with the tile filled by
-a vertical gradient in the mauve tints from `polemic-website/app/global.css` (or the
+a vertical gradient in the mauve tints from `apps/website/app/global.css` in Scholarkit (or the
 site's purple wallpaper colours) and a fine overlay grain, tuned to the grain level of
 the site's wallpaper component.
 

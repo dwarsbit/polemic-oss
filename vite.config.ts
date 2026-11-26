@@ -38,7 +38,7 @@ const webAliases = [
 ];
 
 // https://vite.dev/config/
-// The browser build talks to polemic-server on its own origin. In
+// The browser build talks to the Scholarkit server on its own origin. In
 // development the dev server passes /api on to a server running
 // locally (POLEMIC_SERVER, the API's address).
 const apiProxy = {

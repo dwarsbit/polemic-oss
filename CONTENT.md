@@ -1,6 +1,6 @@
 # Polemic content style
 
-> This file is a copy of the **Content** section of the Polemic design system (https://claude.ai/artifact/3JkEix2wDtryweGKGMxZdX), the source of truth. Change the rules there first, then copy the file to polemic, polemic-server and polemic-website.
+> This file is a copy of the **Content** section of the Polemic design system (https://claude.ai/artifact/3JkEix2wDtryweGKGMxZdX), the source of truth. Change the rules there first, then copy the file here; the mirrors take it from Scholarkit.
 
 How Polemic writes. These rules cover every piece of public text: the editor's interface, the website, the docs, the server's pages and emails, READMEs and release notes. This section is the source of truth; each repository carries a copy as `CONTENT.md`. Change the rules here first, then copy the file to the repositories.
 

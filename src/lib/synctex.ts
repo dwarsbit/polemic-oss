@@ -1,7 +1,7 @@
 // SyncTeX in the browser build: a point on a PDF page → the source file and line (backward), and a
 // source line → its place in the PDF (forward). The desktop app asks the `synctex` program; the
 // browser reads the .synctex file itself. Backward search is the review page's
-// (polemic-server apps/web/lib/synctex.ts); keep the two in step.
+// (apps/account/lib/synctex.ts in dwarsbit/scholarkit); keep the two in step.
 //
 // The file lists inputs (`Input:<tag>:<name>`), then per page (`{<page>` … `}<page>`) nested
 // boxes and nodes with `<tag>,<line>:<x>,<y>` and, for boxes, `:<width>,<height>,<depth>`.
