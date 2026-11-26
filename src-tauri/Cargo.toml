@@ -1,6 +1,6 @@
 [package]
 name = "polemic"
-version = "0.26.0"
+version = "0.26.1"
 description = "Polemic - an open source LaTeX editor"
 authors = ["Leon"]
 edition = "2021"
