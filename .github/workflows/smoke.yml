@@ -3,15 +3,11 @@ name: Smoke
 # Builds the app on macOS and Windows and checks that it starts and
 # stays up for a few seconds. Separate from CI: it is slower, and it
 # launches the real app (window, webview, Rust backend).
-#
-# Pull requests run Windows only, since macOS runners are scarce.
-# Runs started by the mirror or by hand cover both.
 
 # Scholarkit's Mirror workflow starts it after each commit it pushes here, to main or to a
-# scholarkit/<branch> (a push from a workflow starts no workflows by itself). Pull requests
-# here start it too.
+# scholarkit/<branch> (a push from a workflow starts no workflows by itself). Otherwise it runs
+# only by hand: pull requests here start nothing.
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -31,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(github.event_name == 'pull_request' && '["windows-latest"]' || '["macos-latest", "windows-latest"]') }}
+        os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     steps:

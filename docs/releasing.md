@@ -18,9 +18,11 @@ It releases the version of the `## X.Y.Z (unreleased)` heading in
    at the top of the changelog. Every pull request that changes, adds or
    fixes something adds its line there; start the heading if there is
    none yet.
-2. Once CI on Scholarkit's `main` is green, and CI on polemic-oss's `main`
-   is green for the same files, run **Polemic release** from the Actions
-   tab of Scholarkit, on `main`. It takes no input.
+2. Run **CI** on Scholarkit's `main` from the Actions tab: it runs only
+   by hand. Once it is green, and CI on polemic-oss's `main` is green
+   for the same files (the Mirror workflow starts it after a merge), run
+   **Polemic release** from the Actions tab of Scholarkit, on `main`. It
+   takes no input.
 
 **Polemic release** requires exactly one unreleased heading and a numeric
 version (Windows installers take no pre-releases). It sets the version in
