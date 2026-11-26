@@ -14,6 +14,7 @@ catalog:
   eslint: ^10.15.0
   eslint-config-prettier: ^10.1.8
   eslint-plugin-react-hooks: ^7.1.1
+  fflate: 0.8.3
   globals: ^17.14.0
   happy-dom: ^21.0.4
   lefthook: ^2.2.2
@@ -24,11 +25,13 @@ catalog:
   vitest: ^5.1.0
 
 # Install scripts that don't run. The "prepare" script installs the Git hooks, so
-# lefthook's own script isn't needed, and esbuild and sentry-cli ship their binaries as packages.
+# lefthook's own script isn't needed, esbuild and sentry-cli ship their binaries as packages, and
+# tesseract.js's only asks for donations.
 allowBuilds:
   "@sentry/cli": false
   esbuild: false
   lefthook: false
+  tesseract.js: false
 
 # Versions forced past a security advisory where a dependency pins an older one: vitest picks
 # happy-dom as an optional peer, and serve pins compression. Drop an entry once the dependency
