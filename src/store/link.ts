@@ -1,10 +1,13 @@
 import { errorText } from "@/lib/error-text";
 import { create } from "zustand";
+import { openLive, type DesktopLive } from "@/lib/desktop-live";
+import { attachPresence } from "@/lib/live-presence";
 import { LinkSync, type FolderChange, type LinkApi } from "@/lib/link-sync";
 import { publishApi, pullReviewComments } from "@/lib/share";
 import { syncedDriveOf } from "@/lib/synced-drive";
 import { features } from "@/lib/target";
 import {
+  accountStatus,
   isShareError,
   linkEnable,
   linkLoad,
@@ -22,6 +25,7 @@ import {
   sharePush,
   shareStatus,
   shareSync,
+  shareSyncTicket,
   shareUploadAssets,
   type ShareError,
 } from "@/lib/tauri";
@@ -45,6 +49,11 @@ interface LinkState {
   /** The folder of the project that syncs; null when the open project doesn't. */
   dir: string | null;
   status: LinkStatus | null;
+  /**
+   * The project is shared with others and open live, as in the
+   * browser: their edits arrive as they type, yours save as you type.
+   */
+  live: boolean;
   /** Told once per project: it now syncs both ways (shared before
    *  that), or it sits in a synced drive's folder. */
   notice: LinkNotice | null;
@@ -53,6 +62,8 @@ interface LinkState {
   stop: () => void;
   /** Syncs now: after a save, on focus, from the Share dialog. */
   syncNow: () => Promise<void>;
+  /** Opens the live connection once the project is shared with others, as after the Share dialog. */
+  goLive: () => Promise<void>;
   dismissNotice: () => void;
 }
 
@@ -107,8 +118,12 @@ async function gitShared(dir: string, role: string | null): Promise<boolean> {
 /** How often the server is asked for changes, with the window in front and behind. */
 const POLL_FOCUSED_MS = 3_000;
 const POLL_BACKGROUND_MS = 30_000;
+/** While live, the connection tells of changes: polling is only the fallback. */
+const POLL_LIVE_MS = 30_000;
 /** The longest wait between tries while the server can't be reached. */
 const MAX_BACKOFF_MS = 60_000;
+/** How often going live is tried again, on focus or when others' changes arrive. */
+const LIVE_RETRY_MS = 30_000;
 
 /** The LinkApi of the project in `dir`, through the Rust side. */
 export function linkApi(dir: string): LinkApi {
@@ -158,6 +173,10 @@ let sync: LinkSync | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
 let failures = 0;
 let unlisten: (() => void) | null = null;
+let live: DesktopLive | null = null;
+let stopPresence: (() => void) | null = null;
+let goingLive = false;
+let liveTried = 0;
 
 const focused = () => typeof document === "undefined" || document.hasFocus();
 
@@ -167,9 +186,11 @@ export const useLinkStore = create<LinkState>((set, get) => {
     const wait =
       failures > 0
         ? Math.min(MAX_BACKOFF_MS, POLL_FOCUSED_MS * 2 ** failures)
-        : focused()
-          ? POLL_FOCUSED_MS
-          : POLL_BACKGROUND_MS;
+        : live
+          ? POLL_LIVE_MS
+          : focused()
+            ? POLL_FOCUSED_MS
+            : POLL_BACKGROUND_MS;
     timer = setTimeout(() => void run(), wait);
   }
 
@@ -185,7 +206,11 @@ export const useLinkStore = create<LinkState>((set, get) => {
       if (sync !== current) return;
       failures = 0;
       set({ status: { kind: "synced", at: Date.now() } });
-      if (result.changed.length > 0) onFolderChanges(dir, result.changed);
+      if (result.changed.length > 0) {
+        onFolderChanges(dir, result.changed);
+        // Someone else is at work in the project: it may be shared by now.
+        void goLiveSoon();
+      }
     } catch (e) {
       if (sync !== current) return;
       const status = statusFor(e);
@@ -201,9 +226,24 @@ export const useLinkStore = create<LinkState>((set, get) => {
     if (sync === current) schedule();
   }
 
+  function closeLive() {
+    stopPresence?.();
+    stopPresence = null;
+    live?.close();
+    live = null;
+    if (get().live) set({ live: false });
+  }
+
+  /** Goes live unless it was tried in the last LIVE_RETRY_MS. */
+  function goLiveSoon() {
+    if (live || Date.now() - liveTried < LIVE_RETRY_MS) return Promise.resolve();
+    return get().goLive();
+  }
+
   return {
     dir: null,
     status: null,
+    live: false,
     notice: null,
 
     start: async (dir) => {
@@ -250,9 +290,60 @@ export const useLinkStore = create<LinkState>((set, get) => {
         void run((s) => s.local(change));
       });
       await run();
+      await get().goLive();
+    },
+
+    goLive: async () => {
+      const current = sync;
+      const dir = get().dir;
+      if (!current || !dir || live || goingLive) return;
+      goingLive = true;
+      liveTried = Date.now();
+      try {
+        const share = await shareStatus(dir);
+        const ticket = await shareSyncTicket(dir);
+        if (!ticket.shared || !share.link || sync !== current) return;
+        // A change arrives on the connection: fetch it now, unless the copy has it (your own).
+        let pending: ReturnType<typeof setTimeout> | null = null;
+        const opened = await openLive({
+          server: share.server,
+          projectId: share.link.projectId,
+          ticket: ticket.ticket,
+          nextTicket: async () => (await shareSyncTicket(dir)).ticket,
+          onChange: () => {
+            if (pending || sync !== current || !live || current.covers(live.doc))
+              return;
+            pending = setTimeout(() => {
+              pending = null;
+              if (sync === current) void run();
+            }, 0);
+          },
+          onLost: () => {
+            if (live === opened) closeLive();
+          },
+        });
+        if (sync !== current) {
+          opened.close();
+          return;
+        }
+        live = opened;
+        stopPresence = attachPresence(opened, async () =>
+          accountStatus()
+            .then((account) => account.user?.id ?? null)
+            .catch(() => null),
+        );
+        set({ live: true });
+        // What came in while connecting, and the slower polling from now on.
+        void run();
+      } catch {
+        // Not shared with anyone, an older server, or offline: tried again later.
+      } finally {
+        goingLive = false;
+      }
     },
 
     stop: () => {
+      closeLive();
       if (timer) clearTimeout(timer);
       timer = null;
       unlisten?.();
@@ -265,6 +356,7 @@ export const useLinkStore = create<LinkState>((set, get) => {
     syncNow: async () => {
       if (!sync) return;
       failures = 0;
+      void goLiveSoon();
       await run((s) => s.local({ kind: "scan" }));
     },
 

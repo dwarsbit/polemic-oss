@@ -9,13 +9,14 @@ doesn't.
 
 ## Pieces
 
-| Where                    | Does                                                                                                                                                              |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/link-sync.ts`   | One sync run: finish interrupted writes, fold changes made here into the editor's copy of the document, merge the server's changes and write them, push the rest  |
-| `src/store/link.ts`      | Runs the sync while the project is open: on open, after every command that changes files (`onProjectFilesChanged` in `src/lib/tauri.ts`), on focus and on a timer |
-| `src/store/project.ts`   | `applyFolderChanges`: open files follow what a sync wrote; unsaved edits merge with it (`mergeText`)                                                              |
-| `src-tauri/src/link.rs`  | Keeps the copy of the document in the app data folder, writes the server's changes into the folder (never over a file changed since), fetches assets              |
-| `src-tauri/src/share.rs` | The link (folder → server project, `twoWay`), the document and asset routes                                                                                       |
+| Where                     | Does                                                                                                                                                              |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/link-sync.ts`    | One sync run: finish interrupted writes, fold changes made here into the editor's copy of the document, merge the server's changes and write them, push the rest  |
+| `src/store/link.ts`       | Runs the sync while the project is open: on open, after every command that changes files (`onProjectFilesChanged` in `src/lib/tauri.ts`), on focus and on a timer |
+| `src/store/project.ts`    | `applyFolderChanges`: open files follow what a sync wrote; unsaved edits merge with it (`mergeText`)                                                              |
+| `src-tauri/src/link.rs`   | Keeps the copy of the document in the app data folder, writes the server's changes into the folder (never over a file changed since), fetches assets              |
+| `src-tauri/src/share.rs`  | The link (folder → server project, `twoWay`), the document and asset routes                                                                                       |
+| `src/lib/desktop-live.ts` | The live connection of a project shared with others (see "Live")                                                                                                  |
 
 ## How a run goes
 
@@ -24,7 +25,9 @@ doesn't.
    from the copy goes in as edits. Files keep their ids by path, and a
    rename made in the app moves the id, so history and comment anchors
    survive. Files the folder leaves out (`.gitignore`, over 50 MB) are
-   not deleted from the project.
+   not deleted from the project. A save in the app of a file the copy
+   has needs no read: its text goes in as it is (`write` in
+   `LocalChange`), which keeps saving as you type cheap.
 3. `document/sync` gives what the server has that the copy lacks. It is
    merged, and `diskChanges` lists the moves, writes and deletes for the
    folder. Before writing, the paths are saved as pending. A write is
@@ -37,6 +40,32 @@ Only saved files sync. Unsaved edits stay in the editor and merge with
 what arrives; saving sends them. The app syncs a project while it is
 open: changes made while it is closed, on either side, sync on the next
 open.
+
+## Live
+
+A project shared with others is live in the desktop app too, as in the
+browser: your edits save as you type and others' come in as they type.
+After the first run, `goLive` in `src/store/link.ts` asks the server for
+a sync ticket (`share_sync_ticket`; the account token stays in Rust, see
+the API's `docs/services.md`). When anyone besides you is in the
+project, `src/lib/desktop-live.ts` opens the project's WebSocket
+(`/api/sync`) with it, on a replica of the server's document, with a
+fresh ticket on every reconnect. The replica is never edited here:
+
+- A change on it starts a run right away, unless the copy has it
+  already (`covers`: your own push coming back). The timer falls back to
+  every 30 seconds.
+- It carries presence: faces in the toolbar, the status bar's "Live
+  with …" and others' cursors (`src/lib/live-presence.ts`, shared with
+  the browser).
+- While live, the open file saves 200 ms after each burst of keys
+  (`src/lib/save-as-you-type.ts`), so the run sends it.
+
+Not shared, an older server or offline: the app stays with runs, and
+tries going live again on focus, when others' changes arrive or when
+the Share dialog closes, at most every 30 seconds. When the server lets
+go (you left the project), the connection closes and runs go on until
+the next one says so.
 
 ## Links from before
 

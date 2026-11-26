@@ -317,6 +317,45 @@ describe("LinkSync", () => {
     expect(readProject(t.server).texts.has("api.secret")).toBe(true);
   });
 
+  it("sends a save of a file it has without reading the folder", async () => {
+    const t = setup({ "main.tex": "Hello", "fig.png": { hash: HASH } });
+    let reads = 0;
+    const folder = t.api.folder;
+    t.api.folder = () => (reads++, folder());
+    const sync = new LinkSync(t.api);
+    await sync.run();
+    expect(reads).toBe(1);
+    t.edit("main.tex", (text) => text.insert(0, "Oh. "));
+    t.disk.set("main.tex", "Hello there");
+    await sync.local({ kind: "write", path: "main.tex", text: "Hello there" });
+    expect(reads).toBe(1);
+    expect(t.serverText("main.tex")).toBe("Oh. Hello there");
+    expect(t.disk.get("main.tex")).toBe("Oh. Hello there");
+    // A new file, and a .gitignore, are read from the folder.
+    t.disk.set("new.tex", "New");
+    await sync.local({ kind: "write", path: "new.tex", text: "New" });
+    expect(reads).toBe(2);
+    t.disk.set(".gitignore", "*.log\n");
+    await sync.local({ kind: "write", path: ".gitignore", text: "*.log\n" });
+    expect(reads).toBe(3);
+    expect(t.serverText("new.tex")).toBe("New");
+  });
+
+  it("tells whether its copy has what a live document has", async () => {
+    const t = setup({ "main.tex": "Hello" });
+    const sync = new LinkSync(t.api);
+    const live = new Y.Doc();
+    expect(sync.covers(live)).toBe(false);
+    await sync.run();
+    Y.applyUpdate(live, Y.encodeStateAsUpdate(t.server));
+    expect(sync.covers(live)).toBe(true);
+    t.edit("main.tex", (text) => text.insert(5, "!"));
+    Y.applyUpdate(live, Y.encodeStateAsUpdate(t.server));
+    expect(sync.covers(live)).toBe(false);
+    await sync.run();
+    expect(sync.covers(live)).toBe(true);
+  });
+
   it("does not push for a read-only link", async () => {
     const t = setup({ "main.tex": "here" }, [
       { path: "main.tex", kind: "text", text: "there" },

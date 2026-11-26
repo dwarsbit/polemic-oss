@@ -4,9 +4,9 @@
  * and changes from others reach the open file. Started once by App.
  */
 
+import { saveAsYouType } from "@/lib/save-as-you-type";
 import { useCommentsStore } from "@/store/comments";
 import { startPresence } from "@/web/presence";
-import { useEditorStore } from "@/store/editor";
 import { useProjectStore } from "@/store/project";
 import {
   closeProject,
@@ -66,51 +66,9 @@ export function startWebSession(): () => void {
     }),
   );
 
-  // Saving as you type: a background save of each short burst of
-  // edits, so the compile and everyone else see them right away. One
-  // save at a time; edits made while one runs go in the next.
-  let saveTimer: ReturnType<typeof setTimeout> | null = null;
-  let saving: Promise<void> | null = null;
-  let again = false;
-  const saveOnce = async () => {
-    const store = useProjectStore.getState();
-    if (!store.project || store.project.readOnly) return;
-    try {
-      await store.flushBuffers();
-      await store.saveActiveFile({ background: true });
-    } catch {
-      // Tried again after the next edit; the tab warns before closing.
-    }
-  };
-  const save = async () => {
-    saveTimer = null;
-    if (saving) {
-      again = true;
-      return;
-    }
-    saving = (async () => {
-      do {
-        again = false;
-        await saveOnce();
-      } while (again);
-    })();
-    await saving;
-    saving = null;
-  };
-  stops.push(
-    useEditorStore.subscribe((state, previous) => {
-      // A loaded file (docVersion moved) is not an edit.
-      // Nor is someone else's edit coming in (the content is what was saved).
-      if (
-        state.content === previous.content ||
-        state.docVersion !== previous.docVersion ||
-        state.content === useProjectStore.getState().lastSavedContent
-      )
-        return;
-      if (saveTimer !== null) clearTimeout(saveTimer);
-      saveTimer = setTimeout(() => void save(), SAVE_DELAY_MS);
-    }),
-  );
+  // Saving as you type (src/lib/save-as-you-type.ts).
+  const saving = saveAsYouType(() => true, SAVE_DELAY_MS);
+  stops.push(saving.stop);
 
   // The address and the tab title follow the open project.
   stops.push(
@@ -134,14 +92,12 @@ export function startWebSession(): () => void {
 
   // Edits still on their way to the server: ask before the tab closes.
   const onBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (saveTimer !== null || saving !== null || hasUnsyncedChanges())
-      event.preventDefault();
+    if (saving.pending() || hasUnsyncedChanges()) event.preventDefault();
   };
   window.addEventListener("beforeunload", onBeforeUnload);
   stops.push(() => window.removeEventListener("beforeunload", onBeforeUnload));
 
   return () => {
-    if (saveTimer !== null) clearTimeout(saveTimer);
     for (const stop of stops) stop();
   };
 }

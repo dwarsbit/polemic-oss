@@ -13,7 +13,9 @@
  * 1. Writes again the files an interrupted run left unwritten.
  * 2. When something changed here, reads the folder and folds the
  *    difference into the copy, as edits (files keep their ids by path,
- *    so a rename made in the app keeps its history and comments).
+ *    so a rename made in the app keeps its history and comments). A
+ *    save of a file the copy has needs no read: its text goes in as it
+ *    is, which keeps saving as you type cheap in a large project.
  * 3. Fetches what the server has that the copy lacks, merges it, and
  *    writes the files that changed into the folder. A file saved here
  *    while that happened is never overwritten: the two are merged.
@@ -26,6 +28,7 @@
 import * as Y from "yjs";
 import {
   LOCAL_ORIGIN,
+  applyFileChange,
   applyFolder,
   applyRename,
   applyTextMerge,
@@ -70,7 +73,10 @@ export interface LinkApi {
 
 /** A change made here that the sync should pick up. */
 export type LocalChange =
-  { kind: "scan" } | { kind: "rename"; from: string; to: string };
+  | { kind: "scan" }
+  | { kind: "rename"; from: string; to: string }
+  /** The app saved a text file. */
+  | { kind: "write"; path: string; text: string };
 
 /** What a sync did to the folder, for the editor's open files. */
 export type FolderChange =
@@ -120,6 +126,8 @@ export class LinkSync {
   private doc: Y.Doc | null = null;
   private renames: { from: string; to: string }[] = [];
   private scan = true;
+  /** Text files the app saved since the last run, when no read of the folder is due. */
+  private writes = new Map<string, string>();
   /** Asset hashes the server is known to have. */
   private uploaded = new Set<string>();
   private running: Promise<SyncResult> | null = null;
@@ -132,10 +140,22 @@ export class LinkSync {
 
   /** Something changed here: the next run reads the folder. */
   local(change: LocalChange): Promise<SyncResult> {
-    if (change.kind === "rename")
-      this.renames.push({ from: change.from, to: change.to });
-    this.scan = true;
+    if (change.kind === "write") this.writes.set(change.path, change.text);
+    else {
+      if (change.kind === "rename")
+        this.renames.push({ from: change.from, to: change.to });
+      this.scan = true;
+    }
     return this.run();
+  }
+
+  /** Whether the copy has everything `doc` has, as after a run that brought it in. */
+  covers(doc: Y.Doc): boolean {
+    if (!this.doc) return false;
+    const mine = Y.decodeStateVector(Y.encodeStateVector(this.doc));
+    for (const [client, clock] of Y.decodeStateVector(Y.encodeStateVector(doc)))
+      if ((mine.get(client) ?? 0) < clock) return false;
+    return true;
   }
 
   /**
@@ -234,7 +254,26 @@ export class LinkSync {
         throw new Error(t("Could not write {files}.", { files: formatList(failed) }));
     }
 
-    // 2. Changes made here.
+    // 2. Changes made here: saves of files the copy has, or else a read of the folder.
+    const writes = [...this.writes];
+    this.writes.clear();
+    if (!this.scan && writes.length > 0) {
+      // A file the copy lacks may be one the folder leaves out, and a
+      // .gitignore changes what it leaves out: the read decides.
+      const read = ([path]: [string, string]) =>
+        !textAt(doc, path) || path.split("/").pop() === ".gitignore";
+      if (writes.some(read)) this.scan = true;
+      else {
+        for (const [path, text] of writes)
+          applyFileChange(doc, { path, kind: "text", text });
+        try {
+          await this.save();
+        } catch (e) {
+          this.scan = true;
+          throw e;
+        }
+      }
+    }
     if (this.scan) {
       this.scan = false;
       const renames = this.renames.splice(0);

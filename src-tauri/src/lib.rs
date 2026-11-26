@@ -3057,6 +3057,7 @@ pub fn run() {
             share::share_save_comments,
             share::share_stop,
             share::share_info,
+            share::share_sync_ticket,
             share::share_members,
             share::share_invite,
             share::share_cancel_invite,

@@ -27,7 +27,9 @@ const CHANGES_FILES = new Set([
 ]);
 
 export type ProjectFilesChange =
-  { kind: "scan" } | { kind: "rename"; from: string; to: string };
+  | { kind: "scan" }
+  | { kind: "rename"; from: string; to: string }
+  | { kind: "write"; path: string; text: string };
 
 const fileListeners = new Set<
   (projectDir: string, change: ProjectFilesChange) => void
@@ -48,7 +50,9 @@ function invoke<T>(command: string, args?: Record<string, unknown>): Promise<T> 
     const change: ProjectFilesChange =
       command === "rename_entry"
         ? { kind: "rename", from: String(args.path), to: String(args.newPath) }
-        : { kind: "scan" };
+        : command === "write_project_file" && typeof args.content === "string"
+          ? { kind: "write", path: String(args.path), text: args.content }
+          : { kind: "scan" };
     void result.then(
       () => fileListeners.forEach((listener) => listener(dir, change)),
       () => {},
@@ -1388,6 +1392,18 @@ export interface ProjectMembers {
 /** The shared project as the account sees it: its role and owner. */
 export function shareInfo(projectDir: string): Promise<AccountProject> {
   return invoke<AccountProject>("share_info", { projectDir });
+}
+
+/** A ticket for a shared project's live connection (contracts' syncTicketResponse). */
+export interface SyncTicket {
+  ticket: string;
+  /** Whether anyone besides you is in the project. */
+  shared: boolean;
+}
+
+/** A ticket to open the project's live connection with, good for a minute. */
+export function shareSyncTicket(projectDir: string): Promise<SyncTicket> {
+  return invoke<SyncTicket>("share_sync_ticket", { projectDir });
 }
 
 /** Members and open invites; owner only. */

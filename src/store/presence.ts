@@ -36,7 +36,7 @@ type Reporter = (
 
 let reporter: Reporter | null = null;
 
-/** Set by the platform that shares presence (the browser build). */
+/** Set while presence is shared (src/lib/live-presence.ts). */
 export function setPresenceReporter(r: Reporter | null): void {
   reporter = r;
 }

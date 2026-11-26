@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 import * as Y from "yjs";
 import { applyFileChange } from "@/lib/project-doc";
-import type { OpenProject } from "@/web/projects";
 import { colorFor } from "@scholarkit/collab";
-import { peersOf } from "@/web/presence";
+import { peersOf } from "@/lib/live-presence";
 
 type Awareness = Parameters<typeof peersOf>[1];
 
@@ -14,7 +13,7 @@ const awareness = (states: [number, Record<string, unknown>][]) =>
 describe("peersOf", () => {
   const doc = new Y.Doc();
   applyFileChange(doc, { path: "main.tex", kind: "text", text: "Hello world." });
-  const open = { doc } as OpenProject;
+  const open = { doc };
   const position = (index: number) => {
     const files = doc.getMap<Y.Text>("texts");
     const ytext = [...files.values()][0];

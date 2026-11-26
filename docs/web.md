@@ -58,7 +58,7 @@ project, file, comment and compile commands from that document:
   closes). `.polemic/` holds the comments, `project.json` and
   `assets.json`, as on disk.
 - Edits save as you type, a short burst of keys at a time (one save at a
-  time, `src/web/session.ts`). A save carries the text the edit started
+  time, `src/lib/save-as-you-type.ts`). A save carries the text the edit started
   from, and `applyTextMerge` moves the edit past changes others made since,
   so both are kept. Changes from others reload the file tree and are merged
   into the open file, with any edits it has that aren't saved yet.
@@ -85,7 +85,7 @@ project, file, comment and compile commands from that document:
   read in the browser: `src/lib/logparse.ts` and `src/lib/synctex.ts` are
   ports of the desktop app's Rust parser and the review page's SyncTeX
   reader, with their tests.
-- Presence (`src/web/presence.ts`) travels as awareness on the sync
+- Presence (`src/lib/live-presence.ts`, also used by a live desktop project) travels as awareness on the sync
   connection: each tab shares the file it has open and its cursor, as
   relative positions in that file's Y.Text. The server sets whose state it
   is from the connection's account, so names can't be faked. The top bar

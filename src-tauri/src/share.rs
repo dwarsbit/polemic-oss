@@ -437,6 +437,15 @@ struct Projects {
     projects: Vec<ProjectInfo>,
 }
 
+/// A ticket for a project's live connection (contracts' `syncTicketResponse`).
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct SyncTicket {
+    pub ticket: String,
+    /// Whether anyone besides you is in the project.
+    pub shared: bool,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct DocumentSync {
@@ -997,6 +1006,17 @@ impl<'a> Session<'a> {
             .await
     }
 
+    /// A ticket for the project's live connection (contracts'
+    /// `syncTicketResponse`), and whether anyone else is in the project.
+    pub async fn sync_ticket(&self, id: &str) -> Result<SyncTicket, ShareError> {
+        let id = checked_id(id)?;
+        self.json(
+            self.client
+                .post(self.url(&format!("/api/projects/{id}/sync-ticket"))),
+        )
+        .await
+    }
+
     /// Members and open invites (owner only).
     pub async fn members(&self, id: &str) -> Result<Members, ShareError> {
         let id = checked_id(id)?;
@@ -1374,6 +1394,20 @@ pub async fn share_info(
     let cx = context(&app, &project_dir)?;
     let id = cx.link()?.project_id;
     cx.check(cx.session()?.project(&id).await)
+}
+
+/// A ticket for the live connection of a shared project, which the
+/// webview connects with so the account token stays here. Errors
+/// leave the link alone: a server without live connections answers
+/// 404, and the next sync run tells a project that is gone.
+#[tauri::command]
+pub async fn share_sync_ticket(
+    app: tauri::AppHandle,
+    project_dir: String,
+) -> Result<SyncTicket, ShareError> {
+    let cx = context(&app, &project_dir)?;
+    let id = cx.link()?.project_id;
+    cx.session()?.sync_ticket(&id).await
 }
 
 #[tauri::command]

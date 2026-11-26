@@ -46,11 +46,19 @@ import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useCommentsStore } from "@/store/comments";
 import { useProjectStore } from "@/store/project";
 import { setFolderChangeHandler, useLinkStore } from "@/store/link";
+import { saveAsYouType } from "@/lib/save-as-you-type";
+import { startPresenceReporter } from "@/lib/live-presence";
 import { usePreviewStore } from "@/store/preview";
 import { applySettingsSideEffects, useSettingsStore } from "@/store/settings";
 import { useDialogsStore } from "@/store/dialogs";
 import { cn } from "cn";
 import { t } from "@scholarkit/i18n";
+
+/**
+ * How long edits gather before a live project saves them on desktop:
+ * each save also writes the file and goes up as its own request.
+ */
+const LIVE_SAVE_DELAY_MS = 200;
 
 function openExternal(url: string): Promise<void> {
   return import("@tauri-apps/plugin-opener").then(({ openUrl }) => openUrl(url));
@@ -251,6 +259,22 @@ function App() {
       if (comments) void useCommentsStore.getState().load();
     });
     return () => setFolderChangeHandler(() => {});
+  }, []);
+
+  // A project shared with others is live on desktop too: edits save
+  // as you type, so the others see them as they happen, and who else
+  // is here shows with their cursors (src/store/link.ts).
+  useEffect(() => {
+    if (isWeb) return;
+    const stopReporter = startPresenceReporter();
+    const saving = saveAsYouType(() => {
+      const link = useLinkStore.getState();
+      return link.live && link.dir === useProjectStore.getState().project?.path;
+    }, LIVE_SAVE_DELAY_MS);
+    return () => {
+      saving.stop();
+      stopReporter();
+    };
   }, []);
 
   // Refetch git state and reload the file tree and the active file when
@@ -501,7 +525,16 @@ function App() {
         open={documentSettingsOpen}
         onOpenChange={setDocumentSettingsOpen}
       />
-      {hasProject && <ShareDialog open={shareOpen} onOpenChange={setShareOpen} />}
+      {hasProject && (
+        <ShareDialog
+          open={shareOpen}
+          onOpenChange={(open) => {
+            setShareOpen(open);
+            // Shared with someone just now: go live.
+            if (!open) void useLinkStore.getState().goLive();
+          }}
+        />
+      )}
       {features.localFiles && <AccountProjectsDialog />}
       {isWeb && <OpenInDesktopDialog />}
       {paletteOpen && <CommandPalette />}
