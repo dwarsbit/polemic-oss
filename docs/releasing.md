@@ -18,8 +18,8 @@ It releases the version of the `## X.Y.Z (unreleased)` heading in
    at the top of the changelog. Every pull request that changes, adds or
    fixes something adds its line there; start the heading if there is
    none yet.
-2. Run **CI** on Scholarkit's `main` from the Actions tab: it runs only
-   by hand. Once it is green, and CI on polemic-oss's `main` is green
+2. Run `pnpm ci:local` on Scholarkit's `main` on your computer, or
+   **CI** from the Actions tab: neither runs by itself. Once it is green, and CI on polemic-oss's `main` is green
    for the same files (the Mirror workflow starts it after a merge), run
    **Polemic release** from the Actions tab of Scholarkit, on `main`. It
    takes no input.
