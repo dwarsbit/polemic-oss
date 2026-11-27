@@ -6,7 +6,10 @@
 #   docker build -f apps/polemic/docker/web/Dockerfile .
 
 FROM node:26-alpine AS build
-RUN corepack enable
+# Node 25 and later ship without Corepack: install the pnpm that package.json names.
+RUN --mount=type=bind,source=package.json,target=/tmp/package.json \
+  npm install --global "$(node -p "require('/tmp/package.json').packageManager")" \
+  && rm -rf /root/.npm
 WORKDIR /repo
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 # Every workspace package the editor depends on, dev tools included, needs its manifest here.
