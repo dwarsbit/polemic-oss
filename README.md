@@ -79,26 +79,25 @@ switched off. See the [security page](https://polemicapp.com/docs/reference/secu
 
 ## Compared with Overleaf and TeXstudio
 
-|                                | Polemic                         | Overleaf | TeXstudio |
-| ------------------------------ | ------------------------------- | -------- | --------- |
-| Runs on                        | Desktop and browser             | Browser  | Desktop   |
-| Works offline                  | Yes                             | No       | Yes       |
-| Files on your own machine      | Yes                             | No       | Yes       |
-| Open source                    | Yes                             | Yes      | Yes       |
-| Visual editor                  | Yes                             | Yes      | No        |
-| Live PDF preview               | Yes                             | Yes      | Yes       |
-| SyncTeX                        | Yes                             | Yes      | Yes       |
-| Compile without installing TeX | Yes, with an account            | Yes      | No        |
-| Comments                       | Yes                             | Yes      | No        |
-| Review links                   | Yes, with an account            | Yes      | No        |
-| Edit together in real time     | In the browser, with an account | Yes      | No        |
+|                                | Polemic              | Overleaf | TeXstudio |
+| ------------------------------ | -------------------- | -------- | --------- |
+| Runs on                        | Desktop and browser  | Browser  | Desktop   |
+| Works offline                  | Yes                  | No       | Yes       |
+| Files on your own machine      | Yes                  | No       | Yes       |
+| Open source                    | Yes                  | Yes      | Yes       |
+| Visual editor                  | Yes                  | Yes      | No        |
+| Live PDF preview               | Yes                  | Yes      | Yes       |
+| SyncTeX                        | Yes                  | Yes      | Yes       |
+| Compile without installing TeX | Yes, with an account | Yes      | No        |
+| Comments                       | Yes                  | Yes      | No        |
+| Review links                   | Yes, with an account | Yes      | No        |
+| Edit together in real time     | Yes, with Pro        | Yes      | No        |
 
 - **Compared with Overleaf**: Overleaf runs in the browser. Polemic runs on
   your desktop and works offline, and with a free account also in your
-  browser, where co-authors edit together in real time. In the desktop app,
-  your changes go out when you save and theirs arrive within seconds.
-  Reviewers comment from a link, and their comments come back to your
-  editor.
+  browser. With Pro, co-authors edit together in real time in both, with
+  each other's cursors and names in the text. Reviewers comment from a
+  link, and their comments come back to your editor.
 - **Compared with TeXstudio**: both are desktop editors that compile with
   your own TeX distribution. Polemic adds a visual editor, comments, Zotero
   and review links.
