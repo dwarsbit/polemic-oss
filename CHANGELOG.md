@@ -9,6 +9,7 @@
 ### Changed
 
 - The assistant speaks Dutch, German, French and Spanish too: its buttons, menus and messages follow the interface language.
+- A shared project no longer shows **Reconnecting…** for a connection that comes back within 2 seconds, as it does while we update the services. In the browser, a page that was open during an update reloads itself if it needs to, instead of leaving part of it blank.
 
 ## 0.28.0 (2026-11-26)
 

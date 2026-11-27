@@ -7,6 +7,22 @@ import { hasTrafficLights } from "@/lib/platform";
 import { isWeb } from "@/lib/target";
 import "./index.css";
 
+// After a deploy, an open page can ask for a code file that only the other version has. Reload
+// once to get the version now served, instead of leaving part of the page blank. Not again
+// within 10 s, so a file that is really missing can't make the page reload over and over.
+window.addEventListener("vite:preloadError", (event) => {
+  const key = "reloaded-for-new-version";
+  try {
+    const last = Number(sessionStorage.getItem(key)) || 0;
+    if (Date.now() - last < 10_000) return;
+    sessionStorage.setItem(key, String(Date.now()));
+  } catch {
+    return;
+  }
+  event.preventDefault();
+  location.reload();
+});
+
 // The macOS desktop app: the window uses the system vibrancy material
 // (see lib.rs and the html.mac overrides in index.css).
 if (hasTrafficLights) document.documentElement.classList.add("mac");

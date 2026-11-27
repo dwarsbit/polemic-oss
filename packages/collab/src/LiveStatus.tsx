@@ -1,8 +1,9 @@
 import { liveStatus, type LiveConnection } from "./status";
+import { useSettledConnection } from "./useSettledConnection";
 
 /**
  * The status line's part for a shared project: "Live with Anna and Tom",
- * or "Reconnecting… Your changes are kept." Nothing when nobody else is
+ * or "Reconnecting… Your changes are kept." once the connection has been gone for 2 s. Nothing when nobody else is
  * in and the connection is up, so the app's own "Saved" shows.
  */
 export function LiveStatus({
@@ -14,7 +15,8 @@ export function LiveStatus({
   connection: LiveConnection;
   readOnly?: boolean;
 }) {
-  const status = liveStatus({ names, connection, readOnly });
+  const settled = useSettledConnection(connection);
+  const status = liveStatus({ names, connection: settled, readOnly });
   if (!status) return null;
   return (
     <span className="collab-status" data-tone={status.tone} role="status">

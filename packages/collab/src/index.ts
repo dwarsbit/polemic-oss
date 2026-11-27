@@ -9,3 +9,4 @@ export {
   type Person,
 } from "./people";
 export { liveStatus, liveWith, type LiveConnection } from "./status";
+export { RECONNECTING_AFTER_MS, useSettledConnection } from "./useSettledConnection";
