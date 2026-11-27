@@ -119,7 +119,7 @@ the next update.
 
 ### Requirements
 
-- Node.js 20 or later and pnpm
+- Node.js 26 or later and pnpm
 - Rust (stable) with cargo
 - A TeX distribution on your PATH: TeX Live, MacTeX or MiKTeX, including
   `latexmk`
