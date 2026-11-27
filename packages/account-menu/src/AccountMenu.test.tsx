@@ -96,6 +96,25 @@ describe("AccountMenu", () => {
     expect(text()).toContain("More from midnight UTC");
   });
 
+  it("shows the month's assistant on Plus and Pro only", async () => {
+    await render({ loadUsage: async () => free });
+    await open();
+    expect(text()).not.toContain("Assistant this month");
+
+    act(() => root?.unmount());
+    await render({
+      plan: "plus",
+      loadUsage: async () => ({
+        ...free,
+        plan: "plus",
+        assistant: { usedPercent: 100, resetsAt: "2026-12-01T00:00:00.000Z" },
+      }),
+    });
+    await open();
+    expect(text()).toContain("Assistant this month");
+    expect(text()).toContain("More from the first of the month");
+  });
+
   it("offers the next plan on Free and Plus, and nothing on Pro", async () => {
     const onUpgrade = vi.fn();
     await render({ plan: "free", onUpgrade });

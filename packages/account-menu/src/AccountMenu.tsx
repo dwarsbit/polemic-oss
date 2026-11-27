@@ -160,7 +160,10 @@ function Meter({
   );
 }
 
-/** Storage against the plan, the share of today's cloud compile used and the active review links. */
+/**
+ * Storage against the plan, the share of today's cloud compile and of this month's assistant
+ * used, and the active review links.
+ */
 export function UsageMeters({
   usage,
   translator = ACTIVE,
@@ -169,7 +172,7 @@ export function UsageMeters({
   translator?: MenuTranslator;
 }) {
   const { t, tn } = translator;
-  const { storage, compile, reviewLinks } = usage;
+  const { storage, compile, reviewLinks, assistant } = usage;
   return (
     <div className="account-menu-usage">
       <Meter
@@ -188,6 +191,15 @@ export function UsageMeters({
         full={compile.usedPercent >= 100}
         note={t("More from midnight UTC")}
       />
+      {assistant && (
+        <Meter
+          label={t("Assistant this month")}
+          value={t("{percent}% used", { percent: assistant.usedPercent })}
+          share={assistant.usedPercent / 100}
+          full={assistant.usedPercent >= 100}
+          note={t("More from the first of the month")}
+        />
+      )}
       <p className="account-menu-note">
         {reviewLinks.limit === null
           ? t("Unlimited review links")

@@ -1856,6 +1856,8 @@
   "on {date} at {time}": "on {date} at {time}",
   "{used} of {limit}": "{used} of {limit}",
   "{percent}% used": "{percent}% used",
+  "Assistant this month": "Assistant this month",
+  "More from the first of the month": "More from the first of the month",
   "Upgrade to Plus": "Upgrade to Plus",
   "Upgrade to Pro": "Upgrade to Pro",
   "{name}, in {place}": "{name}, in {place}",

@@ -12,6 +12,8 @@ export interface AccountUsage {
   compile: { usedPercent: number; resetsAt?: string };
   /** limit is null: unlimited. */
   reviewLinks: { count: number; limit: number | null };
+  /** The share of this month's assistant on Scholarkit's model used; null or left out on Free. */
+  assistant?: { usedPercent: number; resetsAt?: string } | null;
 }
 
 /** The plan to upgrade to from this one; null on Pro, on a plan this version doesn't know, and without one. */

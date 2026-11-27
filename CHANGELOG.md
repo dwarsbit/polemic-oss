@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.29.0 (unreleased)
+
+### Added
+
+- The account menu shows how much of this month's assistant you've used, on Plus and Pro, next to storage and cloud compile.
+
+### Changed
+
+- The assistant speaks Dutch, German, French and Spanish too: its buttons, menus and messages follow the interface language.
+
 ## 0.28.0 (2026-11-26)
 
 ### Added
