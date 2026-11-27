@@ -5,7 +5,7 @@
 # its own Caddy, on the account app's origin. Build from the repository root:
 #   docker build -f apps/polemic/docker/web/Dockerfile .
 
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 RUN corepack enable
 WORKDIR /repo
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
