@@ -92,11 +92,16 @@ export function collect(srcDir) {
   return messages;
 }
 
+// CLDR's order. Node's own order of the categories depends on its version (newer versions
+// follow this one), and the catalogs must come out the same on every computer.
+const PLURAL_ORDER = ["zero", "one", "two", "few", "many", "other"];
+
 function pluralTemplate(language) {
   const forms = {};
-  for (const category of new Intl.PluralRules(language).resolvedOptions()
-    .pluralCategories)
-    forms[category] = "";
+  const categories = [
+    ...new Intl.PluralRules(language).resolvedOptions().pluralCategories,
+  ].sort((a, b) => PLURAL_ORDER.indexOf(a) - PLURAL_ORDER.indexOf(b));
+  for (const category of categories) forms[category] = "";
   return forms;
 }
 

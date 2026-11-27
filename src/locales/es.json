@@ -27,8 +27,8 @@
   "{plan} plan": "Plan {plan}",
   "Unlimited review links": "Enlaces de revisión ilimitados",
   "{active} of {count} active review links": {
-    "many": "{active} de {count} enlaces de revisión activos",
     "one": "{active} de {count} enlace de revisión activo",
+    "many": "{active} de {count} enlaces de revisión activos",
     "other": "{active} de {count} enlaces de revisión activos"
   },
   "Change plan": "Cambiar de plan",
@@ -100,8 +100,8 @@
   "Expand": "Expandir",
   "Missing files": "Archivos que faltan",
   "{count} references to a file not in the project": {
-    "many": "{count} referencias a un archivo que no está en el proyecto",
     "one": "{count} referencia a un archivo que no está en el proyecto",
+    "many": "{count} referencias a un archivo que no está en el proyecto",
     "other": "{count} referencias a un archivo que no está en el proyecto"
   },
   "Close inspector": "Cerrar inspector",
@@ -111,8 +111,8 @@
   "File": "Archivo",
   "Unused": "Sin usar",
   "Used {count} times": {
-    "many": "Usado {count} veces",
     "one": "Usado una vez",
+    "many": "Usado {count} veces",
     "other": "Usado {count} veces"
   },
   "Fixes LaTeX, leaves your text alone": "Corrige el LaTeX, deja tu texto en paz",
@@ -176,14 +176,14 @@
   "New entry": "Entrada nueva",
   "The state of this file's references": "El estado de las referencias de este archivo",
   "{count} entries": {
-    "many": "{count} entradas",
     "one": "{count} entrada",
+    "many": "{count} entradas",
     "other": "{count} entradas"
   },
   "{incompleteCount} incomplete": "{incompleteCount} incompletas",
   "{count} duplicates": {
-    "many": "{count} duplicados",
     "one": "{count} duplicado",
+    "many": "{count} duplicados",
     "other": "{count} duplicados"
   },
   "Save ({formatShortcut})": "Guardar ({formatShortcut})",
@@ -204,21 +204,21 @@
   "An entry with key \"{newKey}\" already exists.": "Ya existe una entrada con la clave \"{newKey}\".",
   "No entry found for \"{oldKey}\".": "No se ha encontrado ninguna entrada para \"{oldKey}\".",
   "Renamed in {count} files,": {
-    "many": "Renombrada en {count} archivos,",
     "one": "Renombrada en {count} archivo,",
+    "many": "Renombrada en {count} archivos,",
     "other": "Renombrada en {count} archivos,"
   },
   "{count} citations.": {
-    "many": "{count} citas.",
     "one": "{count} cita.",
+    "many": "{count} citas.",
     "other": "{count} citas."
   },
   "Added {key} to {file}.": "Se ha añadido {key} a {file}.",
   "Enter to rename everywhere, Esc to cancel": "Intro para renombrar en todas partes, Esc para cancelar",
   "Insert \\{command}{{key}}": "Insertar \\{command}{{key}}",
   "{count} citations": {
-    "many": "{count} citas",
     "one": "{count} cita",
+    "many": "{count} citas",
     "other": "{count} citas"
   },
   "Incomplete": "Incompleta",
@@ -232,8 +232,8 @@
   "No entries yet. Add one with + or from your sources.": "Aún no hay entradas. Añade una con + o desde tus fuentes.",
   "Undefined citations": "Citas sin definir",
   "{count} citations without an entry": {
-    "many": "{count} citas sin entrada",
     "one": "{count} cita sin entrada",
+    "many": "{count} citas sin entrada",
     "other": "{count} citas sin entrada"
   },
   "New BibTeX entry": "Entrada BibTeX nueva",
@@ -373,18 +373,18 @@
   "Semicolon": "Punto y coma",
   "Tab": "Tabulador",
   "{count} rows": {
-    "many": "{count} filas",
     "one": "{count} fila",
+    "many": "{count} filas",
     "other": "{count} filas"
   },
   "{count} columns": {
-    "many": "{count} columnas",
     "one": "{count} columna",
+    "many": "{count} columnas",
     "other": "{count} columnas"
   },
   "{count} more rows": {
-    "many": "{count} filas más",
     "one": "{count} fila más",
+    "many": "{count} filas más",
     "other": "{count} filas más"
   },
   "A plot needs at least two numeric columns": "Un gráfico necesita al menos dos columnas numéricas",
@@ -435,8 +435,8 @@
   "Author (\\author{…})": "Autor (\\author{…})",
   "Date (\\date{…})": "Fecha (\\date{…})",
   "{count} packages": {
-    "many": "{count} paquetes",
     "one": "{count} paquete",
+    "many": "{count} paquetes",
     "other": "{count} paquetes"
   },
   "Manage packages →": "Gestionar paquetes →",
@@ -664,8 +664,8 @@
   "Look up {name} on CTAN": "Buscar {name} en CTAN",
   "More about this kind of error →": "Más sobre este tipo de error →",
   "and {count} more": {
-    "many": "y {count} más",
     "one": "y {count} más",
+    "many": "y {count} más",
     "other": "y {count} más"
   },
   "TeX's message:": "El mensaje de TeX:",
@@ -675,8 +675,8 @@
   "Hide details": "Ocultar detalles",
   "Show details": "Mostrar detalles",
   "{count} times": {
-    "many": "{count} veces",
     "one": "{count} vez",
+    "many": "{count} veces",
     "other": "{count} veces"
   },
   "Fix": "Corregir",
@@ -687,8 +687,8 @@
   "The compile failed without a readable error. See the compile log.": "La compilación ha fallado sin un error legible. Consulta el registro de compilación.",
   "No issues.": "No hay problemas.",
   "{count} more errors, most likely caused by the first": {
-    "many": "{count} errores más, probablemente causados por el primero",
     "one": "{count} error más, probablemente causado por el primero",
+    "many": "{count} errores más, probablemente causados por el primero",
     "other": "{count} errores más, probablemente causados por el primero"
   },
   "Nothing compiled yet.": "Aún no se ha compilado nada.",
@@ -696,13 +696,13 @@
   "Not a valid label name.": "No es un nombre de etiqueta válido.",
   "A label \"{newName}\" already exists.": "Ya existe una etiqueta \"{newName}\".",
   "{count} occurrences.": {
-    "many": "{count} apariciones.",
     "one": "{count} aparición.",
+    "many": "{count} apariciones.",
     "other": "{count} apariciones."
   },
   "{count} references": {
-    "many": "{count} referencias",
     "one": "{count} referencia",
+    "many": "{count} referencias",
     "other": "{count} referencias"
   },
   "Rename {name} (F2)": "Renombrar {name} (F2)",
@@ -712,8 +712,8 @@
   "No labels yet. Add one with \\label.": "Aún no hay etiquetas. Añade una con \\label.",
   "Undefined references": "Referencias sin definir",
   "{count} references without a label": {
-    "many": "{count} referencias sin etiqueta",
     "one": "{count} referencia sin etiqueta",
+    "many": "{count} referencias sin etiqueta",
     "other": "{count} referencias sin etiqueta"
   },
   "Interface language": "Idioma de la interfaz",
@@ -869,20 +869,20 @@
   "Before the first heading": "Antes del primer encabezado",
   "Counted like texcount: words in the document body (text, headings, captions, footnotes); commands, math, comments, and the bibliography are excluded. Section counts include their subsections.": "Contado como texcount: palabras del cuerpo del documento (texto, encabezados, pies, notas al pie); se excluyen los comandos, las matemáticas, los comentarios y la bibliografía. Los recuentos de las secciones incluyen sus subsecciones.",
   "Replace {count} matches": {
-    "many": "¿Reemplazar {count} coincidencias",
     "one": "¿Reemplazar {count} coincidencia",
+    "many": "¿Reemplazar {count} coincidencias",
     "other": "¿Reemplazar {count} coincidencias"
   },
   "in {count} files with “{replacement}”?": {
-    "many": "en {count} archivos por «{replacement}»?",
     "one": "en {count} archivo por «{replacement}»?",
+    "many": "en {count} archivos por «{replacement}»?",
     "other": "en {count} archivos por «{replacement}»?"
   },
   "Files that are not open are saved right away.": "Los archivos que no están abiertos se guardan de inmediato.",
   "Replace all": "Reemplazar todo",
   "Replaced {count} matches.": {
-    "many": "Se han reemplazado {count} coincidencias.",
     "one": "Se ha reemplazado {count} coincidencia.",
+    "many": "Se han reemplazado {count} coincidencias.",
     "other": "Se han reemplazado {count} coincidencias."
   },
   "1 match": "1 coincidencia",
@@ -1117,13 +1117,13 @@
   "Cancel the invite for {email}": "Cancelar la invitación para {email}",
   "Cancel invite": "Cancelar invitación",
   "{count} invites pending": {
-    "many": "{count} invitaciones pendientes",
     "one": "{count} invitación pendiente",
+    "many": "{count} invitaciones pendientes",
     "other": "{count} invitaciones pendientes"
   },
   "{first}, {second} and {count} more": {
-    "many": "{first}, {second} y {count} más",
     "one": "{first}, {second} y {count} más",
+    "many": "{first}, {second} y {count} más",
     "other": "{first}, {second} y {count} más"
   },
   "Shared with {who}": "Compartido con {who}",
@@ -1174,8 +1174,8 @@
   "Remove source": "Quitar fuente",
   "Include this source when adding references to a project": "Incluir esta fuente al añadir referencias a un proyecto",
   "{count} files": {
-    "many": "{count} archivos",
     "one": "{count} archivo",
+    "many": "{count} archivos",
     "other": "{count} archivos"
   },
   "No .bib files here (yet).": "Aquí no hay archivos .bib (todavía).",
@@ -1189,8 +1189,8 @@
   "Referenced in place: nothing is copied into your projects.": "Referenciado en su sitio: no se copia nada en tus proyectos.",
   "Read from your projects each time, so changes show up here.": "Se lee de tus proyectos cada vez, así que los cambios aparecen aquí.",
   "{count} words": {
-    "many": "{count} palabras",
     "one": "{count} palabra",
+    "many": "{count} palabras",
     "other": "{count} palabras"
   },
   "TeX found": "TeX encontrado",
@@ -1209,25 +1209,25 @@
   "Replaced": "Reemplazado",
   "Highlighted": "Resaltado",
   "Accept {count} suggestions in {files} files?": {
-    "many": "¿Aceptar {count} sugerencias en {files} archivos?",
     "one": "¿Aceptar {count} sugerencia en {files} archivos?",
+    "many": "¿Aceptar {count} sugerencias en {files} archivos?",
     "other": "¿Aceptar {count} sugerencias en {files} archivos?"
   },
   "Reject {count} suggestions in {files} files?": {
-    "many": "¿Rechazar {count} sugerencias en {files} archivos?",
     "one": "¿Rechazar {count} sugerencia en {files} archivos?",
+    "many": "¿Rechazar {count} sugerencias en {files} archivos?",
     "other": "¿Rechazar {count} sugerencias en {files} archivos?"
   },
   "Accept all": "Aceptar todas",
   "Reject all": "Rechazar todas",
   "Accepted in {count} files.": {
-    "many": "Aceptadas en {count} archivos.",
     "one": "Aceptadas en {count} archivo.",
+    "many": "Aceptadas en {count} archivos.",
     "other": "Aceptadas en {count} archivos."
   },
   "Rejected in {count} files.": {
-    "many": "Rechazadas en {count} archivos.",
     "one": "Rechazadas en {count} archivo.",
+    "many": "Rechazadas en {count} archivos.",
     "other": "Rechazadas en {count} archivos."
   },
   "Track changes setup removed.": "Se ha quitado la configuración del control de cambios.",
@@ -1893,8 +1893,8 @@
   "Live with {name}": "En directo con {name}",
   "Live with {first} and {second}": "En directo con {first} y {second}",
   "Live with {first}, {second} and {count} others": {
-    "many": "En directo con {first}, {second} y {count} personas más",
     "one": "En directo con {first}, {second} y {count} persona más",
+    "many": "En directo con {first}, {second} y {count} personas más",
     "other": "En directo con {first}, {second} y {count} personas más"
   },
   "Reconnecting…": "Reconectando…",
@@ -1920,8 +1920,8 @@
   "Ask": "",
   "Thinking…": "",
   "{count} steps": {
-    "many": "",
     "one": "",
+    "many": "",
     "other": ""
   },
   "Stopped.": "",

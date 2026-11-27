@@ -49,4 +49,12 @@ describe("updateCatalog", () => {
       Object.keys(updateCatalog("fr", messages)["{count} files"] as object).sort(),
     ).toEqual(Object.keys({ many: "", one: "", other: "" }).sort());
   });
+
+  it("lists the plural forms in CLDR's order, whatever Node's version", () => {
+    const forms = (language: string) =>
+      Object.keys(updateCatalog(language, messages)["{count} files"] as object);
+    expect(forms("fr")).toEqual(["one", "many", "other"]);
+    expect(forms("pl")).toEqual(["one", "few", "many", "other"]);
+    expect(forms("ar")).toEqual(["zero", "one", "two", "few", "many", "other"]);
+  });
 });
