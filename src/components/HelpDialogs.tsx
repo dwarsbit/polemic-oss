@@ -172,7 +172,7 @@ export function AboutDialog({
           {t("Version")} <span className="font-mono">{version ?? "unknown"}</span>
         </p>
         <p className="text-sm text-muted-foreground">
-          {t("Released under the MIT License.")}
+          {t("Released under the GPL-3.0 license.")}
         </p>
         <button
           type="button"

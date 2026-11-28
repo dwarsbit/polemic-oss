@@ -624,7 +624,7 @@
   "Corrections and dictionary": "Correcties en woordenboek",
   "A modern LaTeX editing experience. Write, compile and revise with a live PDF preview and comments.": "Een moderne LaTeX-editor. Schrijf, compileer en herzie met een live pdf-voorbeeld en opmerkingen.",
   "Version": "Versie",
-  "Released under the MIT License.": "Uitgebracht onder de MIT-licentie.",
+  "Released under the GPL-3.0 license.": "Uitgebracht onder de GPL-3.0-licentie.",
   "github.com/dwarsbit/polemic-oss": "github.com/dwarsbit/polemic-oss",
   "{seconds}s ago": "{seconds} s geleden",
   "{minutes} min ago": "{minutes} min geleden",

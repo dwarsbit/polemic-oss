@@ -637,7 +637,7 @@
   "Corrections and dictionary": "Corrections et dictionnaire",
   "A modern LaTeX editing experience. Write, compile and revise with a live PDF preview and comments.": "Un éditeur LaTeX moderne. Écrivez, compilez et révisez avec un aperçu PDF en direct et des commentaires.",
   "Version": "Version",
-  "Released under the MIT License.": "Publié sous licence MIT.",
+  "Released under the GPL-3.0 license.": "Publié sous licence GPL-3.0.",
   "github.com/dwarsbit/polemic-oss": "github.com/dwarsbit/polemic-oss",
   "{seconds}s ago": "il y a {seconds} s",
   "{minutes} min ago": "il y a {minutes} min",
