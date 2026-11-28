@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { formatDate, t } from "@scholarkit/i18n";
 import { parseNotes, type Span } from "../notes";
+import { UpdateIcon } from "./UpdateIcon";
 import { useUpdates } from "../use-updates";
 import type { Updater } from "../updates";
 
@@ -47,7 +48,8 @@ export function UpdateCard({ updater, app, downloadUrl, openUrl }: UpdateCardPro
         role="status"
         aria-labelledby="update-card-title"
       >
-        <h2 id="update-card-title" className="text-[13px] font-semibold">
+        <h2 id="update-card-title" className="update-title">
+          <UpdateIcon />
           {failed ? t("Update not installed") : t("Update ready")}
         </h2>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">

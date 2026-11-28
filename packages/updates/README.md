@@ -1,5 +1,8 @@
 # @scholarkit/updates
 
+Updates for the apps. The browser builds say when a new version is served
+([below](#a-new-version-in-the-browser)); the desktop apps update themselves.
+
 Updates for the desktop apps: Polemic, Cursive and Binder. Each app checks
 for a new version when it starts and once a day after that, downloads it in
 the background and shows **Update ready**. It installs only when the person
@@ -79,3 +82,29 @@ from a local folder:
 3. Build the older version with the same public key and
    `--config '{"plugins":{"updater":{"endpoints":["http://localhost:8000/latest.json"],"dangerousInsecureTransportProtocol":true}}}'`,
    install it and open **Settings → Updates → Check now**.
+
+## A new version in the browser
+
+Polemic, Cursive and Binder in the browser, and the web home, show **A new
+version is available** at the bottom left once a newer build is served, in
+the look of **Update ready**. **Load new version** saves the open work first
+and reloads only when it is saved (it gives up after 10 seconds and says so);
+**Later** hides the card until yet another build comes. Nothing reloads by
+itself.
+
+- `vite.ts`: the plugin each app's `vite.config.ts` adds to its browser build
+  (`--mode web`). It names the build after a hash of the built `index.html`,
+  which lists every hashed script and style file, so the name changes only
+  when that app's code changes. The name goes into the page as
+  `<meta name="scholarkit-build">` and into `version.json` next to it. The
+  app's Caddyfile serves that file with `Cache-Control: no-store`.
+- `web/new-version.ts`: reads the page's build and asks for `version.json`
+  every 15 minutes while the page is in view, and when it comes back into
+  view or online.
+- `web/NewVersionCard.tsx`: the card. The app passes what saves its open work.
+- The web home has no Vite build: it names its build with the image's commit
+  (`SENTRY_RELEASE`), served at `/version.json` by `apps/account`.
+
+During a deploy the halves App A and App B are updated one after the other,
+and the `sk_server` cookie keeps a browser on one half, so `version.json`
+comes from the half that serves the page and the reload gets that version.

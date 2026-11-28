@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { buildVersion } from "@scholarkit/updates/vite";
 import { readFileSync } from "node:fs";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -49,7 +50,13 @@ const apiProxy = {
 };
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), tailwindcss(), ...sourceMaps],
+  // The browser build names itself, for "A new version is available".
+  plugins: [
+    react(),
+    tailwindcss(),
+    ...sourceMaps,
+    ...(mode === "web" ? [buildVersion()] : []),
+  ],
 
   // The browser build is served at /polemic on the services app.
   base: mode === "web" ? "/polemic/" : "/",

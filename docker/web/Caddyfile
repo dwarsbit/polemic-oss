@@ -17,6 +17,12 @@
 		file_server
 	}
 
+	# The build being served ("A new version is available"): never kept by a browser or the CDN.
+	handle /polemic/version.json {
+		header Cache-Control "no-store"
+		file_server
+	}
+
 	# Every other path under /polemic is the app: /polemic/projects is the list and
 	# /polemic/projects/<id> opens a project.
 	@app path /polemic /polemic/*

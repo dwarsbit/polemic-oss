@@ -4,6 +4,7 @@
 
 ### Added
 
+- In the browser, **A new version is available** shows at the bottom left after we update Polemic. **Load new version** saves your work first, then loads it; **Later** hides it until the next version. The desktop app's **Update ready** card has the same look.
 - The account menu shows how much of this month's assistant you've used, on Plus and Pro, next to storage and cloud compile.
 
 ### Changed

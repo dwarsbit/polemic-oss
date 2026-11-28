@@ -6,6 +6,7 @@
 
 import { saveAsYouType } from "@/lib/save-as-you-type";
 import { useCommentsStore } from "@/store/comments";
+import { saveBeforeReloadWith } from "@/web/new-version";
 import { startPresence } from "@/web/presence";
 import { useProjectStore } from "@/store/project";
 import {
@@ -90,6 +91,14 @@ export function startWebSession(): () => void {
   window.addEventListener("popstate", onPopState);
   stops.push(() => window.removeEventListener("popstate", onPopState));
 
+  // Load new version: open files written, then every edit sent and the save as you type done.
+  stops.push(
+    saveBeforeReloadWith(async () => {
+      await useProjectStore.getState().flushBuffers();
+      await settled(() => !saving.pending() && !hasUnsyncedChanges());
+    }),
+  );
+
   // Edits still on their way to the server: ask before the tab closes.
   const onBeforeUnload = (event: BeforeUnloadEvent) => {
     if (saving.pending() || hasUnsyncedChanges()) event.preventDefault();
@@ -100,4 +109,12 @@ export function startWebSession(): () => void {
   return () => {
     for (const stop of stops) stop();
   };
+}
+
+/** Resolves once `done()` holds, looking every 100 ms; gives up after 30 s. */
+async function settled(done: () => boolean): Promise<void> {
+  for (let waited = 0; !done(); waited += 100) {
+    if (waited >= 30_000) throw new Error("Not saved");
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
 }

@@ -2,7 +2,7 @@
   "name": "@scholarkit/updates",
   "version": "0.1.0",
   "private": true,
-  "description": "Updates for the desktop apps: checks for a new version, downloads it and asks before restarting.",
+  "description": "Updates for the apps: the desktop apps check for a new version, download it and ask before restarting; the browser builds say when a new version is served.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -15,7 +15,11 @@
     "./tauri": "./src/tauri.ts",
     "./components/UpdateCard": "./src/components/UpdateCard.tsx",
     "./components/UpdatesSettings": "./src/components/UpdatesSettings.tsx",
-    "./updates.css": "./src/updates.css"
+    "./updates.css": "./src/updates.css",
+    "./components/UpdateIcon": "./src/components/UpdateIcon.tsx",
+    "./web/new-version": "./src/web/new-version.ts",
+    "./web/NewVersionCard": "./src/web/NewVersionCard.tsx",
+    "./vite": "./src/vite.ts"
   },
   "scripts": {
     "lint": "eslint .",

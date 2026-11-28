@@ -40,8 +40,10 @@ import { useUiStore, type EditorFace } from "@/store/ui";
 import { hasTrafficLights } from "@/lib/platform";
 import { HELP_URL, ISSUES_URL } from "@/lib/links";
 import { features, isWeb } from "@/lib/target";
+import { newVersion, saveBeforeReload } from "@/web/new-version";
 import { DOWNLOAD_URL, updater } from "@/lib/updates";
 import { UpdateCard } from "@scholarkit/updates/components/UpdateCard";
+import { NewVersionCard } from "@scholarkit/updates/web/NewVersionCard";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useCommentsStore } from "@/store/comments";
 import { useProjectStore } from "@/store/project";
@@ -517,6 +519,7 @@ function App() {
           openUrl={(url) => void openExternal(url)}
         />
       )}
+      {newVersion && <NewVersionCard watcher={newVersion} save={saveBeforeReload} />}
       <TableDialog open={tableDialogOpen} onOpenChange={setTableDialogOpen} />
       <TableGridDialog />
       <CsvImportDialog />
